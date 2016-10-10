@@ -14,23 +14,20 @@
 #include "external/tinyxml2/tinyxml2.h"
 
 using namespace tinyxml2;
+USING_NS_CC;
 
-class RandomMap :public cocos2d::Ref, public XMLDocument{
+class RandomMap :public Ref, public XMLDocument{
 public:
-        static RandomMap* create(SimpleMapInfoBean infos);
+        static RandomMap* create(const SimpleMapInfoBean& infos);
+        std::string getXmlString();
+        
 protected:
-        RandomMap();
-        bool init();
-        void initRootMap();
-        void initTilesSet();
+        RandomMap(const SimpleMapInfoBean& infos);
+        bool init(const SimpleMapInfoBean& infos);
+        void initRootMap(const MapBasicBean& basic);
+        void initTilesSet(const TileSetBean& tileset);
+        void initLayer(const LayerBean& layer);
 private:
-        int _widthInTiles;
-        int _heightInTiles;
-        int _tileWidth;
-        int _tileHeight;
-        int _hexsidelength;
-        std::string _staggeraxis;
-        std::string _staggerindex;
         XMLElement* _rootElement;
 };
 

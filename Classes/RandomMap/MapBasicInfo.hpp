@@ -9,15 +9,12 @@
 #ifndef _MapBasicInfo_hpp_
 #define _MapBasicInfo_hpp_
 
-typedef struct DataBean_s {
-        std::vector<int> datas;
-}DataBean;
-
 typedef struct LayerBean_s{
         std::string name;
         int width;
         int height;
         float opacity;
+        std::vector<int> datas;
 }LayerBean;
 
 typedef struct ImageBean_s{
@@ -35,7 +32,7 @@ typedef struct TileSetBean_s{
         ImageBean imageBean;
 }TileSetBean;
 
-typedef struct SimpleMapInfoBean_s{
+typedef struct MapBasicBean_s{
         int widthInTiles;
         int heightInTiles;
         int tileWidth;
@@ -43,7 +40,14 @@ typedef struct SimpleMapInfoBean_s{
         int hexsidelength;
         std::string staggeraxis;
         std::string staggerindex;
-        TileSetBean tileSetBean;
+        std::string orientation;
+        std::string renderorder;
+}MapBasicBean;
+
+typedef struct SimpleMapInfoBean_s{
+        MapBasicBean mapBasicBean;
+        TileSetBean  tileSetBean;
+        LayerBean    layerBean;
 }SimpleMapInfoBean;
 
 

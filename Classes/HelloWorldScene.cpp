@@ -1,5 +1,6 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "RandomMap/RandomMap.hpp"
 
 USING_NS_CC;
 
@@ -52,10 +53,39 @@ bool HelloWorld::init()
     /////////////////////////////
     // 3. add your codes below...
         
-        auto map = TMXTiledMap::create("maps/hexa-axis-x.tmx");
-
+//        auto map = TMXTiledMap::create("maps/hexa-axis-x.tmx");
+//
+//        this->addChild(map, 2);
+        
+        SimpleMapInfoBean simpleBean;
+        MapBasicBean mapBasic = {32, 28, 80, 80, 40, "x", "odd", "hexagonal", "right-down"};
+        simpleBean.mapBasicBean = mapBasic;
+        
+        TileSetBean tileSet = {"MapTest", 80, 80, 2, 2, {"hexa-axis-x.png", 160, 80}};
+        simpleBean.tileSetBean = tileSet;
+        
+        LayerBean layer = {"map", 3, 3, 0.2};
+        std::vector<int> datas;
+        datas.push_back(1);
+        datas.push_back(2);
+        datas.push_back(1);
+        datas.push_back(2);
+        datas.push_back(2);
+        datas.push_back(1);
+        datas.push_back(1);
+        datas.push_back(1);
+        datas.push_back(2);
+        datas.push_back(2);
+        layer.datas = datas;
+        simpleBean.layerBean = layer;
+        
+        RandomMap* mapxml = RandomMap::create(simpleBean);
+        
+        std::string xmls = mapxml->getXmlString();
+        printf("---test=%s---", xmls.c_str());
+        auto map = TMXTiledMap::createWithXML(xmls, "maps");
+        
         this->addChild(map, 2);
- 
     
     return true;
 }
