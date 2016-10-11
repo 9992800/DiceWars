@@ -11,7 +11,7 @@ Scene* HelloWorld::createScene()
     
     // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
-
+        
     // add layer as a child to scene
     scene->addChild(layer);
 
@@ -53,29 +53,23 @@ bool HelloWorld::init()
     /////////////////////////////
     // 3. add your codes below...
         
-//        auto map = TMXTiledMap::create("maps/hexa-axis-x.tmx");
-//
-//        this->addChild(map, 2);
+        
+
         
         SimpleMapInfoBean simpleBean;
-        MapBasicBean mapBasic = {32, 28, 80, 80, 40, "x", "odd", "hexagonal", "right-down"};
+        int row = 32, columns = 3;
+        MapBasicBean mapBasic = {row, columns, 20, 20, 10, "x", "even", "hexagonal", "right-down"};
         simpleBean.mapBasicBean = mapBasic;
         
-        TileSetBean tileSet = {"MapTest", 80, 80, 2, 2, {"hexa-axis-x.png", 160, 80}};
+        TileSetBean tileSet = {"MapTest", 20, 20, 2, 2, {"hexa-axis-x.png", 40, 20}};
         simpleBean.tileSetBean = tileSet;
         
-        LayerBean layer = {"map", 3, 3, 0.2};
+        LayerBean layer = {"map", row, columns, 1.0};
         std::vector<int> datas;
-        datas.push_back(1);
-        datas.push_back(2);
-        datas.push_back(1);
-        datas.push_back(2);
-        datas.push_back(2);
-        datas.push_back(1);
-        datas.push_back(1);
-        datas.push_back(1);
-        datas.push_back(2);
-        datas.push_back(2);
+        for (int i = 0; i < row * columns; i++){
+                int value = random<int>(1, 2);
+                datas.push_back(value);
+        }
         layer.datas = datas;
         simpleBean.layerBean = layer;
         
@@ -83,11 +77,20 @@ bool HelloWorld::init()
         
         std::string xmls = mapxml->getXmlString();
         printf("---test=%s---", xmls.c_str());
-        auto map = TMXTiledMap::createWithXML(xmls, "maps");
+//        auto map = TMXTiledMap::createWithXML(xmls, "maps");
+        auto map = TMXTiledMap::create("maps/issue16105.tmx");
+//        map->setAnchorPoint(Vec2(0.0, -0.0));
+        
+        
+        Size cs = map->getContentSize();
+        map->setPosition(Vec2(origin.x, origin.y));
+        auto color = LayerColor::create( Color4B(64,0,0,255), cs.width, cs.height);
+        map->addChild(color, -1);
         
         this->addChild(map, 2);
+        
     
-    return true;
+        return true;
 }
 
 
