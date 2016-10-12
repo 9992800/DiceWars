@@ -1,6 +1,6 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
-#include "RandomMap/RandomMap.hpp"
+#include "game/DiceGame.hpp"
 
 USING_NS_CC;
 
@@ -52,35 +52,12 @@ bool HelloWorld::init()
 
     /////////////////////////////
     // 3. add your codes below...
+                 
         
-        
-
-        
-        SimpleMapInfoBean simpleBean;
-        int row = 32, columns = 3;
-        MapBasicBean mapBasic = {row, columns, 20, 20, 10, "x", "even", "hexagonal", "right-down"};
-        simpleBean.mapBasicBean = mapBasic;
-        
-        TileSetBean tileSet = {"MapTest", 20, 20, 2, 2, {"hexa-axis-x.png", 40, 20}};
-        simpleBean.tileSetBean = tileSet;
-        
-        LayerBean layer = {"map", row, columns, 1.0};
-        std::vector<int> datas;
-        for (int i = 0; i < row * columns; i++){
-                int value = random<int>(1, 2);
-                datas.push_back(value);
-        }
-        layer.datas = datas;
-        simpleBean.layerBean = layer;
-        
-        RandomMap* mapxml = RandomMap::create(simpleBean);
-        
-        std::string xmls = mapxml->getXmlString();
+        std::string xmls = DiceGame::getInstance()->createMapXMLString();
         printf("---test=%s---", xmls.c_str());
-//        auto map = TMXTiledMap::createWithXML(xmls, "maps");
-        auto map = TMXTiledMap::create("maps/issue16105.tmx");
-//        map->setAnchorPoint(Vec2(0.0, -0.0));
-        
+        auto map = TMXTiledMap::createWithXML(xmls, "maps");
+//        auto map = TMXTiledMap::create("maps/issue16105.tmx");         
         
         Size cs = map->getContentSize();
         map->setPosition(Vec2(origin.x, origin.y));
@@ -88,8 +65,6 @@ bool HelloWorld::init()
         map->addChild(color, -1);
         
         this->addChild(map, 2);
-        
-    
         return true;
 }
 
