@@ -20,12 +20,13 @@
 USING_NS_CC;
 
 
-#define XMAX 32
-#define YMAX 28
-#define PUT_DICE 3
-#define STOCK_MAX 64
-#define AREA_MAX 32
+#define XMAX (32)
+#define YMAX (28)
+#define PUT_DICE (3)
+#define STOCK_MAX (64)
+#define AREA_MAX (32)
 #define CEL_MAX (XMAX * YMAX)
+#define MAX_PLAYER (8)
 
 
 #define SET_SIZE_TOZERO(target, SIZE) {\
@@ -73,7 +74,7 @@ private:
         int percolate(int pt, int cmax, int an);
         
 public:
-        static int  MAX_PLAYER;
+        static int  CURRENT_PLAYERS;
         
 private:
         int                             _userId;

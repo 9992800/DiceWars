@@ -51,8 +51,10 @@ private:
         int     _cx;
         int     _cy;
         int     _len_min;
-        int*    _join;
-        int*    _line_cel;
-        int*    _line_dir;
+        
+        
+        std::vector<int>    _join;
+        std::vector<int>    _line_cel;
+        std::vector<int>    _line_dir;
 };
 #endif /* AreaData_hpp */

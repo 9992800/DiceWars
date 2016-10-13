@@ -56,12 +56,9 @@ bool HelloWorld::init()
         std::string xmls = DiceGame::getInstance()->createMapXMLString();
         printf("---test=%s---", xmls.c_str());
         auto map = TMXTiledMap::createWithXML(xmls, "maps");
-//        auto map = TMXTiledMap::create("maps/issue16105.tmx");         
         
         Size cs = map->getContentSize();
         map->setPosition(Vec2(origin.x, origin.y));
-        auto color = LayerColor::create( Color4B(64,0,0,255), cs.width, cs.height);
-        map->addChild(color, -1);
         
         this->addChild(map, 2);
         return true;

@@ -10,11 +10,11 @@
 #include "DiceGame.hpp"
 
 JoinData::JoinData(){
-        _dir = new int[6]();
+        _dir = std::vector<int>(6);
 }
 
 JoinData::~JoinData(){
-        delete _dir;
+        _dir.clear();
 }
 
 void JoinData::initdir(int cellIdx){

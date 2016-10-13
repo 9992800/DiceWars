@@ -22,16 +22,16 @@ _cx(0),
 _cy(0),
 _len_min(9999)
 {
-        _join       = new int[32]();
-        _line_cel   = new int[100]();
-        _line_dir   = new int[100]();
+        _join       = std::vector<int>(32);
+        _line_cel   = std::vector<int>(100);
+        _line_dir   = std::vector<int>(100);
 }
 
 
 AreaData::~AreaData(){
-        delete[] _join;
-        delete[] _line_cel;
-        delete[] _line_dir;
+        _join.clear();
+        _line_cel.clear();
+        _line_dir.clear();
 }
 
 

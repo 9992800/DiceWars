@@ -9,7 +9,7 @@
 #include "DiceGame.hpp"
 
 static DiceGame* s_SharedGame = nullptr;
-int DiceGame::MAX_PLAYER = 7;
+int DiceGame::CURRENT_PLAYERS = 7;
 DiceGame* DiceGame::getInstance(){
         
         if (!s_SharedGame){
@@ -22,11 +22,21 @@ DiceGame* DiceGame::getInstance(){
 }
 
 DiceGame::DiceGame():_userId(0){
+        _join           = std::vector<JoinData*>(CEL_MAX);
+        _areaData       = std::vector<AreaData*>(AREA_MAX);
+        _player         = std::vector<GamePlayer*>(MAX_PLAYER);
+        _jun            = std::vector<int>(MAX_PLAYER);
+        _cel            = std::vector<int>(CEL_MAX);
+        _rcel           = std::vector<int>(CEL_MAX);
+        _num            = std::vector<int>(CEL_MAX);
+        _chk            = std::vector<int>(AREA_MAX);
 }
 
 bool DiceGame::init(){
         
+        
         SET_SIZE_TOIDX(_num, CEL_MAX);
+        
         
         for (int i = 0; i < CEL_MAX; i++){
                 JoinData* join_data = new JoinData();
@@ -48,6 +58,15 @@ DiceGame::~DiceGame(){
         for (JoinData* p : _join){
                 delete p;
         }
+        
+        _join.clear();
+        _areaData.clear();
+        _player.clear();
+        _jun.clear();
+        _cel.clear();
+        _rcel.clear();
+        _num.clear();
+        _chk.clear();
 }
 
 std::string DiceGame::createMapXMLString(){
@@ -63,14 +82,20 @@ std::string DiceGame::createMapXMLString(){
 
 
 std::vector<int> DiceGame::initRandomMapData(){
+        this->makeNewMap();
         
+        for (int i = 0; i < CEL_MAX; i++){
+                int area_id = this->_cel[i];
+                printf("---%d---", area_id);
+                _mapData.push_back(area_id % 2 + 1);
+        }
         return _mapData;
 }
 
 
 SimpleMapInfoBean DiceGame::initMapBasicInfo(){
         SimpleMapInfoBean simpleBean;
-        int row = YMAX, columns = XMAX;
+        int row = XMAX, columns = YMAX;
         
         MapBasicBean mapBasic = {row, columns, 20, 20, 10, "x", "even", "hexagonal", "right-down"};
         simpleBean.mapBasicBean = mapBasic;
@@ -207,7 +232,8 @@ void DiceGame::makeNewMap(){
         
         cell_idx = 0;
         for (int i = 0; i < YMAX; i++){
-                for (int j = 0; j < XMAX; i++){
+                
+                for (int j = 0; j < XMAX; j++){
                         
                         int area_id = this->_cel[cell_idx];
                         
@@ -243,7 +269,7 @@ void DiceGame::makeNewMap(){
                 this->_areaData[random_area]->setOwner(player_uid);
                 
                 ++player_uid;
-                if (player_uid >= MAX_PLAYER){
+                if (player_uid >= CURRENT_PLAYERS){
                         player_uid = 0;
                 }
         }
@@ -302,7 +328,7 @@ void DiceGame::makeNewMap(){
                 this->_areaData[random_area]->increaseDice();
                 
                 ++player_uid;
-                if (player_uid >= MAX_PLAYER){
+                if (player_uid >= CURRENT_PLAYERS){
                         player_uid = 0;
                 }
         }

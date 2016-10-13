@@ -33,6 +33,6 @@ public:
 private:
         int next_cel(int cellIdx, int dirIdx);
 private:
-        int* _dir;
+        std::vector<int> _dir;
 };
 #endif /* JoinData_hpp */
