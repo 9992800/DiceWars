@@ -9,16 +9,7 @@
 #include "DiceGame.hpp"
 
 static DiceGame* s_SharedGame = nullptr;
-
-int DiceGame::ROWMAX = 32;
-int DiceGame::COLMAX = 28;
-int DiceGame::MAX_PLAYER = 7;//TODO::check if can I change it
-int DiceGame::PUT_DICE = 3;
-int DiceGame::STOCK_MAX = 64;
-int DiceGame::AREA_MAX = 32;
-int DiceGame::CEL_MAX = ROWMAX * COLMAX;
-
-
+int DiceGame::MAX_PLAYER = 7;
 DiceGame* DiceGame::getInstance(){
         
         if (!s_SharedGame){
@@ -31,45 +22,38 @@ DiceGame* DiceGame::getInstance(){
 }
 
 DiceGame::DiceGame():_userId(0){
-        _areaData = new (AreaData*)[AREA_MAX];
-        _player   = new GamePlayer[MAX_PLAYER + 1]();
-        _join     = new JoinData[CEL_MAX]();
-        
-        _num      = new int[CEL_MAX]();
-        _jun      = new int[8]();
-        _cel      = new int[CEL_MAX]();
-        _rcel     = new int[CEL_MAX]();
 }
 
 bool DiceGame::init(){
         
-        for (int i = 0; i < CEL_MAX; i++) {
-                _num[i] = i;
-        }
+        SET_SIZE_TOIDX(_num, CEL_MAX);
         
         for (int i = 0; i < CEL_MAX; i++){
-                this->_join[i] = new JoinData();
-                this->_join[i].initdir(i);
+                JoinData* join_data = new JoinData();
+                join_data->initdir(i);
+                _join[i] = join_data;
         }
         
         return true;
 }
 
 DiceGame::~DiceGame(){
-        delete[]        _areaData;
-        delete[]        _player;
-        delete[]        _join;
         
-        delete[]        _num;
-        delete[]        _jun;
-        delete[]        _cel;
-        delete[]        _rcel;
+        for (AreaData* p : _areaData){
+                delete p;
+        }
+        for (GamePlayer* p : _player){
+                delete p;
+        }
+        for (JoinData* p : _join){
+                delete p;
+        }
 }
 
 std::string DiceGame::createMapXMLString(){
         
-        std::vector<int> datas = this->RandomMapData();
-        SimpleMapInfoBean simpleBean = this->initMapBasicInfo(datas);
+        std::vector<int> datas = this->initRandomMapData();
+        SimpleMapInfoBean simpleBean = this->initMapBasicInfo();
         
         RandomMap* mapxml = RandomMap::create(simpleBean);
         std::string xmls = mapxml->getXmlString();
@@ -78,15 +62,15 @@ std::string DiceGame::createMapXMLString(){
 }
 
 
-std::vector<int> DiceGame::RandomMapData(){
+std::vector<int> DiceGame::initRandomMapData(){
         
         return _mapData;
 }
 
 
-SimpleMapInfoBean DiceGame::initMapBasicInfo(std::vector<int> datas){
+SimpleMapInfoBean DiceGame::initMapBasicInfo(){
         SimpleMapInfoBean simpleBean;
-        int row = ROWMAX, columns = COLMAX;
+        int row = YMAX, columns = XMAX;
         
         MapBasicBean mapBasic = {row, columns, 20, 20, 10, "x", "even", "hexagonal", "right-down"};
         simpleBean.mapBasicBean = mapBasic;
@@ -95,10 +79,300 @@ SimpleMapInfoBean DiceGame::initMapBasicInfo(std::vector<int> datas){
         simpleBean.tileSetBean = tileSet;
         
         LayerBean layer = {"map", row, columns, 1.0};
-        layer.datas = datas;
+        layer.datas = _mapData;
         simpleBean.layerBean = layer;
         
         return simpleBean;
+}
+
+
+void DiceGame::makeNewMap(){
+        for (int i = 0; i <  CEL_MAX; i++){
+                int radom = random(0, CEL_MAX -1);
+                
+                int tmp = this->_num[i];
+                this->_num[i] = this->_num[radom];
+                this->_num[radom] = tmp;
+        }
+        
+        SET_SIZE_TOZERO2(_cel, _rcel, CEL_MAX);
+        int radom = random(0, CEL_MAX -1);
+        _rcel[radom] = 1;
+        
+        
+        /*create original area data*/
+        int selected_cell;
+        int i = 1;
+        do{
+                int valaible_cel = 9999;
+                
+                for (int j = 0; j < CEL_MAX; j++){
+                        
+                        if (_cel[j] <=0
+                            && _num[j] <= valaible_cel
+                            && _rcel[j] != 0){
+                                
+                                valaible_cel = _num[j];
+                                selected_cell = j;
+                        }
+                }
+                
+                if (9999 == valaible_cel){
+                        break;
+                }
+                
+                int next_cel = this->percolate(selected_cell, 8, i);
+                if (0 ==  next_cel){
+                        break;
+                }
+                
+                ++i;
+        }while(i < AREA_MAX);
+        
+        
+        
+        /*make all cells around created area been in used*/
+        for (i = 0; i < CEL_MAX; i++){
+                if (_cel[i] > 0){
+                        continue;
+                }
+                
+                int areaIdx = 0;
+                bool areaNotUsed = false;
+                for (int j = 0; j < 6; j++) {
+                        int joined_cell = _join[i]->getJoinDir(j);
+                        if (joined_cell < 0){
+                                continue;
+                        }
+                        
+                        if (this->_cel[joined_cell] == 0){
+                                areaNotUsed = true;
+                        }else{
+                                areaIdx = _cel[joined_cell];
+                        }
+                }
+                
+                if (!areaNotUsed){
+                        _cel[i] = areaIdx;
+                }
+        }
+        
+        
+        for (int i = 0 ; i < AREA_MAX; i++){
+                
+                if (nullptr != this->_areaData[i]){
+                        delete this->_areaData[i];
+                }
+                this->_areaData[i] = new AreaData();
+        }
+        
+        for (int i = 0; i < CEL_MAX; i++){
+                int area_id = this->_cel[i] > 0;
+                if (area_id > 0){
+                        this->_areaData[area_id]->increaseSize();
+                }
+        }
+        
+        for (int i = 1; i < AREA_MAX; i++){
+                this->_areaData[i]->removeAreaTooSmall(i);
+        }
+        
+        
+        for (int i = 0; i < CEL_MAX; i++){
+                int areaId = this->_cel[i];
+                if (this->_areaData[areaId]->isEmpty() ){
+                        this->_cel[i] = 0;
+                }
+        }
+        
+        int cell_idx = 0;
+        for (int i = 0; i < YMAX; i++){
+                for (int j = 0; j < XMAX; j++){
+                        int area_id = this->_cel[cell_idx];
+                        if (area_id > 0){
+                                AreaData* area = this->_areaData[area_id];
+                                area->initBound(i, j);
+                        }
+                        
+                        ++cell_idx;
+                }
+        }
+        
+        
+        for (int i = 1; i < AREA_MAX; i++){
+                AreaData* area = this->_areaData[i];
+                area->initCenter();
+        }
+        
+        
+        cell_idx = 0;
+        for (int i = 0; i < YMAX; i++){
+                for (int j = 0; j < XMAX; i++){
+                        
+                        int area_id = this->_cel[cell_idx];
+                        
+                        if (area_id > 0){
+                                AreaData* area = this->_areaData[area_id];
+                                area->calcLenAndPos(i, j, cell_idx, this);
+                        }
+                        
+                        cell_idx++;
+                }
+        }
+        
+        
+        int tmpAreaId[AREA_MAX] = {0};
+        int player_uid = 0;
+        
+        while(true){
+                int available_area = 0;
+                for (int i = 1; i < AREA_MAX; i++){
+                        AreaData* area = this->_areaData[i];
+                        if (area->isNeedOwner()){
+                                tmpAreaId[available_area] = i;
+                                ++available_area;
+                        }
+                        
+                }
+                
+                if (0 == available_area){
+                        break;
+                }
+                
+                int random_area = tmpAreaId[random<int>(0, available_area - 1)];
+                this->_areaData[random_area]->setOwner(player_uid);
+                
+                ++player_uid;
+                if (player_uid >= MAX_PLAYER){
+                        player_uid = 0;
+                }
+        }
+        
+        SET_SIZE_TOZERO(this->_chk, AREA_MAX);
+        
+        for (int i = 0; i < CEL_MAX; i++){
+                int area_id = this->_cel[i];
+                
+                if (area_id == 0 || this->_chk[area_id] == 0){
+                        continue;
+                }
+                
+                for (int j = 0; j < 6; j++){
+                        if (this->_chk[area_id]){
+                                break;
+                        }
+                        
+                        int joined_cell = this->_join[i]->getJoinDir(j);
+                        if (joined_cell >= 0
+                            && this->_cel[joined_cell] != area_id){
+                                
+                                this->setAreaLine(i, j);
+                                this->_chk[area_id] = 1;
+                        }
+                }
+        }
+        
+        int total_dice = 0;
+        for (int i = 1; i < AREA_MAX; i++){
+                if (this->_areaData[i]->initDice()){
+                        total_dice++;
+                }
+        }
+        
+        total_dice = total_dice * (PUT_DICE - 1);
+        player_uid = 0;
+        for (int i = 0; i < total_dice; i++){
+                
+                int tempArea[AREA_MAX] = {0};
+                int available_area = 0;
+                
+                
+                for (int j = 1; j < AREA_MAX; j++){
+                        if (this->_areaData[j]->needDice(player_uid)){
+                                tempArea[available_area] = j;
+                                ++available_area;
+                        }
+                }
+                
+                if (0 == available_area){
+                        break;
+                }
+                
+                int random_area = tempArea[random(0, available_area - 1)];
+                this->_areaData[random_area]->increaseDice();
+                
+                ++player_uid;
+                if (player_uid >= MAX_PLAYER){
+                        player_uid = 0;
+                }
+        }
+}
+
+
+int DiceGame::percolate(int pt, int cmax, int an){
+        if (cmax < 3){
+                cmax = 3;
+        }
+        
+        int cell_in_area = pt;
+        int next_f[CEL_MAX];
+        
+        SET_SIZE_TOZERO(next_f, CEL_MAX);
+        int cell_num_in_area = 0;
+        while (cell_num_in_area < cmax){
+                this->_cel[cell_in_area] = an;
+                ++cell_num_in_area;
+                
+                for (int j = 0; j < 6; j++){
+                        int joined_cell = this->_join[cell_num_in_area]->getJoinDir(j);
+                        if (joined_cell >= 0){
+                                next_f[joined_cell] = 1;
+                        }
+                }
+                
+                
+                int candidate_cell = 9999;
+                for (int j = 0; j < CEL_MAX; j++){
+                        if (next_f[j] != 0 &&
+                            this->_cel[j] <= 0 &&
+                            this->_num[j] < candidate_cell){
+                                
+                                candidate_cell = this->_num[j];
+                                cell_in_area = j;
+                        }
+                }
+                
+                if (9999 == candidate_cell){
+                        break;
+                }
+        }
+        
+        
+        for (int i = 0; i < CEL_MAX; i++){
+                
+                if (next_f[i] != 0 && next_f[i] <= 0){
+                        
+                        this->_cel[i] = an;
+                        ++cell_num_in_area;
+                        
+                        for (int j = 0; j < 6; j++){
+                                int joined_cell = this->_join[i]->getJoinDir(j);
+                                if (joined_cell >= 0){
+                                        this->_rcel[joined_cell] = 1;
+                                }
+                        }
+                }
+        }
+        
+        return cell_in_area;
+}
+
+void DiceGame::setAreaLine(int cell, int dir){
+        
+        int cur_area = this->_cel[cell];
+        AreaData* area = this->_areaData[cur_area];
+        
+        area->initAreaLine(cell, dir, this);
 }
 
 

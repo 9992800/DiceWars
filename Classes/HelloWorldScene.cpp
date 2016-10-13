@@ -52,7 +52,6 @@ bool HelloWorld::init()
 
     /////////////////////////////
     // 3. add your codes below...
-                 
         
         std::string xmls = DiceGame::getInstance()->createMapXMLString();
         printf("---test=%s---", xmls.c_str());

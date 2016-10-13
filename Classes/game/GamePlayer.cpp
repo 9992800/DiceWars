@@ -15,3 +15,6 @@ GamePlayer::GamePlayer()
 ,_stock(0){
         
 }
+
+GamePlayer::~GamePlayer(){
+}

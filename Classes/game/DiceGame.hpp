@@ -19,7 +19,38 @@
 
 USING_NS_CC;
 
+
+#define XMAX 32
+#define YMAX 28
+#define PUT_DICE 3
+#define STOCK_MAX 64
+#define AREA_MAX 32
+#define CEL_MAX (XMAX * YMAX)
+
+
+#define SET_SIZE_TOZERO(target, SIZE) {\
+        for (int i = 0; i < SIZE; i++){\
+                target[i] = 0;\
+        }\
+} \
+
+
+#define SET_SIZE_TOZERO2(target1, target2, SIZE) {\
+        for (int i = 0; i < SIZE; i++){\
+                target1[i] = 0;\
+                target2[i] = 0;\
+        }\
+} \
+
+#define SET_SIZE_TOIDX(target, SIZE) {\
+        for (int i = 0; i < SIZE; i++){\
+                target[i] = i;\
+        }\
+}
+
 class DiceGame : public Ref{
+        
+        friend class AreaData;
 public:
         static DiceGame* getInstance();
         std::string createMapXMLString();
@@ -31,28 +62,28 @@ protected:
         
         bool init();
         
-        std::vector<int> RandomMapData();
+        std::vector<int> initRandomMapData();
+        void makeNewMap();
+        void setAreaLine(int cell, int dir);
         
 private:
-        SimpleMapInfoBean initMapBasicInfo(std::vector<int> datas);
+        SimpleMapInfoBean initMapBasicInfo();
         std::vector<int> _mapData;
         
+        int percolate(int pt, int cmax, int an);
+        
 public:
-        static int ROWMAX;
-        static int COLMAX;
-        static int MAX_PLAYER;
-        static int PUT_DICE;
-        static int STOCK_MAX;
-        static int AREA_MAX;
-        static int CEL_MAX;
+        static int  MAX_PLAYER;
+        
 private:
-        int             _userId;
-        AreaData*       _areaData[];
-        GamePlayer*     _player;
-        JoinData*       _join[];
-        int*            _jun;
-        int*            _cel;
-        int*            _rcel;
-        int*            _num;
+        int                             _userId;
+        std::vector<AreaData*>          _areaData;
+        std::vector<GamePlayer*>        _player;
+        std::vector<JoinData*>          _join;
+        std::vector<int>                _jun;
+        std::vector<int>                _cel;
+        std::vector<int>                _rcel;
+        std::vector<int>                _num;
+        std::vector<int>                _chk;
 };
 #endif /* DiceGame_hpp */

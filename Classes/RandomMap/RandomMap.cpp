@@ -47,7 +47,7 @@ void RandomMap::initRootMap(const MapBasicBean& basic){
         _rootElement->SetAttribute("nextobjectid",      1);
         
         this->InsertFirstChild(_rootElement);
-}
+} 
 
 void RandomMap::initTilesSet(const TileSetBean& tilesetInfo){
         XMLElement * tilesSet = this->NewElement("tileset");
