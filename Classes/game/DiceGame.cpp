@@ -82,12 +82,15 @@ std::string DiceGame::createMapXMLString(){
 
 
 std::vector<int> DiceGame::initRandomMapData(){
+        
         this->makeNewMap();
         
         for (int i = 0; i < CEL_MAX; i++){
                 int area_id = this->_cel[i];
-                printf("---%d---", area_id);
-                _mapData.push_back(area_id % 2 + 1);
+                if (area_id != 0)
+                        _mapData.push_back(area_id % 2 + 1);
+                else
+                        _mapData.push_back(0);
         }
         return _mapData;
 }
@@ -113,7 +116,7 @@ SimpleMapInfoBean DiceGame::initMapBasicInfo(){
 
 void DiceGame::makeNewMap(){
         for (int i = 0; i <  CEL_MAX; i++){
-                int radom = random(0, CEL_MAX -1);
+                int radom = random(0, CEL_MAX - 1);
                 
                 int tmp = this->_num[i];
                 this->_num[i] = this->_num[radom];
@@ -123,17 +126,13 @@ void DiceGame::makeNewMap(){
         SET_SIZE_TOZERO2(_cel, _rcel, CEL_MAX);
         int radom = random(0, CEL_MAX -1);
         _rcel[radom] = 1;
-        
-        
         /*create original area data*/
-        int selected_cell;
-        int i = 1;
-        do{
+        for (int i = 1; i < AREA_MAX; ++i){
                 int valaible_cel = 9999;
-                
+                int selected_cell;
                 for (int j = 0; j < CEL_MAX; j++){
                         
-                        if (_cel[j] <=0
+                        if (_cel[j] <= 0
                             && _num[j] <= valaible_cel
                             && _rcel[j] != 0){
                                 
@@ -149,15 +148,17 @@ void DiceGame::makeNewMap(){
                 int next_cel = this->percolate(selected_cell, 8, i);
                 if (0 ==  next_cel){
                         break;
+                }                
+        };
+        
+        for (int j = 0; j < CEL_MAX; j++){
+                if (j % 32 == 0){
+                        printf("]\r\n[");
                 }
-                
-                ++i;
-        }while(i < AREA_MAX);
-        
-        
-        
+                printf(" %d ", this->_cel[j]);
+        }
         /*make all cells around created area been in used*/
-        for (i = 0; i < CEL_MAX; i++){
+        for (int i = 0; i < CEL_MAX; i++){
                 if (_cel[i] > 0){
                         continue;
                 }
@@ -181,8 +182,7 @@ void DiceGame::makeNewMap(){
                         _cel[i] = areaIdx;
                 }
         }
-        
-        
+                 
         for (int i = 0 ; i < AREA_MAX; i++){
                 
                 if (nullptr != this->_areaData[i]){
@@ -192,7 +192,7 @@ void DiceGame::makeNewMap(){
         }
         
         for (int i = 0; i < CEL_MAX; i++){
-                int area_id = this->_cel[i] > 0;
+                int area_id = this->_cel[i];
                 if (area_id > 0){
                         this->_areaData[area_id]->increaseSize();
                 }
@@ -202,12 +202,20 @@ void DiceGame::makeNewMap(){
                 this->_areaData[i]->removeAreaTooSmall(i);
         }
         
-        
         for (int i = 0; i < CEL_MAX; i++){
                 int areaId = this->_cel[i];
                 if (this->_areaData[areaId]->isEmpty() ){
                         this->_cel[i] = 0;
                 }
+        }
+        
+        printf("--------------------------------\r\n");
+        for (int j = 0; j < CEL_MAX; j++){
+                
+                if (j % 32 == 0){
+                        printf("]\r\n[");
+                }
+                printf(" %d ", this->_cel[j]);
         }
         
         int cell_idx = 0;
@@ -341,34 +349,33 @@ int DiceGame::percolate(int pt, int cmax, int an){
         }
         
         int cell_in_area = pt;
-        int next_f[CEL_MAX];
+        int next_f[CEL_MAX] = {0};
         
-        SET_SIZE_TOZERO(next_f, CEL_MAX);
         int cell_num_in_area = 0;
         while (cell_num_in_area < cmax){
                 this->_cel[cell_in_area] = an;
                 ++cell_num_in_area;
                 
                 for (int j = 0; j < 6; j++){
-                        int joined_cell = this->_join[cell_num_in_area]->getJoinDir(j);
+                        int joined_cell = this->_join[cell_in_area]->getJoinDir(j);
                         if (joined_cell >= 0){
                                 next_f[joined_cell] = 1;
                         }
                 }
                 
                 
-                int candidate_cell = 9999;
+                int cell_value = 9999;
                 for (int j = 0; j < CEL_MAX; j++){
                         if (next_f[j] != 0 &&
                             this->_cel[j] <= 0 &&
-                            this->_num[j] < candidate_cell){
+                            this->_num[j] < cell_value){
                                 
-                                candidate_cell = this->_num[j];
+                                cell_value = this->_num[j];
                                 cell_in_area = j;
                         }
                 }
                 
-                if (9999 == candidate_cell){
+                if (9999 == cell_value){
                         break;
                 }
         }
@@ -376,7 +383,7 @@ int DiceGame::percolate(int pt, int cmax, int an){
         
         for (int i = 0; i < CEL_MAX; i++){
                 
-                if (next_f[i] != 0 && next_f[i] <= 0){
+                if (next_f[i] != 0 && this->_cel[i] <= 0){
                         
                         this->_cel[i] = an;
                         ++cell_num_in_area;
