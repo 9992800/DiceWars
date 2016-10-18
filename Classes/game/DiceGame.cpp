@@ -102,10 +102,15 @@ SimpleMapInfoBean DiceGame::initMapBasicInfo(){
         SimpleMapInfoBean simpleBean;
         int row = XMAX, columns = YMAX;
         
-        MapBasicBean mapBasic = {row, columns, 30, 35, 17, "y", "odd", "hexagonal", "right-down"};
+        MapResolustionConfig config =  MapResolustion::getConfig();
+        
+        MapBasicBean mapBasic = {row, columns, config.mapTileWidth, config.mapTileHeight, config.hexsidelength,
+                "y", "odd", "hexagonal", "right-down"};
         simpleBean.mapBasicBean = mapBasic;
         
-        TileSetBean tileSet = {"game", 30, 35, 6, 3, {"test4.png", 90, 70}};
+        TileSetBean tileSet = {"game", config.tilesetWidth, config.tilesetHeight,
+                6, 3, {config.imgSource, config.imageWidth, config.imageHeight}};
+        
         simpleBean.tileSetBean = tileSet;
         
         LayerBean layer = {"map", row, columns, 1.0};

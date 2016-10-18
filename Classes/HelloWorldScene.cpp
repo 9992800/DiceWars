@@ -60,11 +60,6 @@ bool HelloWorld::init()
         Size cs = map->getContentSize();
         map->setPosition(Vec2(origin.x, origin.y));
         this->addChild(map, 2);
-        
-//        Size map_size = map->getContentSize();
-//        auto back = LayerColor::create(Color4B(255, 0, 0, 70), visibleSize.width/2, visibleSize.height / 2);
-        
-//        map->addChild(back);
         return true;
 }
 

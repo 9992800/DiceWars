@@ -8,6 +8,7 @@
 
 #ifndef _MapBasicInfo_hpp_
 #define _MapBasicInfo_hpp_
+#include "cocos2d.h"
 
 typedef struct LayerBean_s{
         std::string name;
@@ -50,6 +51,31 @@ typedef struct SimpleMapInfoBean_s{
         LayerBean    layerBean;
 }SimpleMapInfoBean;
 
+
+typedef struct MapResolustionConfig_s{
+        int mapTileWidth;
+        int mapTileHeight;
+        int hexsidelength;
+        int tilesetWidth;
+        int tilesetHeight;
+        std::string imgSource;
+        int imageWidth;
+        int imageHeight;
+}MapResolustionConfig;
+
+
+
+USING_NS_CC;
+class MapResolustion: public Ref{
+public:
+        static void initConfig(int solution);
+        static const MapResolustionConfig& getConfig();
+        enum {
+                SMALL_SCREEN_RESOLUTION = 1,
+                MEDIUM_SCREEN_RESOLUTION = 2,
+                BIG_SCREEN_RESOLUTION = 4
+        };
+};
 
 
 #endif /* _MapBasicInfo_hpp_ */

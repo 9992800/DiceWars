@@ -1,5 +1,6 @@
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
+#include "MapBasicInfo.hpp"
 
 USING_NS_CC;
 
@@ -58,17 +59,23 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // if the frame's height is larger than the height of medium size.
     if (frameSize.height > mediumResolutionSize.height)
     {        
-        director->setContentScaleFactor(MIN(largeResolutionSize.height/designResolutionSize.height, largeResolutionSize.width/designResolutionSize.width));
+//        director->setContentScaleFactor(MIN(largeResolutionSize.height/designResolutionSize.height, largeResolutionSize.width/designResolutionSize.width));
+            director->setContentScaleFactor(MapResolustion::BIG_SCREEN_RESOLUTION);
+            MapResolustion::initConfig(MapResolustion::BIG_SCREEN_RESOLUTION);
     }
     // if the frame's height is larger than the height of small size.
     else if (frameSize.height > smallResolutionSize.height)
     {        
-        director->setContentScaleFactor(MIN(mediumResolutionSize.height/designResolutionSize.height, mediumResolutionSize.width/designResolutionSize.width));
+//        director->setContentScaleFactor(MIN(mediumResolutionSize.height/designResolutionSize.height, mediumResolutionSize.width/designResolutionSize.width));
+             director->setContentScaleFactor(MapResolustion::MEDIUM_SCREEN_RESOLUTION);
+             MapResolustion::initConfig(MapResolustion::MEDIUM_SCREEN_RESOLUTION);
     }
     // if the frame's height is smaller than the height of medium size.
     else
     {        
-        director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
+//        director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
+        director->setContentScaleFactor(MapResolustion::SMALL_SCREEN_RESOLUTION);
+        MapResolustion::initConfig(MapResolustion::SMALL_SCREEN_RESOLUTION);
     }
 
     register_all_packages();
