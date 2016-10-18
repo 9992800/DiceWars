@@ -9,7 +9,7 @@
 
 static MapResolustionConfig _curConfig;
 
-void initConfig(int solution){
+void MapResolustion::initConfig(int solution){
         switch (solution) {
                 case MapResolustion::BIG_SCREEN_RESOLUTION:
                         _curConfig = {60, 70, 34, 60, 70, "test5.png", 180, 140};
@@ -26,6 +26,6 @@ void initConfig(int solution){
         }
 }
 
-const MapResolustionConfig& getConfig(){
+const MapResolustionConfig& MapResolustion::getConfig(){
         return  _curConfig;
 }
