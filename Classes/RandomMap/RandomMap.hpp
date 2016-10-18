@@ -22,7 +22,7 @@ public:
         std::string getXmlString();
         
 protected:
-        RandomMap(const SimpleMapInfoBean& infos);
+        RandomMap();
         bool init(const SimpleMapInfoBean& infos);
         void initRootMap(const MapBasicBean& basic);
         void initTilesSet(const TileSetBean& tileset);

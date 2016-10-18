@@ -71,7 +71,7 @@ DiceGame::~DiceGame(){
 
 std::string DiceGame::createMapXMLString(){
         
-        std::vector<int> datas = this->initRandomMapData();
+        this->initRandomMapData();
         SimpleMapInfoBean simpleBean = this->initMapBasicInfo();
         
         RandomMap* mapxml = RandomMap::create(simpleBean);
@@ -81,18 +81,20 @@ std::string DiceGame::createMapXMLString(){
 }
 
 
-std::vector<int> DiceGame::initRandomMapData(){
+void DiceGame::initRandomMapData(){
         
         this->makeNewMap();
         
         for (int i = 0; i < CEL_MAX; i++){
                 int area_id = this->_cel[i];
+//                AreaData* area = this->_areaData[area_id];
+//                
+//                area->getOwner();
                 if (area_id != 0)
-                        _mapData.push_back(area_id % 2 + 1);
+                        _mapData.push_back(area_id % 6 + 1);
                 else
                         _mapData.push_back(0);
         }
-        return _mapData;
 }
 
 
@@ -100,10 +102,10 @@ SimpleMapInfoBean DiceGame::initMapBasicInfo(){
         SimpleMapInfoBean simpleBean;
         int row = XMAX, columns = YMAX;
         
-        MapBasicBean mapBasic = {row, columns, 20, 20, 10, "x", "even", "hexagonal", "right-down"};
+        MapBasicBean mapBasic = {row, columns, 30, 35, 17, "y", "odd", "hexagonal", "right-down"};
         simpleBean.mapBasicBean = mapBasic;
         
-        TileSetBean tileSet = {"game", 20, 20, 2, 2, {"test.png", 40, 20}};
+        TileSetBean tileSet = {"game", 30, 35, 6, 3, {"test4.png", 90, 70}};
         simpleBean.tileSetBean = tileSet;
         
         LayerBean layer = {"map", row, columns, 1.0};

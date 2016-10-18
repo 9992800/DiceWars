@@ -9,7 +9,7 @@
 #include "RandomMap.hpp"
 
 RandomMap* RandomMap::create(const SimpleMapInfoBean& infos){
-        RandomMap* ret = new (std::nothrow)RandomMap(infos);
+        RandomMap* ret = new (std::nothrow)RandomMap();
         if (ret->init(infos)){
                 ret->autorelease();
                 return ret;
@@ -27,7 +27,7 @@ std::string RandomMap::getXmlString(){
         return std::string(printer.CStr());
 }
 
-RandomMap::RandomMap(const SimpleMapInfoBean& infos):XMLDocument(){
+RandomMap::RandomMap():XMLDocument(){
 }
 
 
@@ -41,7 +41,7 @@ void RandomMap::initRootMap(const MapBasicBean& basic){
         _rootElement->SetAttribute("height",            basic.heightInTiles);
         _rootElement->SetAttribute("tilewidth",         basic.tileWidth);
         _rootElement->SetAttribute("tileheight",        basic.tileHeight);
-        _rootElement->SetAttribute("hexsidelength",     basic.heightInTiles);
+        _rootElement->SetAttribute("hexsidelength",     basic.hexsidelength);
         _rootElement->SetAttribute("staggeraxis",       basic.staggeraxis.c_str());
         _rootElement->SetAttribute("staggerindex",      basic.staggerindex.c_str());
         _rootElement->SetAttribute("nextobjectid",      1);

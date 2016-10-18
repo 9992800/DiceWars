@@ -32,6 +32,7 @@ public:
         
         inline bool isNeedOwner(){return _size != 0 && _arm < 0;}
         inline void setOwner(int ownerId){_arm = ownerId;}
+        inline int  getOwner(){return _arm;}
         
         bool initDice();
         bool needDice(int player_uid);

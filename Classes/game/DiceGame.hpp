@@ -63,7 +63,7 @@ protected:
         
         bool init();
         
-        std::vector<int> initRandomMapData();
+        void initRandomMapData();
         void makeNewMap();
         void setAreaLine(int cell, int dir);
         
