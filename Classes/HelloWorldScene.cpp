@@ -3,6 +3,10 @@
 #include "game/DiceGame.hpp"
 
 USING_NS_CC;
+enum
+{
+        kTagTileMap = 1,
+};
 
 Scene* HelloWorld::createScene()
 {
@@ -59,7 +63,17 @@ bool HelloWorld::init()
         
         Size cs = map->getContentSize();
         map->setPosition(Vec2(origin.x, origin.y));
-        this->addChild(map, 2);
+        this->addChild(map, 2, kTagTileMap);
+        
+        
+        Director::getInstance()->setDepthTest(true);
+        
+        
+        auto listener = EventListenerTouchAllAtOnce::create();
+        listener->onTouchesMoved = CC_CALLBACK_2(HelloWorld::onTouchesMoved, this);
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+        
+        
         return true;
 }
 
@@ -79,4 +93,14 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     //_eventDispatcher->dispatchEvent(&customEndEvent);
     
     
+}
+
+
+void HelloWorld::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event){
+        auto touch = touches[0];
+        
+        auto diff = touch->getDelta();
+        auto node = getChildByTag(kTagTileMap);
+        auto currentPos = node->getPosition();
+        node->setPosition(currentPos + diff);
 }
