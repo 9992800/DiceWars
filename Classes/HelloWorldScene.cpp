@@ -13,7 +13,7 @@ Scene* HelloWorld::createScene()
     auto layer = HelloWorld::create();
         
     // add layer as a child to scene
-    scene->addChild(layer);
+    scene->addChild(layer); 
 
     // return the scene
     return scene;
@@ -43,7 +43,7 @@ bool HelloWorld::init()
                                            CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
     
     closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
-                                origin.y + closeItem->getContentSize().height/2));
+                                origin.y +closeItem->getContentSize().height/2));
 
     // create menu, it's an autorelease object
     auto menu = Menu::create(closeItem, NULL);
@@ -54,13 +54,17 @@ bool HelloWorld::init()
     // 3. add your codes below...
         
         std::string xmls = DiceGame::getInstance()->createMapXMLString();
-//        printf("---test=%s---", xmls.c_str());
+//        printf("%s", xmls.c_str());
         auto map = TMXTiledMap::createWithXML(xmls, "maps");
         
         Size cs = map->getContentSize();
         map->setPosition(Vec2(origin.x, origin.y));
-        
         this->addChild(map, 2);
+        
+//        Size map_size = map->getContentSize();
+//        auto back = LayerColor::create(Color4B(255, 0, 0, 70), visibleSize.width/2, visibleSize.height / 2);
+        
+//        map->addChild(back);
         return true;
 }
 
