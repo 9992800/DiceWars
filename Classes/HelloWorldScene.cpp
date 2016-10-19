@@ -75,6 +75,10 @@ bool HelloWorld::init()
         _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
         
         
+        auto node = DrawNode::create();
+        node->drawLine(Vec2(0, 0), Vec2(500, 500), Color4F(1.0, 0.0, 0.0, 1.0));
+        this->addChild(node);
+        
         return true;
 }
 
