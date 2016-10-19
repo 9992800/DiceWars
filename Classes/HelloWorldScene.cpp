@@ -64,7 +64,9 @@ bool HelloWorld::init()
         this->addChild(_randomMap, 2, kTagTileMap);
         
          Size cs = _randomMap->getContentSize();
-        _lowestPostion_y = visibleSize.height + origin.y - cs.height;
+        
+        //TODO::why always lost 6 pixels
+        _lowestPostion_y = visibleSize.height + origin.y - cs.height - 6;
         
         
         Director::getInstance()->setDepthTest(true);
@@ -119,9 +121,9 @@ void HelloWorld::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, coc
                 diff.y = origin.y - currentPos.y;
         }
         
-//        if ((currentPos.y + diff.y) < _lowestPostion_y){
-//                diff.y = _lowestPostion_y - currentPos.y;
-//        }
+        if ((currentPos.y + diff.y) < _lowestPostion_y){
+                diff.y = _lowestPostion_y - currentPos.y;
+        }
         
         node->setPosition(currentPos + diff);
 }
