@@ -16,6 +16,10 @@ public:
         void onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
+        
+private:
+        cocos2d::TMXTiledMap* _randomMap;
+        float _lowestPostion_y;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
