@@ -173,5 +173,5 @@ void AreaData::drawBorder(DrawNode* drawNode){
         
         Color4F border_color = _areaLineColor[_arm];
         
-        drawNode->drawLine(Vec2(0, 0), Vec2(50*_arm, 500), border_color);
+        drawNode->drawLine(Vec2(0, 0), Vec2(50 * (1+_arm), 500), border_color);
 }
