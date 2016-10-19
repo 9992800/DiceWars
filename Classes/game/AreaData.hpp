@@ -40,6 +40,8 @@ public:
         
         void initAreaLine(int cell, int dir, DiceGame* game);
         
+        void drawBorder(DrawNode* drawNode);
+        
 private:
         int     _size;
         int     _cpos;

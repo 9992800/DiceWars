@@ -9,6 +9,16 @@
 #include "AreaData.hpp"
 #include "DiceGame.hpp"
 
+
+
+
+static Color4F _areaLineColor[] = {Color4F(1.0, 0.0, 0.0, 1.0),
+        Color4F(0.0, 1.0, 0.0, 1.0),Color4F(0.0, 0.0, 1.0, 1.0),
+        Color4F(1.0, 1.0, 0.0, 1.0),Color4F(0.0, 1.0, 1.0, 1.0),
+        Color4F(1.0, 0.0, 1.0, 1.0),Color4F(1.0, 1.0, 1.0, 1.0),
+        Color4F(0.0, 0.0, 0.0, 1.0)};
+
+
 AreaData::AreaData()
 :_size(0),
 _cpos(0),
@@ -155,4 +165,13 @@ void AreaData::initAreaLine(int cell, int dir, DiceGame* game){
                         return;
                 }
         }
+}
+
+void AreaData::drawBorder(DrawNode* drawNode){
+        if (_size == 0 || _arm < 0)
+                return;
+        
+        Color4F border_color = _areaLineColor[_arm];
+        
+        drawNode->drawLine(Vec2(0, 0), Vec2(50*_arm, 500), border_color);
 }

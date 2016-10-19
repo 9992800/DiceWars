@@ -57,9 +57,7 @@ bool HelloWorld::init()
     /////////////////////////////
     // 3. add your codes below...
         
-        std::string xmls = DiceGame::getInstance()->createMapXMLString();
-
-        _randomMap = TMXTiledMap::createWithXML(xmls, "maps");
+        _randomMap = DiceGame::getInstance()->createMap();
         _randomMap->setPosition(Vec2(origin.x, origin.y));
         this->addChild(_randomMap, 2, kTagTileMap);
         
@@ -75,12 +73,7 @@ bool HelloWorld::init()
         auto listener = EventListenerTouchAllAtOnce::create();
         listener->onTouchesMoved = CC_CALLBACK_2(HelloWorld::onTouchesMoved, this);
         _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-        
-        
-        auto node = DrawNode::create();
-        node->drawLine(Vec2(0, 0), Vec2(500, 500), Color4F(1.0, 0.0, 0.0, 1.0));
-        this->addChild(node);
-        
+                 
         return true;
 }
 

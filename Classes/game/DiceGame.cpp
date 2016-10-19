@@ -9,7 +9,8 @@
 #include "DiceGame.hpp"
 
 static DiceGame* s_SharedGame = nullptr;
-int DiceGame::CURRENT_PLAYERS = 7;
+int DiceGame::CURRENT_PLAYERS = 6;
+
 DiceGame* DiceGame::getInstance(){
         
         if (!s_SharedGame){
@@ -21,7 +22,7 @@ DiceGame* DiceGame::getInstance(){
         return s_SharedGame;
 }
 
-DiceGame::DiceGame():_userId(0){
+DiceGame::DiceGame():_userId(0), _drawNode(nullptr){
         _join           = std::vector<JoinData*>(CEL_MAX);
         _areaData       = std::vector<AreaData*>(AREA_MAX);
         _player         = std::vector<GamePlayer*>(MAX_PLAYER);
@@ -71,7 +72,18 @@ DiceGame::~DiceGame(){
 
 std::string DiceGame::createMapXMLString(){
         
-        this->initRandomMapData();
+        this->makeNewMap();
+        
+        for (int i = 0; i < CEL_MAX; i++){
+                int area_id = this->_cel[i];
+                AreaData* area = this->_areaData[area_id];
+                int payer_uid = area->getOwner();
+                if (payer_uid > 0)
+                        _mapData.push_back(payer_uid + 1);
+                else
+                        _mapData.push_back(0);
+        }
+        
         SimpleMapInfoBean simpleBean = this->initMapBasicInfo();
         
         RandomMap* mapxml = RandomMap::create(simpleBean);
@@ -80,23 +92,27 @@ std::string DiceGame::createMapXMLString(){
         return xmls;
 }
 
-
-void DiceGame::initRandomMapData(){
-        
-        this->makeNewMap();
-        
-        for (int i = 0; i < CEL_MAX; i++){
-                int area_id = this->_cel[i];
-//                AreaData* area = this->_areaData[area_id];
-//                
-//                area->getOwner();
-                if (area_id != 0)
-                        _mapData.push_back(area_id % 6 + 1);
-                else
-                        _mapData.push_back(0);
+void DiceGame::drawBorderForArea(){
+        for (int i = 0; i < AREA_MAX; i++){
+                AreaData* area = this->_areaData[i];
+                area->drawBorder(_drawNode);
         }
 }
 
+
+TMXTiledMap* DiceGame::createMap()
+{
+        std::string xmls = this->createMapXMLString();
+        
+        TMXTiledMap* map = TMXTiledMap::createWithXML(xmls, "maps");
+        
+        _drawNode = DrawNode::create();
+        map->addChild(_drawNode);
+        
+        this->drawBorderForArea();
+        
+        return map;
+}
 
 SimpleMapInfoBean DiceGame::initMapBasicInfo(){
         SimpleMapInfoBean simpleBean;

@@ -52,32 +52,35 @@ USING_NS_CC;
 class DiceGame : public Ref{
         
         friend class AreaData;
+        
 public:
         static DiceGame* getInstance();
-        std::string createMapXMLString();
+        
+        TMXTiledMap* createMap();
         
         virtual ~DiceGame();
         
 protected:
         DiceGame();
         
+        std::string createMapXMLString();
+        void drawBorderForArea();
         bool init();
-        
-        void initRandomMapData();
+         
         void makeNewMap();
         void setAreaLine(int cell, int dir);
-        
-private:
         SimpleMapInfoBean initMapBasicInfo();
-        std::vector<int> _mapData;
-        
         int percolate(int pt, int cmax, int an);
         
 public:
         static int  CURRENT_PLAYERS;
         
 private:
+        
+        DrawNode* _drawNode;
+private:
         int                             _userId;
+        std::vector<int>                _mapData;
         std::vector<AreaData*>          _areaData;
         std::vector<GamePlayer*>        _player;
         std::vector<JoinData*>          _join;
