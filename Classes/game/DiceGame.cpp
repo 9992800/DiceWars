@@ -93,25 +93,17 @@ std::string DiceGame::createMapXMLString(){
 }
 
 void DiceGame::drawBorderForArea(){
+        
+        auto visibleSize = Director::getInstance()->getVisibleSize();         
+        visibleSize.width -= 5;
+        
+        Color4F color(1.0, 0.0, 0.0, 1.0);
+        _drawNode->drawRect(Vec2(2, 0.1), Vec2(visibleSize), color);
+        
         for (int i = 0; i < AREA_MAX; i++){
                 AreaData* area = this->_areaData[i];
                 area->drawBorder(_drawNode);
         }
-}
-
-
-TMXTiledMap* DiceGame::createMap()
-{
-        std::string xmls = this->createMapXMLString();
-        
-        TMXTiledMap* map = TMXTiledMap::createWithXML(xmls, "maps");
-        
-        _drawNode = DrawNode::create();
-        map->addChild(_drawNode);
-        
-        this->drawBorderForArea();
-        
-        return map;
 }
 
 SimpleMapInfoBean DiceGame::initMapBasicInfo(){
@@ -429,6 +421,48 @@ void DiceGame::setAreaLine(int cell, int dir){
         AreaData* area = this->_areaData[cur_area];
         
         area->initAreaLine(cell, dir, this);
+}
+
+
+void DiceGame::set_area_tc(int pid){
+        
+}
+
+#pragma mark - main pullic function
+
+TMXTiledMap* DiceGame::createMap()
+{
+        std::string xmls = this->createMapXMLString();
+        
+        TMXTiledMap* map = TMXTiledMap::createWithXML(xmls, "maps");
+        
+        _drawNode = DrawNode::create();
+        map->addChild(_drawNode);
+        
+        MapResolustion::calScreenCell(map->getContentSize());
+        this->drawBorderForArea();
+        
+        return map;
+}
+
+void DiceGame::startGame(){
+        
+        SET_SIZE_TOIDX(_jun, MAX_PLAYER);
+        
+        for (int i = 0; i < MAX_PLAYER; i++){
+                int ramdom_p = random(0, MAX_PLAYER - 1);
+                int tmp = this->_jun[i];
+                this->_jun[i] = this->_jun[ramdom_p];
+                this->_jun[ramdom_p] = tmp;
+        }
+        
+        for (int i = 0; i < MAX_PLAYER; i++){
+                this->_player[i] = new GamePlayer();
+        }
+        
+        for (int i = 0; i < MAX_PLAYER; i++){
+                this->set_area_tc(i);
+        }
 }
 
 

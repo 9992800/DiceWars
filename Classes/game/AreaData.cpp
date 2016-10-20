@@ -64,11 +64,6 @@ void AreaData::initBound(int vertical, int horizen){
 }
 
 
-void AreaData::initCenter(){
-        _cx = (_left + _right) / 2;
-        _cy = (_top + _bottom) / 2;
-}
-
 
 void AreaData::calcLenAndPos(int vertical, int horizen, int cell_idx, DiceGame* game){
         
@@ -106,25 +101,7 @@ void AreaData::calcLenAndPos(int vertical, int horizen, int cell_idx, DiceGame* 
                 
                 _cpos = vertical * XMAX + horizen;
         }
-}
-
-
-
-
-bool AreaData::initDice(){
-        if (_size > 0){
-                _dice = 1;
-                return true;
-        }
-        
-        return false;
-}
-
-
-bool AreaData::needDice(int player_uid){
-        return _size != 0 && _arm == player_uid && _dice < 8;
-}
-
+} 
 
 void AreaData::initAreaLine(int cell, int dir, DiceGame* game){
         
@@ -172,6 +149,4 @@ void AreaData::drawBorder(DrawNode* drawNode){
                 return;
         
         Color4F border_color = _areaLineColor[_arm];
-        
-        drawNode->drawLine(Vec2(0, 0), Vec2(50 * (1+_arm), 500), border_color);
 }

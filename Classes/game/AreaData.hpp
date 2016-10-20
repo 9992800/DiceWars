@@ -27,15 +27,28 @@ public:
         inline bool isEmpty() {return _size == 0;}
         
         void initBound(int vertical, int horizen);
-        void initCenter();
+        inline void initCenter(){
+                _cx = (_left + _right) / 2;
+                _cy = (_top + _bottom) / 2;
+        }
         void calcLenAndPos(int vertical, int horizen, int cell_idx, DiceGame* game);
         
         inline bool isNeedOwner(){return _size != 0 && _arm < 0;}
         inline void setOwner(int ownerId){_arm = ownerId;}
         inline int  getOwner(){return _arm;}
         
-        bool initDice();
-        bool needDice(int player_uid);
+        bool initDice(){
+                if (_size > 0){
+                        _dice = 1;
+                        return true;
+                }
+                
+                return false;
+        }
+        
+        inline bool needDice(int player_uid){
+                return _size != 0 && _arm == player_uid && _dice < 8;
+        }
         inline void increaseDice(){_dice++;}
         
         void initAreaLine(int cell, int dir, DiceGame* game);

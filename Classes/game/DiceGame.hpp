@@ -55,10 +55,10 @@ class DiceGame : public Ref{
         
 public:
         static DiceGame* getInstance();
+        virtual ~DiceGame();
         
         TMXTiledMap* createMap();
-        
-        virtual ~DiceGame();
+        void startGame();
         
 protected:
         DiceGame();
@@ -72,12 +72,15 @@ protected:
         SimpleMapInfoBean initMapBasicInfo();
         int percolate(int pt, int cmax, int an);
         
+        void set_area_tc(int pid);
+        
 public:
         static int  CURRENT_PLAYERS;
         
 private:
         
         DrawNode* _drawNode;
+        
 private:
         int                             _userId;
         std::vector<int>                _mapData;

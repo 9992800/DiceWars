@@ -6,6 +6,7 @@
 //
 //
 #include "MapBasicInfo.hpp"
+#include "DiceGame.hpp"
 
 static MapResolustionConfig _curConfig;
 
@@ -29,3 +30,9 @@ void MapResolustion::initConfig(int solution){
 const MapResolustionConfig& MapResolustion::getConfig(){
         return  _curConfig;
 }
+
+void MapResolustion::calScreenCell(Size mapSize){
+        float w = mapSize.width / XMAX;
+        float h = mapSize.height / YMAX;
+        _cellSize = Size(w, h);
+} 
