@@ -17,16 +17,6 @@ class JoinData: public Ref{
 public:
         JoinData();
         virtual ~JoinData();
-        
-        enum {
-                CELL_DIR_RIGHT_TOP      = 0,
-                CELL_DIR_RIGHT_MID      = 1,
-                CELL_DIR_RIGHT_BOTTOM   = 2,
-                CELL_DIR_LEFT_BOTTOM    = 3,
-                CELL_DIR_LEFT_MID       = 4,
-                CELL_DIR_LEFT_TOP       = 5
-        };
-        
         void initdir(int cellIdx);
         
         inline int getJoinDir(int dirIdx){ return _dir[dirIdx];}

@@ -145,16 +145,31 @@ void AreaData::drawBorder(DrawNode* drawNode){
         if (_size == 0 || _arm < 0)
                 return;
         
-//        for (int i = 0; i < MAX_LINE_INAREA; i++){
-//                int cell = _line_cel[i];
-//                int dir  = _line_dir[i];
-//        }
+        
         Color4F border_color = _areaLineColor[_arm];
         
-        Vec2 start = ScreenCoordinate::getInstance()->getCellPos(0);
+        printf("\r\n-----owner=%d---", _arm);
+        int cell = _line_cel[0];
+        int dir  = _line_dir[0];
+        for (int i = 1; i < MAX_LINE_INAREA; i++){
+                printf("\t c=%d d=%d",cell, dir);
+//                Vec2 start = ScreenCoordinate::getInstance()->getCellPos(cell, dir);
+//                
+//                Vec2 end = ScreenCoordinate::getInstance()->getCellPos(cell, dir + 1);
+//
+//                drawNode->drawRect(start, end, border_color);
+//                
+                cell = _line_cel[i];
+                dir  = _line_dir[i];
+
+                if (cell == _line_cel[0] && dir == _line_dir[0]){
+                        break;
+                }
+        }
         
-        start += Vec2(0, 5);
-//        Vec2 end = ScreenCoordinate::getInstance()->getCellPos(1);
-        Vec2 end = start - Vec2(-10, 10);
+//        Vec2 start = ScreenCoordinate::getInstance()->getCellPos(66, 1);
+//
+//        Size cellSize = ScreenCoordinate::getInstance()->getCellSize();
+//        Vec2 end = start - Vec2(-cellSize.width, cellSize.height);
 //        drawNode->drawRect(start, end, Color4F(1.0, 0,0, 1.0));
 }

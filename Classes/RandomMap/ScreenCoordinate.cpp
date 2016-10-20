@@ -56,6 +56,8 @@ void ScreenCoordinate::configScreen(Size mapSize){
                 }
         }
         
+        
+        //TODO:: why height is 3 it must h/3
         _axis_x[0] = w / 2;
         _axis_x[1] = w;
         _axis_x[2] = w;
@@ -65,10 +67,14 @@ void ScreenCoordinate::configScreen(Size mapSize){
         _axis_x[6] = w / 2;
         
         _axis_y[0] = -3;
-        _axis_y[1] = 3;
-        _axis_y[2] = h - 3;
-        _axis_y[3] = h + 3;
-        _axis_y[4] = h - 3;
-        _axis_y[5] = 3;
-        _axis_y[6] = -3;
+        _axis_y[1] = 0;
+        _axis_y[2] = 3 - h;
+        _axis_y[3] = -h;
+        _axis_y[4] = 3 - h;
+        _axis_y[5] = 0;
+        _axis_y[6] = 3;
+}
+
+Vec2 ScreenCoordinate::getCellPos(int cell, int dir){
+        return Vec2(_cpos_x[cell] + _axis_x[dir], _cpos_y[cell] + _axis_y[dir]);
 }

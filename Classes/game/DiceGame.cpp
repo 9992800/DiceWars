@@ -79,7 +79,7 @@ std::string DiceGame::createMapXMLString(){
                 int area_id = this->_cel[i];
                 AreaData* area = this->_areaData[area_id];
                 int payer_uid = area->getOwner();
-                if (payer_uid > 0)
+                if (area_id > 0)
                         _mapData.push_back(payer_uid + 1);
                 else
                         _mapData.push_back(0);
@@ -96,6 +96,7 @@ std::string DiceGame::createMapXMLString(){
 void DiceGame::drawBorderForArea(){
         for (int i = 0; i < AREA_MAX; i++){
                 AreaData* area = this->_areaData[i];
+                printf("\r\n\r\n area=%d", i);
                 area->drawBorder(_drawNode);
         }
 }

@@ -10,7 +10,7 @@
 #include "GameConfig.hpp"
 
 JoinData::JoinData(){
-        _dir = std::vector<int>(6);
+        _dir = std::vector<int>(DIR_INAREA);
 }
 
 JoinData::~JoinData(){
@@ -18,7 +18,7 @@ JoinData::~JoinData(){
 }
 
 void JoinData::initdir(int cellIdx){
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < DIR_INAREA; i++){
                 _dir[i] = next_cel(cellIdx, i);
         }
 }
@@ -39,11 +39,11 @@ int JoinData::next_cel(int opos, int dir){
                 case CELL_DIR_RIGHT_MID:
                         iFlag = 1;
                         break;
-                case CELL_DIR_RIGHT_BOTTOM:
+                case CELL_DIR_RIGHT_BOT:
                         iFlag = odd_rows ? 1 : 0;
                         jFlag = 1;
                         break;
-                case CELL_DIR_LEFT_BOTTOM:
+                case CELL_DIR_LEFT_BOT:
                         iFlag = odd_rows ? 0 : -1;
                         jFlag = 1;
                         break;
