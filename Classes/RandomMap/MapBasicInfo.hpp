@@ -74,16 +74,8 @@ public:
                 MEDIUM_SCREEN_RESOLUTION = 2,
                 BIG_SCREEN_RESOLUTION = 4
         };
-
-        
         static void initConfig(int solution);
         static const MapResolustionConfig& getConfig();
-        
-        static void calScreenCell(Size mapSize);
-        inline static Size getScreenCell(){return _cellSize;}
-
-private:
-        static Size _cellSize;
 };
 
 

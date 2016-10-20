@@ -15,39 +15,10 @@
 #include "AreaData.hpp"
 #include "GamePlayer.hpp"
 #include "JoinData.hpp"
+#include "GameConfig.hpp"
 
 
 USING_NS_CC;
-
-
-#define XMAX (32)
-#define YMAX (28)
-#define PUT_DICE (3)
-#define STOCK_MAX (64)
-#define AREA_MAX (32)
-#define CEL_MAX (XMAX * YMAX)
-#define MAX_PLAYER (8)
-
-
-#define SET_SIZE_TOZERO(target, SIZE) {\
-        for (int i = 0; i < SIZE; i++){\
-                target[i] = 0;\
-        }\
-} \
-
-
-#define SET_SIZE_TOZERO2(target1, target2, SIZE) {\
-        for (int i = 0; i < SIZE; i++){\
-                target1[i] = 0;\
-                target2[i] = 0;\
-        }\
-} \
-
-#define SET_SIZE_TOIDX(target, SIZE) {\
-        for (int i = 0; i < SIZE; i++){\
-                target[i] = i;\
-        }\
-}
 
 class DiceGame : public Ref{
         

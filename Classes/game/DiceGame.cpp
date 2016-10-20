@@ -7,6 +7,7 @@
 //
 
 #include "DiceGame.hpp"
+#include "ScreenCoordinate.hpp"
 
 static DiceGame* s_SharedGame = nullptr;
 int DiceGame::CURRENT_PLAYERS = 6;
@@ -93,13 +94,6 @@ std::string DiceGame::createMapXMLString(){
 }
 
 void DiceGame::drawBorderForArea(){
-        
-        auto visibleSize = Director::getInstance()->getVisibleSize();         
-        visibleSize.width -= 5;
-        
-        Color4F color(1.0, 0.0, 0.0, 1.0);
-        _drawNode->drawRect(Vec2(2, 0.1), Vec2(visibleSize), color);
-        
         for (int i = 0; i < AREA_MAX; i++){
                 AreaData* area = this->_areaData[i];
                 area->drawBorder(_drawNode);
@@ -180,7 +174,7 @@ void DiceGame::makeNewMap(){
                 
                 int areaIdx = 0;
                 bool areaNotUsed = false;
-                for (int j = 0; j < 6; j++) {
+                for (int j = 0; j < DIR_INAREA; j++) {
                         int joined_cell = _join[i]->getJoinDir(j);
                         if (joined_cell < 0){
                                 continue;
@@ -222,15 +216,6 @@ void DiceGame::makeNewMap(){
                 if (this->_areaData[areaId]->isEmpty() ){
                         this->_cel[i] = 0;
                 }
-        }
-        
-        printf("--------------------------------\r\n");
-        for (int j = 0; j < CEL_MAX; j++){
-                
-                if (j % 32 == 0){
-                        printf("]\r\n[");
-                }
-                printf(" %d ", this->_cel[j]);
         }
         
         int cell_idx = 0;
@@ -306,7 +291,7 @@ void DiceGame::makeNewMap(){
                         continue;
                 }
                 
-                for (int j = 0; j < 6; j++){
+                for (int j = 0; j < DIR_INAREA; j++){
                         if (this->_chk[area_id]){
                                 break;
                         }
@@ -371,7 +356,7 @@ int DiceGame::percolate(int pt, int cmax, int an){
                 this->_cel[cell_in_area] = an;
                 ++cell_num_in_area;
                 
-                for (int j = 0; j < 6; j++){
+                for (int j = 0; j < DIR_INAREA; j++){
                         int joined_cell = this->_join[cell_in_area]->getJoinDir(j);
                         if (joined_cell >= 0){
                                 next_f[joined_cell] = 1;
@@ -403,7 +388,7 @@ int DiceGame::percolate(int pt, int cmax, int an){
                         this->_cel[i] = an;
                         ++cell_num_in_area;
                         
-                        for (int j = 0; j < 6; j++){
+                        for (int j = 0; j < DIR_INAREA; j++){
                                 int joined_cell = this->_join[i]->getJoinDir(j);
                                 if (joined_cell >= 0){
                                         this->_rcel[joined_cell] = 1;
@@ -437,9 +422,10 @@ TMXTiledMap* DiceGame::createMap()
         TMXTiledMap* map = TMXTiledMap::createWithXML(xmls, "maps");
         
         _drawNode = DrawNode::create();
-        map->addChild(_drawNode);
+        map->addChild(_drawNode, 1);
         
-        MapResolustion::calScreenCell(map->getContentSize());
+        ScreenCoordinate::getInstance()->configScreen(map->getContentSize());
+        
         this->drawBorderForArea();
         
         return map;

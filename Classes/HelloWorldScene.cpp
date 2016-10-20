@@ -107,8 +107,8 @@ void HelloWorld::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, coc
         auto visibleSize = Director::getInstance()->getVisibleSize();
         
         
-        printf("\r\n-------currentPos(%f, diff=%f)==origin=%f==_lowestPostion_y=%f map_size=%f)++++visibleSize=%f=====",
-               currentPos.y, diff.y, origin.y, _lowestPostion_y, map_size.height, visibleSize.height);
+//        printf("\r\n-------currentPos(%f, diff=%f)==origin=%f==_lowestPostion_y=%f map_size=%f)++++visibleSize=%f=====",
+//               currentPos.y, diff.y, origin.y, _lowestPostion_y, map_size.height, visibleSize.height);
         
         if (origin.y < (currentPos.y + diff.y)){
                 diff.y = origin.y - currentPos.y;

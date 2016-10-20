@@ -8,9 +8,7 @@
 
 #include "AreaData.hpp"
 #include "DiceGame.hpp"
-
-
-
+#include "ScreenCoordinate.hpp"
 
 static Color4F _areaLineColor[] = {Color4F(1.0, 0.0, 0.0, 1.0),
         Color4F(0.0, 1.0, 0.0, 1.0),Color4F(0.0, 0.0, 1.0, 1.0),
@@ -30,11 +28,10 @@ _top(YMAX),
 _bottom(-1),
 _cx(0),
 _cy(0),
-_len_min(9999)
-{
+_len_min(9999){
         _join       = std::vector<int>(32);
-        _line_cel   = std::vector<int>(100);
-        _line_dir   = std::vector<int>(100);
+        _line_cel   = std::vector<int>(MAX_LINE_INAREA);
+        _line_dir   = std::vector<int>(MAX_LINE_INAREA);
 }
 
 
@@ -77,7 +74,7 @@ void AreaData::calcLenAndPos(int vertical, int horizen, int cell_idx, DiceGame* 
         
         bool near_diff_area =  false;
         
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < DIR_INAREA; i++){
                 
                 int joined_cell = game->_join[cell_idx]->getJoinDir(i);
                 
@@ -115,10 +112,10 @@ void AreaData::initAreaLine(int cell, int dir, DiceGame* game){
         
         ++cell_num;
         
-        for (int i = 0; i < 100; i++){
+        for (int i = 0; i < MAX_LINE_INAREA; i++){
                 
                 ++cur_dir;
-                if (cur_dir >= 6){
+                if (cur_dir >= DIR_INAREA){
                         cur_dir = 0;
                 }
                 
@@ -148,5 +145,16 @@ void AreaData::drawBorder(DrawNode* drawNode){
         if (_size == 0 || _arm < 0)
                 return;
         
+//        for (int i = 0; i < MAX_LINE_INAREA; i++){
+//                int cell = _line_cel[i];
+//                int dir  = _line_dir[i];
+//        }
         Color4F border_color = _areaLineColor[_arm];
+        
+        Vec2 start = ScreenCoordinate::getInstance()->getCellPos(0);
+        
+        start += Vec2(0, 5);
+//        Vec2 end = ScreenCoordinate::getInstance()->getCellPos(1);
+        Vec2 end = start - Vec2(-10, 10);
+//        drawNode->drawRect(start, end, Color4F(1.0, 0,0, 1.0));
 }

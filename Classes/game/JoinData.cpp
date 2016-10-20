@@ -7,7 +7,7 @@
 //
 
 #include "JoinData.hpp"
-#include "DiceGame.hpp"
+#include "GameConfig.hpp"
 
 JoinData::JoinData(){
         _dir = std::vector<int>(6);
