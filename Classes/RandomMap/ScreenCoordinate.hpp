@@ -17,6 +17,7 @@ public:
         static ScreenCoordinate* getInstance();
         void configScreen(Size mapSize);
         Vec2 getCellPos(int cell, int dir);
+        Vec2 getCellPos2(int cell){return Vec2(_cpos_x[cell], _cpos_y[cell]);}
         Size getCellSize(){return _cellSize;}
 private:
         ScreenCoordinate(void);

@@ -15,10 +15,11 @@ USING_NS_CC;
 
 class GamePlayer: public Ref{
 public:
-        GamePlayer();
+        GamePlayer(int id);
         virtual ~GamePlayer();
         
 private:
+        int     _player_id;
         int     _area_c;
         int     _area_tc;
         int     _dice_c;

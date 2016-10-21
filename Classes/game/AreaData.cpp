@@ -17,8 +17,9 @@ static Color4F _areaLineColor[] = {Color4F(1.0, 0.0, 0.0, 1.0),
         Color4F(0.0, 0.0, 0.0, 1.0)};
 
 
-AreaData::AreaData()
-:_size(0),
+AreaData::AreaData(int id)
+:_areaId(id),
+_size(0),
 _cpos(0),
 _arm(-1),
 _dice(0),
@@ -139,11 +140,6 @@ void AreaData::initAreaLine(int cell, int dir, DiceGame* game){
                         return;
                 }
         }
-        
-        printf("\r\n+++++++owner=%d++++cur_area=%d+++", _arm, cur_area);
-        for (int i = 1; i < MAX_LINE_INAREA; i++){
-                printf("\t c=%d d=%d",_line_cel[i], _line_dir[i]);
-        }
 }
 
 void AreaData::drawBorder(DrawNode* drawNode){
@@ -152,17 +148,17 @@ void AreaData::drawBorder(DrawNode* drawNode){
         
         
         Color4F border_color = _areaLineColor[_arm];
-        
-        printf("\r\n-----owner=%d---", _arm);
         int cell = _line_cel[0];
         int dir  = _line_dir[0];
         for (int i = 1; i < MAX_LINE_INAREA; i++){
-                printf("\t c=%d d=%d",cell, dir);
-                Vec2 start = ScreenCoordinate::getInstance()->getCellPos(cell, dir);
+//                Vec2 start = ScreenCoordinate::getInstance()->getCellPos2(cell);
+                Vec2 start = ScreenCoordinate::getInstance()->getCellPos(cell,dir);
                 
                 Vec2 end = ScreenCoordinate::getInstance()->getCellPos(cell, dir + 1);
+//                Vec2 end = start + Vec2(10, -10);
 
-                drawNode->drawRect(start, end, border_color);
+                drawNode->drawLine(start, end, border_color);
+//                drawNode->drawRect(start, end, border_color);
 
                 cell = _line_cel[i];
                 dir  = _line_dir[i];
@@ -171,10 +167,4 @@ void AreaData::drawBorder(DrawNode* drawNode){
                         break;
                 }
         }
-        
-//        Vec2 start = ScreenCoordinate::getInstance()->getCellPos(66, 1);
-//
-//        Size cellSize = ScreenCoordinate::getInstance()->getCellSize();
-//        Vec2 end = start - Vec2(-cellSize.width, cellSize.height);
-//        drawNode->drawRect(start, end, Color4F(1.0, 0,0, 1.0));
 }

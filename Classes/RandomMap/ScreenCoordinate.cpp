@@ -39,7 +39,7 @@ void ScreenCoordinate::configScreen(Size mapSize){
         
         float w = mapSize.width / XMAX;
         float h = mapSize.height / YMAX;
-        _cellSize = Size(w, h);
+        _cellSize = Size((int)w, h);
         
         int count = 0;
         for (int i = 0; i < YMAX; i++){
@@ -58,21 +58,22 @@ void ScreenCoordinate::configScreen(Size mapSize){
         
         
         //TODO:: why height is 3 it must h/3
-        _axis_x[0] = w / 2;
-        _axis_x[1] = w;
-        _axis_x[2] = w;
-        _axis_x[3] = w / 2;
+        _axis_x[0] = _cellSize.width / 2;
+        _axis_x[1] = _cellSize.width;
+        _axis_x[2] = _cellSize.width;
+        _axis_x[3] = _cellSize.width / 2;
         _axis_x[4] = 0.f;
         _axis_x[5] = 0.f;
-        _axis_x[6] = w / 2;
+        _axis_x[6] = _cellSize.width / 2;
         
-        _axis_y[0] = -3;
+        double s = 9 * mapSize.height / (double) (YMAX * 30);
+        _axis_y[0] = s;
         _axis_y[1] = 0;
-        _axis_y[2] = 3 - h;
+        _axis_y[2] = s - h;
         _axis_y[3] = -h;
-        _axis_y[4] = 3 - h;
+        _axis_y[4] = s - h;
         _axis_y[5] = 0;
-        _axis_y[6] = 3;
+        _axis_y[6] = s;
 }
 
 Vec2 ScreenCoordinate::getCellPos(int cell, int dir){

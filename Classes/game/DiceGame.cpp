@@ -198,7 +198,7 @@ void DiceGame::makeNewMap(){
                 if (nullptr != this->_areaData[i]){
                         delete this->_areaData[i];
                 }
-                this->_areaData[i] = new AreaData();
+                this->_areaData[i] = new AreaData(i);
         }
         
         for (int i = 0; i < CEL_MAX; i++){
@@ -444,7 +444,7 @@ void DiceGame::startGame(){
         }
         
         for (int i = 0; i < MAX_PLAYER; i++){
-                this->_player[i] = new GamePlayer();
+                this->_player[i] = new GamePlayer(i);
         }
         
         for (int i = 0; i < MAX_PLAYER; i++){

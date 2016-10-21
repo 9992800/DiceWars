@@ -19,7 +19,7 @@ class DiceGame;
 
 class AreaData: public Ref{
 public:
-        AreaData();
+        AreaData(int id);
         virtual ~AreaData();
         
         inline void increaseSize() { _size++;}
@@ -67,6 +67,7 @@ private:
         int     _cx;
         int     _cy;
         int     _len_min;
+        int     _areaId;
         
         
         std::vector<int>    _join;

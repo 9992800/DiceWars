@@ -7,8 +7,9 @@
 //
 
 #include "GamePlayer.hpp"
-GamePlayer::GamePlayer()
-:_area_c(0)
+GamePlayer::GamePlayer(int id)
+:_player_id(id)
+,_area_c(0)
 ,_area_tc(0)
 ,_dice_c(0)
 ,_dice_jun(0)
