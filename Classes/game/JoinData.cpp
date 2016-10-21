@@ -43,14 +43,14 @@ int JoinData::next_cel(int opos, int dir){
                         iFlag = odd_rows ? 1 : 0;
                         jFlag = 1;
                         break;
-                case CELL_DIR_LEFT_BOT:
+                case CELL_DIR_LEFT_TOP:
                         iFlag = odd_rows ? 0 : -1;
                         jFlag = 1;
                         break;
                 case CELL_DIR_LEFT_MID:
                         iFlag = -1;
                         break;
-                case CELL_DIR_LEFT_TOP:
+                case CELL_DIR_LEFT_BOT:
                         iFlag = odd_rows ? 0 : -1;
                         jFlag = -1;
                         break;

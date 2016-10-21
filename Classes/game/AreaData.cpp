@@ -139,6 +139,11 @@ void AreaData::initAreaLine(int cell, int dir, DiceGame* game){
                         return;
                 }
         }
+        
+        printf("\r\n+++++++owner=%d++++cur_area=%d+++", _arm, cur_area);
+        for (int i = 1; i < MAX_LINE_INAREA; i++){
+                printf("\t c=%d d=%d",_line_cel[i], _line_dir[i]);
+        }
 }
 
 void AreaData::drawBorder(DrawNode* drawNode){
@@ -153,12 +158,12 @@ void AreaData::drawBorder(DrawNode* drawNode){
         int dir  = _line_dir[0];
         for (int i = 1; i < MAX_LINE_INAREA; i++){
                 printf("\t c=%d d=%d",cell, dir);
-//                Vec2 start = ScreenCoordinate::getInstance()->getCellPos(cell, dir);
-//                
-//                Vec2 end = ScreenCoordinate::getInstance()->getCellPos(cell, dir + 1);
-//
-//                drawNode->drawRect(start, end, border_color);
-//                
+                Vec2 start = ScreenCoordinate::getInstance()->getCellPos(cell, dir);
+                
+                Vec2 end = ScreenCoordinate::getInstance()->getCellPos(cell, dir + 1);
+
+                drawNode->drawRect(start, end, border_color);
+
                 cell = _line_cel[i];
                 dir  = _line_dir[i];
 

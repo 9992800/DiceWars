@@ -288,7 +288,7 @@ void DiceGame::makeNewMap(){
         for (int i = 0; i < CEL_MAX; i++){
                 int area_id = this->_cel[i];
                 
-                if (area_id == 0 || this->_chk[area_id] == 0){
+                if (area_id == 0 || this->_chk[area_id]){
                         continue;
                 }
                 
