@@ -23,7 +23,7 @@ DiceGame* DiceGame::getInstance(){
         return s_SharedGame;
 }
 
-DiceGame::DiceGame():_userId(0), _drawNode(nullptr){
+DiceGame::DiceGame():_userId(3),_selected_area(AREA_UNSELECTED){
         _join           = std::vector<JoinData*>(CEL_MAX);
         _areaData       = std::vector<AreaData*>(AREA_MAX);
         _player         = std::vector<GamePlayer*>(MAX_PLAYER);
@@ -93,10 +93,13 @@ std::string DiceGame::createMapXMLString(){
         return xmls;
 }
 
-void DiceGame::drawAreaWithColor(){
+void DiceGame::intAreaDrawObject(TMXTiledMap* map){
+        
         for (int i = 0; i < AREA_MAX; i++){
+                DrawNode* draw_node = DrawNode::create();
+                map->addChild(draw_node, 1);
                 AreaData* area = this->_areaData[i];
-                area->drawArea(_drawNode);
+                area->intDrawObject(draw_node);
         }
 }
 
@@ -408,7 +411,7 @@ void DiceGame::setAreaLine(int cell, int dir){
         area->initAreaLine(cell, dir, this);
 }
 
-
+//TODO:: fill area tc;
 void DiceGame::set_area_tc(int pid){
         
 }
@@ -420,13 +423,9 @@ TMXTiledMap* DiceGame::createMap()
         std::string xmls = this->createMapXMLString();
         
         TMXTiledMap* map = TMXTiledMap::createWithXML(xmls, "maps");
-        
-        _drawNode = DrawNode::create();
-        map->addChild(_drawNode, 1);
-        
         ScreenCoordinate::getInstance()->configScreen(map->getContentSize());
         
-        this->drawAreaWithColor();
+        this->intAreaDrawObject(map);
         
         return map;
 }
@@ -457,8 +456,34 @@ void DiceGame::startAttack(TMXTiledMap* map, Vec2 position){
         Size map_size = map->getContentSize();
         int cell_id = ScreenCoordinate::getInstance()->getSelectedCell(map_size, position);
         int area_id = this->_cel[cell_id];
+        
         AreaData* area = this->_areaData[area_id];
-        area->drawAsSelected(_drawNode);
+        int owner_uid = area->getOwner();
+
+        if (AREA_UNSELECTED == _selected_area){
+                
+                if (owner_uid == _userId){
+                        _selected_area = area_id;
+                        area->drawAsSelected();
+                }else{
+                        return;
+                }
+                
+        }else{
+                if (area_id == _selected_area){
+                        _selected_area = AREA_UNSELECTED;
+                        area->drawAsUnselected();
+                }else {
+                        
+                        if (area->isJoinedWithArea(_selected_area)
+                            && owner_uid != _userId){
+                                //TODO::AI Start attack;
+                        }else{
+                                return;
+                        }
+                }
+        }
+        
 }
 
 

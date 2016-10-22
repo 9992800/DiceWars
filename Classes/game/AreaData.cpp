@@ -21,6 +21,7 @@ static Color4F selected_color = Color4F(0., 0.0, 0.0, 0.5);
 
 AreaData::AreaData(int id)
 :_areaId(id),
+_drawNode(nullptr),
 _size(0),
 _cpos(0),
 _arm(-1),
@@ -32,7 +33,8 @@ _bottom(-1),
 _cx(0),
 _cy(0),
 _len_min(9999){
-        _join       = std::vector<int>(32);
+        _join       = std::vector<bool>(AREA_MAX);
+        SET_SIZE_TOZERO(_join, AREA_MAX);
         _line_cel   = std::vector<int>(MAX_LINE_INAREA);
         _line_dir   = std::vector<int>(MAX_LINE_INAREA);
         _cell_idxs  = std::set<int>();
@@ -88,7 +90,7 @@ void AreaData::calcLenAndPos(int vertical, int horizen, int cell_idx, DiceGame* 
                         int join_area_id = game->_cel[joined_cell];
                         if (join_area_id != game->_cel[cell_idx]){
                                 near_diff_area = true;
-                                _join[join_area_id] = 1;
+                                _join[join_area_id] = true;
                         }
                 }
         }
@@ -145,7 +147,7 @@ void AreaData::initAreaLine(int cell, int dir, DiceGame* game){
         }
 }
 
-void AreaData::drawBorder(DrawNode* drawNode){
+void AreaData::drawBorder(){
         if (_size == 0 || _arm < 0)
                 return;
         
@@ -167,11 +169,11 @@ void AreaData::drawBorder(DrawNode* drawNode){
                 }
         }
         
-        drawNode->drawPoly(points, point_size, true, border_color);
+        _drawNode->drawPoly(points, point_size, true, border_color);
 }
 
 
-void AreaData::drawPolyGon(DrawNode* drawNode, int owner){
+void AreaData::drawPolyGon(int owner){
         
         if (_size == 0 || _arm < 0)
                 return;
@@ -191,7 +193,7 @@ void AreaData::drawPolyGon(DrawNode* drawNode, int owner){
                         points[i] = ScreenCoordinate::getInstance()->getCellPos(*it, i);
                 }
                 
-                drawNode->drawPolygon(points, 6, fillColor, 0.0f, Color4F(0.0f,0.f,0.f,0.0f));
+                _drawNode->drawPolygon(points, 6, fillColor, 0.0f, Color4F(0.0f,0.f,0.f,0.0f));
         }
 }
  

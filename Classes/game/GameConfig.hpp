@@ -42,6 +42,7 @@ target[i] = i;\
 //
 #define MAX_LINE_INAREA (100)
 #define DIR_INAREA (6)
+#define AREA_UNSELECTED (-1)
 
 enum {
         CELL_DIR_RIGHT_TOP = 0,

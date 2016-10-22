@@ -37,7 +37,7 @@ protected:
         DiceGame();
         
         std::string createMapXMLString();
-        void drawAreaWithColor();
+        void intAreaDrawObject(TMXTiledMap* map);
         bool init();
          
         void makeNewMap();
@@ -51,11 +51,8 @@ public:
         static int  CURRENT_PLAYERS;
         
 private:
-        
-        DrawNode* _drawNode;
-        
-private:
         int                             _userId;
+        int                             _selected_area;
         std::vector<int>                _mapData;
         std::vector<AreaData*>          _areaData;
         std::vector<GamePlayer*>        _player;

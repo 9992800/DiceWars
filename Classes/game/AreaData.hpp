@@ -61,23 +61,31 @@ public:
         
         void initAreaLine(int cell, int dir, DiceGame* game);
         
-        void drawArea(DrawNode* drawNode){
-                drawBorder(drawNode);
-                drawPolyGon(drawNode, _arm);
+        void intDrawObject(DrawNode* drawNode){
+                _drawNode = drawNode;
+                drawBorder();
+                drawPolyGon(_arm);
         }
         
-        void drawAsSelected(DrawNode* drawNode){
-                drawPolyGon(drawNode, -1);
+        void drawAsSelected(){
+                drawPolyGon(-1);
         }
-        void drawAsUnselected(DrawNode* drawNode){
-                drawPolyGon(drawNode, _arm);
+        void drawAsUnselected(){
+                _drawNode->clear();
+                drawBorder();
+                drawPolyGon(_arm);
+        }
+        
+        bool isJoinedWithArea(int joinId){
+                return _join[joinId];
         }
         
 private:
-        void drawBorder(DrawNode* drawNode);
-        void drawPolyGon(DrawNode* drawNode, int owner);
+        void drawBorder();
+        void drawPolyGon(int owner);
         
 private:
+        
         int     _size;
         int     _cpos;
         int     _arm;
@@ -91,8 +99,9 @@ private:
         int     _len_min;
         int     _areaId;
         
+        DrawNode* _drawNode;
         
-        std::vector<int>    _join;
+        std::vector<bool>    _join;
         std::vector<int>    _line_cel;
         std::vector<int>    _line_dir;
         std::set<int>       _cell_idxs;
