@@ -23,7 +23,9 @@ DiceGame* DiceGame::getInstance(){
         return s_SharedGame;
 }
 
-DiceGame::DiceGame():_userId(3),_selected_area(AREA_UNSELECTED){
+DiceGame::DiceGame():_userId(3),
+_selected_area(AREA_UNSELECTED),
+_gameStatus(GAME_STATUS_INIT){
         _join           = std::vector<JoinData*>(CEL_MAX);
         _areaData       = std::vector<AreaData*>(AREA_MAX);
         _player         = std::vector<GamePlayer*>(MAX_PLAYER);
@@ -411,9 +413,66 @@ void DiceGame::setAreaLine(int cell, int dir){
         area->initAreaLine(cell, dir, this);
 }
 
-//TODO:: fill area tc;
 void DiceGame::set_area_tc(int pid){
         
+        GamePlayer* player = this->_player[pid];
+        
+        SET_SIZE_TOIDX(this->_chk, AREA_MAX);
+        
+        bool found = false;
+        do {
+                found = false;
+                
+                for (int i = 1; i < AREA_MAX; i++){
+                        
+                        AreaData* area = this->_areaData[i];
+                        if (area->isEmpty() || area->getOwner() != pid){
+                                continue;
+                        }
+                        
+                        for (int j = 0; j < AREA_MAX; j++){
+                                
+                                AreaData* area_another = this->_areaData[j];
+                                if (area_another->isEmpty()
+                                    || area_another->getOwner() != pid
+                                    || !area->isJoinedWithArea(j)
+                                    || this->_chk[j] == this->_chk[i]){
+                                        continue;
+                                }
+                                
+                                if (this->_chk[i] > this->_chk[j]){
+                                        this->_chk[i] = this->_chk[j];
+                                }else{
+                                        this->_chk[j] = this->_chk[i];
+                                }
+                                found = true;
+                                break;
+                        }
+                        
+                        if (found){
+                                break;
+                        }
+                }
+                
+        } while (found);
+        
+        for (int i = 1;  i < AREA_MAX; i++) {
+                if (!this->_areaData[i]->isEmpty()
+                    && this->_areaData[i]->getOwner() == pid){
+                        this->_areaData[this->_chk[i]]->increaseTc();
+                }
+        }
+        
+        
+        int tc = 0;
+        for (int i = 0; i < AREA_MAX; i++){
+                if (this->_areaData[i]->getTc() > tc){
+                        tc = this->_areaData[i]->getTc();
+                }
+        }
+        
+        player->setAreaTc(tc);
+        printf("\r\n\r\n---player:(%d) tc=%d---", pid, tc);
 }
 
 #pragma mark - main pullic function
@@ -431,6 +490,9 @@ TMXTiledMap* DiceGame::createMap()
 }
 
 void DiceGame::startGame(){
+        if (_gameStatus != GAME_STATUS_INIT){
+                return;
+        }
         
         SET_SIZE_TOIDX(_jun, MAX_PLAYER);
         
@@ -448,6 +510,8 @@ void DiceGame::startGame(){
         for (int i = 0; i < MAX_PLAYER; i++){
                 this->set_area_tc(i);
         }
+        
+        _gameStatus = GAME_STATUS_RUNNING;
 }
 
 

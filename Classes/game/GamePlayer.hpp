@@ -17,7 +17,9 @@ class GamePlayer: public Ref{
 public:
         GamePlayer(int id);
         virtual ~GamePlayer();
-        
+        inline void setAreaTc(int tc){
+                _area_tc = tc;
+        }
 private:
         int     _player_id;
         int     _area_c;

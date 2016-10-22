@@ -45,7 +45,7 @@ public:
         inline void setOwner(int ownerId){_arm = ownerId;}
         inline int  getOwner(){return _arm;}
         
-        bool initDice(){
+        inline bool initDice(){
                 if (_size > 0){
                         _dice = 1;
                         return true;
@@ -61,23 +61,31 @@ public:
         
         void initAreaLine(int cell, int dir, DiceGame* game);
         
-        void intDrawObject(DrawNode* drawNode){
+        inline void intDrawObject(DrawNode* drawNode){
                 _drawNode = drawNode;
                 drawBorder();
                 drawPolyGon(_arm);
         }
         
-        void drawAsSelected(){
+        inline void drawAsSelected(){
                 drawPolyGon(-1);
         }
-        void drawAsUnselected(){
+        inline void drawAsUnselected(){
                 _drawNode->clear();
                 drawBorder();
                 drawPolyGon(_arm);
         }
         
-        bool isJoinedWithArea(int joinId){
+        inline bool isJoinedWithArea(int joinId){
                 return _join[joinId];
+        }
+        
+        
+        inline void increaseTc(){
+                ++_tc;
+        }
+        inline int getTc(){
+                return _tc;
         }
         
 private:
@@ -105,5 +113,8 @@ private:
         std::vector<int>    _line_cel;
         std::vector<int>    _line_dir;
         std::set<int>       _cell_idxs;
+        
+private:
+        int     _tc;
 };
 #endif /* AreaData_hpp */

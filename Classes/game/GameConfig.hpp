@@ -53,4 +53,10 @@ enum {
         CELL_DIR_LEFT_BOT  = 5
 };
 
+enum {
+        GAME_STATUS_INIT = 0,
+        GAME_STATUS_RUNNING,
+        GAME_STATUS_FINISHED,
+};
+
 #endif /* GameConfig_h */
