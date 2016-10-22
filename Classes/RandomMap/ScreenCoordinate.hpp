@@ -19,6 +19,7 @@ public:
         Vec2 getCellPos(int cell, int dir);
         Vec2 getCellPos2(int cell){return Vec2(_cpos_x[cell], _cpos_y[cell]);}
         Size getCellSize(){return _cellSize;}
+        int getSelectedCell(Size mapSize, Vec2 curreTouch);
 private:
         ScreenCoordinate(void);
         bool init();

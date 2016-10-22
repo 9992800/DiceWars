@@ -194,10 +194,4 @@ void AreaData::drawPolyGon(DrawNode* drawNode, int owner){
                 drawNode->drawPolygon(points, 6, fillColor, 0.0f, Color4F(0.0f,0.f,0.f,0.0f));
         }
 }
-
-void drawAsSelected(){
-        
-}
-void drawAsUnselected(){
-        
-}
+ 

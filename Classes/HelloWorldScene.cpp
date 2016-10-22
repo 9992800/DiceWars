@@ -100,8 +100,8 @@ void HelloWorld::onTouchesMoved(const std::vector<Touch*>& touches, Event* event
         
         auto diff = touch->getDelta();
         diff.x = 0;
-        auto node = getChildByTag(kTagTileMap);
-        auto currentPos = node->getPosition();
+//        auto node = getChildByTag(kTagTileMap);
+        auto currentPos = _randomMap->getPosition();
         auto origin = Director::getInstance()->getVisibleOrigin();
         
         auto map_size = _randomMap->getContentSize();
@@ -114,7 +114,7 @@ void HelloWorld::onTouchesMoved(const std::vector<Touch*>& touches, Event* event
                 diff.y = _lowestPostion_y - currentPos.y;
         }
         
-        node->setPosition(currentPos + diff);
+        _randomMap->setPosition(currentPos + diff);
 }
 
 
@@ -122,5 +122,10 @@ void HelloWorld::onTouchesBegan(const std::vector<Touch*>& touches, Event *event
         auto touch = touches[0];
         auto position = touch->getLocation();
         printf("\r\n===position(%f, %f)===",position.x, position.y);
-}
+        
+        Vec2 inMap = _randomMap->convertToNodeSpace(position);
+        
+        printf("\r\n===inMap(%f, %f)===",inMap.x, inMap.y);
 
+        DiceGame::getInstance()->startAttack(_randomMap, inMap);
+} 

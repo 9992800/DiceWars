@@ -16,6 +16,7 @@ public:
     
         void onTouchesMoved(const std::vector<Touch*>& touches, Event* event);
         void onTouchesBegan(const std::vector<Touch*>& touches, Event *event);
+//        void onTouchesEnded(const std::vector<Touch*>& touches, Event *event);
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
         

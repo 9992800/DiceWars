@@ -31,6 +31,8 @@ public:
         TMXTiledMap* createMap();
         void startGame();
         
+        void startAttack(TMXTiledMap* map, Vec2 position);
+        
 protected:
         DiceGame();
         

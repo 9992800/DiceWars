@@ -452,3 +452,13 @@ void DiceGame::startGame(){
 }
 
 
+void DiceGame::startAttack(TMXTiledMap* map, Vec2 position){
+        
+        Size map_size = map->getContentSize();
+        int cell_id = ScreenCoordinate::getInstance()->getSelectedCell(map_size, position);
+        int area_id = this->_cel[cell_id];
+        AreaData* area = this->_areaData[area_id];
+        area->drawAsSelected(_drawNode);
+}
+
+
