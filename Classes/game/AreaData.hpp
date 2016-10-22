@@ -22,8 +22,16 @@ public:
         AreaData(int id);
         virtual ~AreaData();
         
-        inline void increaseSize() { _size++;}
-        inline void removeAreaTooSmall(int areaId) {if (_size <= 5) _size = 0;}
+        inline void increaseSize(int cell) {
+                _size++;
+                _cell_idxs.insert(cell);
+        }
+        inline void removeAreaTooSmall(int areaId) {
+                if (_size <= 5){
+                        _size = 0;
+                        _cell_idxs.clear();
+                }
+        }
         inline bool isEmpty() {return _size == 0;}
         
         void initBound(int vertical, int horizen);
@@ -53,7 +61,21 @@ public:
         
         void initAreaLine(int cell, int dir, DiceGame* game);
         
+        void drawArea(DrawNode* drawNode){
+                drawBorder(drawNode);
+                drawPolyGon(drawNode, _arm);
+        }
+        
+        void drawAsSelected(DrawNode* drawNode){
+                drawPolyGon(drawNode, -1);
+        }
+        void drawAsUnselected(DrawNode* drawNode){
+                drawPolyGon(drawNode, _arm);
+        }
+        
+private:
         void drawBorder(DrawNode* drawNode);
+        void drawPolyGon(DrawNode* drawNode, int owner);
         
 private:
         int     _size;
@@ -73,5 +95,6 @@ private:
         std::vector<int>    _join;
         std::vector<int>    _line_cel;
         std::vector<int>    _line_dir;
+        std::set<int>       _cell_idxs;
 };
 #endif /* AreaData_hpp */

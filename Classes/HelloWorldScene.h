@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 
+USING_NS_CC;
 class HelloWorld : public cocos2d::Layer
 {
 public:
@@ -13,7 +14,8 @@ public:
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
-        void onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
+        void onTouchesMoved(const std::vector<Touch*>& touches, Event* event);
+        void onTouchesBegan(const std::vector<Touch*>& touches, Event *event);
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
         

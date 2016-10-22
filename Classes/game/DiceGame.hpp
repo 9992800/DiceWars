@@ -35,7 +35,7 @@ protected:
         DiceGame();
         
         std::string createMapXMLString();
-        void drawBorderForArea();
+        void drawAreaWithColor();
         bool init();
          
         void makeNewMap();

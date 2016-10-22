@@ -2,7 +2,6 @@
 #include "SimpleAudioEngine.h"
 #include "game/DiceGame.hpp"
 
-USING_NS_CC;
 enum
 {
         kTagTileMap = 1,
@@ -61,8 +60,9 @@ bool HelloWorld::init()
         _randomMap->setPosition(Vec2(origin.x, origin.y));
         this->addChild(_randomMap, 2, kTagTileMap);
         
+        LayerColor* back_ground = LayerColor::create(Color4B(255,255,255,255.0));
+        this->addChild(back_ground);
          Size cs = _randomMap->getContentSize();
-        
         //TODO::why always lost 6 pixels
         _lowestPostion_y = visibleSize.height + origin.y - cs.height - 6;
         
@@ -72,6 +72,7 @@ bool HelloWorld::init()
         
         auto listener = EventListenerTouchAllAtOnce::create();
         listener->onTouchesMoved = CC_CALLBACK_2(HelloWorld::onTouchesMoved, this);
+        listener->onTouchesBegan = CC_CALLBACK_2(HelloWorld::onTouchesBegan, this);
         _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
                  
         return true;
@@ -94,7 +95,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 }
 
 
-void HelloWorld::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event){
+void HelloWorld::onTouchesMoved(const std::vector<Touch*>& touches, Event* event){
         auto touch = touches[0];
         
         auto diff = touch->getDelta();
@@ -115,3 +116,11 @@ void HelloWorld::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, coc
         
         node->setPosition(currentPos + diff);
 }
+
+
+void HelloWorld::onTouchesBegan(const std::vector<Touch*>& touches, Event *event){
+        auto touch = touches[0];
+        auto position = touch->getLocation();
+        printf("\r\n===position(%f, %f)===",position.x, position.y);
+}
+

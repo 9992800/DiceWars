@@ -10,12 +10,14 @@
 #include "DiceGame.hpp"
 #include "ScreenCoordinate.hpp"
 
-static Color4F _areaLineColor[] = {Color4F(1.0, 0.0, 0.0, 1.0),
-        Color4F(0.0, 1.0, 0.0, 1.0),Color4F(0.0, 0.0, 1.0, 1.0),
-        Color4F(1.0, 1.0, 0.0, 1.0),Color4F(0.0, 1.0, 1.0, 1.0),
-        Color4F(1.0, 0.0, 1.0, 1.0),Color4F(1.0, 1.0, 1.0, 1.0),
-        Color4F(0.0, 0.0, 0.0, 1.0)};
+static Color4F _areaLineColor[] = {Color4F(1.0, 0.0, 0.0, 0.02),
+        Color4F(0.0, 1.0, 0.0, 0.02),Color4F(0.0, 0.0, 1.0, 0.02),
+        Color4F(1.0, 1.0, 0.0, 0.02),Color4F(0.0, 1.0, 1.0, 0.02),
+        Color4F(1.0, 0.0, 1.0, 0.02),Color4F(1.0, 1.0, 1.0, 0.02),
+        Color4F(0.0, 0.0, 0.0, 0.02)};
 
+static Color4F border_color = Color4F(0.0, 0.0, 0.0, 1.0);
+static Color4F selected_color = Color4F(0., 0.0, 0.0, 0.5);
 
 AreaData::AreaData(int id)
 :_areaId(id),
@@ -33,6 +35,7 @@ _len_min(9999){
         _join       = std::vector<int>(32);
         _line_cel   = std::vector<int>(MAX_LINE_INAREA);
         _line_dir   = std::vector<int>(MAX_LINE_INAREA);
+        _cell_idxs  = std::set<int>();
 }
 
 
@@ -40,6 +43,7 @@ AreaData::~AreaData(){
         _join.clear();
         _line_cel.clear();
         _line_dir.clear();
+        _cell_idxs.clear();
 }
 
 
@@ -110,7 +114,6 @@ void AreaData::initAreaLine(int cell, int dir, DiceGame* game){
         
         _line_cel[cell_num] = cur_cell;
         _line_dir[cell_num] = cur_dir;
-        
         ++cell_num;
         
         for (int i = 0; i < MAX_LINE_INAREA; i++){
@@ -134,7 +137,7 @@ void AreaData::initAreaLine(int cell, int dir, DiceGame* game){
                 
                 _line_cel[cell_num] = cur_cell;
                 _line_dir[cell_num] = cur_dir;
-                ++cell_num;
+                ++cell_num; 
                 
                 if (cur_cell == cell && cur_dir == dir){
                         return;
@@ -146,20 +149,16 @@ void AreaData::drawBorder(DrawNode* drawNode){
         if (_size == 0 || _arm < 0)
                 return;
         
-        
-        Color4F border_color = _areaLineColor[_arm];
         int cell = _line_cel[0];
         int dir  = _line_dir[0];
+        Vec2 points[MAX_LINE_INAREA] = {{0,0}};
+        
+        int point_size = 0;
+        
         for (int i = 1; i < MAX_LINE_INAREA; i++){
-//                Vec2 start = ScreenCoordinate::getInstance()->getCellPos2(cell);
                 Vec2 start = ScreenCoordinate::getInstance()->getCellPos(cell,dir);
+                points[point_size++] = start;
                 
-                Vec2 end = ScreenCoordinate::getInstance()->getCellPos(cell, dir + 1);
-//                Vec2 end = start + Vec2(10, -10);
-
-                drawNode->drawLine(start, end, border_color);
-//                drawNode->drawRect(start, end, border_color);
-
                 cell = _line_cel[i];
                 dir  = _line_dir[i];
 
@@ -167,4 +166,38 @@ void AreaData::drawBorder(DrawNode* drawNode){
                         break;
                 }
         }
+        
+        drawNode->drawPoly(points, point_size, true, border_color);
+}
+
+
+void AreaData::drawPolyGon(DrawNode* drawNode, int owner){
+        
+        if (_size == 0 || _arm < 0)
+                return;
+        
+        Color4F fillColor;
+        if (-1 == owner){
+                fillColor = selected_color;
+        }else{
+                fillColor = _areaLineColor[_arm];
+        }
+        
+        for (std::set<int>::iterator it = _cell_idxs.begin(); it != _cell_idxs.end(); ++it){
+                
+                Vec2 points[DIR_INAREA] = {{0,0}};
+                
+                for (int i = 0; i < DIR_INAREA; i++){
+                        points[i] = ScreenCoordinate::getInstance()->getCellPos(*it, i);
+                }
+                
+                drawNode->drawPolygon(points, 6, fillColor, 0.0f, Color4F(0.0f,0.f,0.f,0.0f));
+        }
+}
+
+void drawAsSelected(){
+        
+}
+void drawAsUnselected(){
+        
 }

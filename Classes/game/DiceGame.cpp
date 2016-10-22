@@ -93,11 +93,10 @@ std::string DiceGame::createMapXMLString(){
         return xmls;
 }
 
-void DiceGame::drawBorderForArea(){
+void DiceGame::drawAreaWithColor(){
         for (int i = 0; i < AREA_MAX; i++){
                 AreaData* area = this->_areaData[i];
-                printf("\r\n\r\n area=%d", i);
-                area->drawBorder(_drawNode);
+                area->drawArea(_drawNode);
         }
 }
 
@@ -204,7 +203,7 @@ void DiceGame::makeNewMap(){
         for (int i = 0; i < CEL_MAX; i++){
                 int area_id = this->_cel[i];
                 if (area_id > 0){
-                        this->_areaData[area_id]->increaseSize();
+                        this->_areaData[area_id]->increaseSize(i);
                 }
         }
         
@@ -427,7 +426,7 @@ TMXTiledMap* DiceGame::createMap()
         
         ScreenCoordinate::getInstance()->configScreen(map->getContentSize());
         
-        this->drawBorderForArea();
+        this->drawAreaWithColor();
         
         return map;
 }
