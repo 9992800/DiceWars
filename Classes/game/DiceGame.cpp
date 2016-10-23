@@ -78,18 +78,7 @@ DiceGame::~DiceGame(){
 
 std::string DiceGame::createMapXMLString(){
         
-        this->makeNewMap();
-        
-        
-        
-        for (int j = 0; j < CEL_MAX; j++){
-                int area_id = this->_cel[j];
-                if (j % 32 == 0){
-                        printf("]\r\n[");
-                }
-                printf(" %d ", area_id);
-        }
-
+        this->makeNewMap();         
         
         for (int i = 0; i < CEL_MAX; i++){
                 int area_id = this->_cel[i];
@@ -229,6 +218,14 @@ void DiceGame::makeNewMap(){
                         this->_cel[i] = 0;
                 }
         }
+        
+        for (int j = 0; j < CEL_MAX; j++){
+                int area_id = this->_cel[j];
+                if (j % AREA_MAX == 0){
+                        printf("]\r\n[");
+                }
+                printf(" %d ", area_id);
+        }         
         
         int cell_idx = 0;
         for (int i = 0; i < YMAX; i++){

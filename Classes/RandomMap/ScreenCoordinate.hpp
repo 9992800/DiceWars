@@ -21,9 +21,7 @@ public:
         inline Size getCellSize(){return _cellSize;}
         int getSelectedCell(Size mapSize, Vec2 curreTouch);
         
-        Vec2 getAreaCenterPos(int pos){
-                return Vec2(_cpos_x[pos], _cpos_y[pos]);
-        }
+        Vec2 getAreaCenterPos(int pos);
 private:
         ScreenCoordinate(void);
         bool init();
