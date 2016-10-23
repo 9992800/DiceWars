@@ -29,10 +29,10 @@ public:
         virtual ~DiceGame();
         
         TMXTiledMap* createMap();
-        void startGame(Layer* parent);
+        void startGame();
         
         void startAttack(TMXTiledMap* map, Vec2 position);
-        
+        void nextTurn();
 protected:
         DiceGame();
         

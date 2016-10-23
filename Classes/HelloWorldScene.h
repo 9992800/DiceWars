@@ -12,7 +12,8 @@ public:
     virtual bool init();
     
     // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
+        void menuStartGameCallback(cocos2d::Ref* pSender);
+        void menuEndTurnCallback(cocos2d::Ref* pSender);
     
         void onTouchesMoved(const std::vector<Touch*>& touches, Event* event);
         void onTouchesBegan(const std::vector<Touch*>& touches, Event *event);
@@ -21,7 +22,9 @@ public:
     CREATE_FUNC(HelloWorld);
         
 private:
-        cocos2d::TMXTiledMap* _randomMap;
+        TMXTiledMap* _randomMap;
+        MenuItemImage* _playItem;
+        MenuItemImage* _endTurnItem;
         float _lowestPostion_y;
 };
 

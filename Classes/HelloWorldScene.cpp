@@ -40,16 +40,25 @@ bool HelloWorld::init()
     //    you may modify it.
 
     // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+        _playItem = MenuItemImage::create(
+                                           "playbutton.png",
+                                           "playbutton.png",
+                                           CC_CALLBACK_1(HelloWorld::menuStartGameCallback, this));
     
-    closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
-                                origin.y +closeItem->getContentSize().height/2));
+        _playItem->setPosition(Vec2(origin.x + visibleSize.width - _playItem->getContentSize().width/2 ,
+                                origin.y +_playItem->getContentSize().height/2));
+        
+        _endTurnItem = MenuItemImage::create(
+                                          "NextButton.png",
+                                          "NextButton.png",
+                                          CC_CALLBACK_1(HelloWorld::menuEndTurnCallback, this));
+        
+        _endTurnItem->setPosition(Vec2(origin.x + visibleSize.width - _endTurnItem->getContentSize().width/2 ,
+                                    origin.y +_endTurnItem->getContentSize().height/2));
+        _endTurnItem->setVisible(false);
 
     // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
+    auto menu = Menu::create(_playItem, _endTurnItem, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 3);
 
@@ -79,9 +88,11 @@ bool HelloWorld::init()
 }
 
 
-void HelloWorld::menuCloseCallback(Ref* pSender)
+void HelloWorld::menuStartGameCallback(Ref* pSender)
 {
-        DiceGame::getInstance()->startGame(this);
+        DiceGame::getInstance()->startGame();
+        _playItem->setVisible(false);
+        _endTurnItem->setVisible(true);
 //    //Close the cocos2d-x game scene and quit the application
 //    Director::getInstance()->end();
 //
@@ -95,6 +106,12 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 }
 
+void HelloWorld::menuEndTurnCallback(Ref* pSender)
+{
+        DiceGame::getInstance()->nextTurn();
+        _endTurnItem->setVisible(false);
+        
+}
 
 void HelloWorld::onTouchesMoved(const std::vector<Touch*>& touches, Event* event){
         auto touch = touches[0];

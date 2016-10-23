@@ -17,7 +17,7 @@ static Color4F _areaLineColor[] = {Color4F(1.0, 0.0, 0.0, 0.02),
         Color4F(0.0, 0.0, 0.0, 0.02)};
 
 static Color4F border_color = Color4F(0.0, 0.0, 0.0, 1.0);
-static Color4F selected_color = Color4F(0., 0.0, 0.0, 0.5);
+static Color4F selected_color = Color4F(0.2, 0.0, 0.0, 0.7);
 
 AreaData::AreaData(int id)
 :_areaId(id),

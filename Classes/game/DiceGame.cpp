@@ -497,7 +497,7 @@ TMXTiledMap* DiceGame::createMap()
         return _cur_map;
 }
 
-void DiceGame::startGame(Layer* parent){
+void DiceGame::startGame(){
         if (_gameStatus != GAME_STATUS_INIT){
                 return;
         }
@@ -564,4 +564,8 @@ void DiceGame::startAttack(TMXTiledMap* map, Vec2 position){
         
 }
 
+
+void DiceGame::nextTurn(){
+        
+}
 
