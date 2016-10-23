@@ -29,7 +29,7 @@ public:
         virtual ~DiceGame();
         
         TMXTiledMap* createMap();
-        void startGame();
+        void startGame(Layer* parent);
         
         void startAttack(TMXTiledMap* map, Vec2 position);
         
@@ -67,5 +67,6 @@ private:
         int     _ban;
         int     _area_from;
         int     _area_to;
+        TMXTiledMap* _cur_map;
 };
 #endif /* DiceGame_hpp */

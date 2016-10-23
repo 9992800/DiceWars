@@ -197,3 +197,14 @@ void AreaData::drawPolyGon(int owner){
         }
 }
  
+
+Sprite* AreaData::createSprite(){
+        std::ostringstream s;
+        s <<"maps/"<< _dice <<".png";
+        auto sprite = Sprite::create(s.str());
+        Vec2 pos = ScreenCoordinate::getInstance()->getAreaCenterPos(_cpos);
+        sprite->setPosition(pos);
+        return sprite;
+}
+
+

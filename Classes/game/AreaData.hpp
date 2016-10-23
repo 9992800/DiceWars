@@ -83,6 +83,8 @@ public:
         inline int getDice(){
                 return _dice;
         }
+        
+        Sprite* createSprite();
 private:
         void drawBorder();
         void drawPolyGon(int owner);

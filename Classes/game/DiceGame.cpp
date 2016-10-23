@@ -489,15 +489,15 @@ TMXTiledMap* DiceGame::createMap()
 {
         std::string xmls = this->createMapXMLString();
         
-        TMXTiledMap* map = TMXTiledMap::createWithXML(xmls, "maps");
-        ScreenCoordinate::getInstance()->configScreen(map->getContentSize());
+        _cur_map = TMXTiledMap::createWithXML(xmls, "maps");
+        ScreenCoordinate::getInstance()->configScreen(_cur_map->getContentSize());
         
-        this->intAreaDrawObject(map);
+        this->intAreaDrawObject(_cur_map);
         
-        return map;
+        return _cur_map;
 }
 
-void DiceGame::startGame(){
+void DiceGame::startGame(Layer* parent){
         if (_gameStatus != GAME_STATUS_INIT){
                 return;
         }
@@ -517,6 +517,12 @@ void DiceGame::startGame(){
         
         for (int i = 0; i < MAX_PLAYER; i++){
                 this->set_area_tc(i);
+        }
+        
+        for(int i = 1; i < AREA_MAX; i++){
+                AreaData* area = this->_areaData[i];
+                Sprite* dice = area->createSprite();
+                _cur_map->addChild(dice, 3, i + 100);
         }
         
         _gameStatus = GAME_STATUS_RUNNING;

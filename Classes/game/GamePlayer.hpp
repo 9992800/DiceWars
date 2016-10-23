@@ -23,7 +23,7 @@ public:
         inline void increaseAreaC(){
                 ++_area_c;
         }
-        inline void addDice(int dice){
+        inline void addDiceC(int dice){
                 _dice_c += dice;
         }
         

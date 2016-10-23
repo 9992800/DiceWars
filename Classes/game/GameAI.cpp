@@ -45,7 +45,7 @@ int GameAI::com_thinking(){
                 int owner = area->getOwner();
                 GamePlayer* player = game->_player[owner];
                 player->increaseAreaC();
-                player->addDice(area->getDice());
+                player->addDiceC(area->getDice());
                 total_dice += area->getDice();
         }
         
@@ -90,8 +90,7 @@ int GameAI::com_thinking(){
                         }
                         
                         if (target_uid >= 0
-                            && area_i->getOwner() != target_uid
-                            && area_j->getOwner() != target_uid
+                            && !(area_i->getOwner() != target_uid && area_j->getOwner() != target_uid)
                             && area_j->getDice() <= area_i->getDice()){
                                 
                                 if (area_j->getDice() == area_i->getDice()){
