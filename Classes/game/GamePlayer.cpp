@@ -12,7 +12,7 @@ GamePlayer::GamePlayer(int id)
 ,_area_c(0)
 ,_area_tc(0)
 ,_dice_c(0)
-,_dice_jun(0)
+,_dice_jun(id)
 ,_stock(0){
         
 }

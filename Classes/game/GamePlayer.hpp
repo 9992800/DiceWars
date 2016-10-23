@@ -20,6 +20,23 @@ public:
         inline void setAreaTc(int tc){
                 _area_tc = tc;
         }
+        inline void increaseAreaC(){
+                ++_area_c;
+        }
+        inline void addDice(int dice){
+                _dice_c += dice;
+        }
+        
+        inline int getDiceC(){
+                return _dice_c;
+        }
+        inline int getDiceJun(){
+                return _dice_jun;
+        }
+        inline void setDiceJun(int jun){
+                _dice_jun = jun;
+        }
+        
 private:
         int     _player_id;
         int     _area_c;

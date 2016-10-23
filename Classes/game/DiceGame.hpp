@@ -23,7 +23,7 @@ USING_NS_CC;
 class DiceGame : public Ref{
         
         friend class AreaData;
-        
+        friend class GameAI;
 public:
         static DiceGame* getInstance();
         virtual ~DiceGame();
@@ -65,5 +65,7 @@ private:
 private:
         int     _gameStatus;
         int     _ban;
+        int     _area_from;
+        int     _area_to;
 };
 #endif /* DiceGame_hpp */

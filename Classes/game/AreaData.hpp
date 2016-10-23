@@ -78,7 +78,11 @@ public:
         
         inline bool isJoinedWithArea(int joinId){
                 return _join[joinId];
-        }         
+        }
+        
+        inline int getDice(){
+                return _dice;
+        }
 private:
         void drawBorder();
         void drawPolyGon(int owner);

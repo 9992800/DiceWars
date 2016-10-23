@@ -10,7 +10,7 @@
 #include "GameConfig.hpp"
 #include "MapBasicInfo.hpp"
 
-static ScreenCoordinate*s_SharedScreen;
+static ScreenCoordinate* s_SharedScreen;
 
 ScreenCoordinate* ScreenCoordinate::getInstance(){
         if (!s_SharedScreen)

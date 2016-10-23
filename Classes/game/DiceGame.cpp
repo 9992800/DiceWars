@@ -26,7 +26,9 @@ DiceGame* DiceGame::getInstance(){
 DiceGame::DiceGame():_userId(3),
 _selected_area(AREA_UNSELECTED),
 _gameStatus(GAME_STATUS_INIT),
-_ban(0){
+_ban(0),
+_area_from(-1),
+_area_to(-1){
         _join           = std::vector<JoinData*>(CEL_MAX);
         _areaData       = std::vector<AreaData*>(AREA_MAX);
         _player         = std::vector<GamePlayer*>(MAX_PLAYER);
