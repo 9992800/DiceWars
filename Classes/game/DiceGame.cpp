@@ -23,7 +23,7 @@ DiceGame* DiceGame::getInstance(){
         return s_SharedGame;
 }
 
-DiceGame::DiceGame():_userId(3),
+DiceGame::DiceGame():_userId(0),
 _selected_area(AREA_UNSELECTED),
 _gameStatus(GAME_STATUS_INIT),
 _ban(0),
