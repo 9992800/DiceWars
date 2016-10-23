@@ -63,6 +63,7 @@ private:
         std::vector<int>                _num;
         std::vector<int>                _chk;
 private:
-        int                             _gameStatus;
+        int     _gameStatus;
+        int     _ban;
 };
 #endif /* DiceGame_hpp */

@@ -32,8 +32,7 @@ _top(YMAX),
 _bottom(-1),
 _cx(0),
 _cy(0),
-_len_min(9999),
-_tc(0){
+_len_min(9999){
         _join       = std::vector<bool>(AREA_MAX);
         SET_SIZE_TOZERO(_join, AREA_MAX);
         _line_cel   = std::vector<int>(MAX_LINE_INAREA);

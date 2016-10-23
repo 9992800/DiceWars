@@ -78,16 +78,7 @@ public:
         
         inline bool isJoinedWithArea(int joinId){
                 return _join[joinId];
-        }
-        
-        
-        inline void increaseTc(){
-                ++_tc;
-        }
-        inline int getTc(){
-                return _tc;
-        }
-        
+        }         
 private:
         void drawBorder();
         void drawPolyGon(int owner);
@@ -113,8 +104,5 @@ private:
         std::vector<int>    _line_cel;
         std::vector<int>    _line_dir;
         std::set<int>       _cell_idxs;
-        
-private:
-        int     _tc;
 };
 #endif /* AreaData_hpp */

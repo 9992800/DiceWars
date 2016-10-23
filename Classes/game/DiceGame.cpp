@@ -25,7 +25,8 @@ DiceGame* DiceGame::getInstance(){
 
 DiceGame::DiceGame():_userId(3),
 _selected_area(AREA_UNSELECTED),
-_gameStatus(GAME_STATUS_INIT){
+_gameStatus(GAME_STATUS_INIT),
+_ban(0){
         _join           = std::vector<JoinData*>(CEL_MAX);
         _areaData       = std::vector<AreaData*>(AREA_MAX);
         _player         = std::vector<GamePlayer*>(MAX_PLAYER);
@@ -76,6 +77,17 @@ DiceGame::~DiceGame(){
 std::string DiceGame::createMapXMLString(){
         
         this->makeNewMap();
+        
+        
+        
+        for (int j = 0; j < CEL_MAX; j++){
+                int area_id = this->_cel[j];
+                if (j % 32 == 0){
+                        printf("]\r\n[");
+                }
+                printf(" %d ", area_id);
+        }
+
         
         for (int i = 0; i < CEL_MAX; i++){
                 int area_id = this->_cel[i];
@@ -164,13 +176,6 @@ void DiceGame::makeNewMap(){
                         break;
                 }                
         };
-        
-        for (int j = 0; j < CEL_MAX; j++){
-                if (j % 32 == 0){
-                        printf("]\r\n[");
-                }
-                printf(" %d ", this->_cel[j]);
-        }
         /*make all cells around created area been in used*/
         for (int i = 0; i < CEL_MAX; i++){
                 if (_cel[i] > 0){
@@ -456,18 +461,19 @@ void DiceGame::set_area_tc(int pid){
                 
         } while (found);
         
+        int tcArr[AREA_MAX] = {0};
         for (int i = 1;  i < AREA_MAX; i++) {
                 if (!this->_areaData[i]->isEmpty()
                     && this->_areaData[i]->getOwner() == pid){
-                        this->_areaData[this->_chk[i]]->increaseTc();
+                        ++tcArr[this->_chk[i]];
                 }
         }
         
         
         int tc = 0;
         for (int i = 0; i < AREA_MAX; i++){
-                if (this->_areaData[i]->getTc() > tc){
-                        tc = this->_areaData[i]->getTc();
+                if (tcArr[i] > tc){
+                        tc = tcArr[i];
                 }
         }
         
@@ -496,8 +502,8 @@ void DiceGame::startGame(){
         
         SET_SIZE_TOIDX(_jun, MAX_PLAYER);
         
-        for (int i = 0; i < MAX_PLAYER; i++){
-                int ramdom_p = random(0, MAX_PLAYER - 1);
+        for (int i = 0; i < CURRENT_PLAYERS; i++){
+                int ramdom_p = random(0, CURRENT_PLAYERS - 1);
                 int tmp = this->_jun[i];
                 this->_jun[i] = this->_jun[ramdom_p];
                 this->_jun[ramdom_p] = tmp;
