@@ -518,6 +518,9 @@ void DiceGame::startGame(){
         
         for(int i = 1; i < AREA_MAX; i++){
                 AreaData* area = this->_areaData[i];
+                if (area->getOwner() < 0){
+                        continue;
+                }
                 Sprite* dice = area->createSprite();
                 _cur_map->addChild(dice, 3, i + 100);
         }
