@@ -22,9 +22,15 @@ public:
 private:
         
         void menuStartGameCallback(cocos2d::Ref* pSender);
+        void menuSetPlayerNum(cocos2d::Ref* pSender);
 private:
         
         MenuItemImage* _playItem;
+        MenuItemImage *_playNum_2, *_playNum_3, *_playNum_4,
+                      *_playNum_5, *_playNum_6, *_playNum_7,
+                      *_playNum_8;
+        
+        
 };
 
 #endif /* MainScene_hpp */

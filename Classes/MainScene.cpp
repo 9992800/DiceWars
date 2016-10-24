@@ -27,16 +27,51 @@ bool MainScene::init()
         _playItem->setPosition(Vec2(origin.x + visibleSize.width - 2*_playItem->getContentSize().width ,
                                     origin.y +_playItem->getContentSize().height/2));
         
-        auto menu = Menu::create(_playItem, NULL);
+        
+        _playNum_2 = MenuItemImage::create("maps/2.png", "maps/2_s.png",
+                                           CC_CALLBACK_1(MainScene::menuSetPlayerNum, this));
+        _playNum_2->setPosition(Vec2(origin.x + visibleSize.width / 2 - 3 * _playNum_2->getContentSize().width,
+                                     origin.y + visibleSize.height / 2));
+        
+        _playNum_3 = MenuItemImage::create("maps/3.png", "maps/3_s.png",
+                                           CC_CALLBACK_1(MainScene::menuSetPlayerNum, this));
+        _playNum_3->setPosition(Vec2(origin.x + visibleSize.width / 2  - 2 * _playNum_3->getContentSize().width,
+                                     origin.y + visibleSize.height / 2));
+        
+        _playNum_4 = MenuItemImage::create("maps/4.png", "maps/4_s.png",
+                                           CC_CALLBACK_1(MainScene::menuSetPlayerNum, this));
+        _playNum_4->setPosition(Vec2(origin.x + visibleSize.width / 2 - _playNum_4->getContentSize().width,
+                                     origin.y + visibleSize.height / 2));
+        
+        _playNum_5 = MenuItemImage::create("maps/5.png", "maps/5_s.png",
+                                          CC_CALLBACK_1(MainScene::menuSetPlayerNum, this));
+        _playNum_5->setPosition(Vec2(origin.x + visibleSize.width / 2,  origin.y + visibleSize.height / 2));
+        
+        _playNum_6 = MenuItemImage::create("maps/6.png", "maps/6_s.png",
+                                           CC_CALLBACK_1(MainScene::menuSetPlayerNum, this));
+        _playNum_6->setPosition(Vec2(origin.x + visibleSize.width / 2 + _playNum_6->getContentSize().width,
+                                     origin.y + visibleSize.height / 2));
+        
+        _playNum_7 = MenuItemImage::create("maps/7.png", "maps/7_s.png",
+                                           CC_CALLBACK_1(MainScene::menuSetPlayerNum, this));
+        _playNum_7->setPosition(Vec2(origin.x + visibleSize.width / 2 + 2 * _playNum_7->getContentSize().width,
+                                     origin.y + visibleSize.height / 2));
+        
+        _playNum_8 = MenuItemImage::create("maps/8.png", "maps/8_s.png",
+                                           CC_CALLBACK_1(MainScene::menuSetPlayerNum, this));
+        _playNum_8->setPosition(Vec2(origin.x + visibleSize.width / 2 + 3 * _playNum_8->getContentSize().width,
+                                     origin.y + visibleSize.height / 2));
+        
+        auto menu = Menu::create(_playItem,_playNum_2, _playNum_3, _playNum_4, _playNum_5, _playNum_6, _playNum_7, _playNum_8, NULL);
         menu->setPosition(Vec2::ZERO);
         layer->addChild(menu, 3);
         
         LayerColor* back_ground = LayerColor::create(Color4B(255,255,255,255.0));
         layer->addChild(back_ground);
         
+        
         return true;
 }
-
 
 
 void MainScene::menuStartGameCallback(Ref* pSender)
@@ -44,3 +79,10 @@ void MainScene::menuStartGameCallback(Ref* pSender)
         auto gameScene = GameScene::create();
         Director::getInstance()->pushScene(gameScene);
 }
+
+void MainScene::menuSetPlayerNum(Ref* pSender){
+        if (pSender == _playNum_2){
+                
+        }
+}
+

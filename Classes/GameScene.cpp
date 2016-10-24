@@ -18,13 +18,7 @@ bool GameScene::init()
 
         auto visibleSize = Director::getInstance()->getVisibleSize();
         Vec2 origin = Director::getInstance()->getVisibleOrigin();
-        
-//        _endTurnItem = MenuItemImage::create("NextButton.png",
-//                                           "NextButton.png",
-//                                          CC_CALLBACK_1(GameScene::menuEndTurnCallback, this));
-//        _endTurnItem->setPosition(Vec2(origin.x + visibleSize.width - 2* _endTurnItem->getContentSize().width ,
-//                                    origin.y + 2 * _endTurnItem->getContentSize().height));
-//        
+                
         _endTurnItem = MenuItemImage::create("NextButton.png",
                                           "NextButton.png",
                                           CC_CALLBACK_1(GameScene::menuEndTurnCallback, this));
