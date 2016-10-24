@@ -40,6 +40,11 @@ public:
                 _dice_jun = jun;
         }
         
+        inline void resetValue(){
+                _area_c = 0;
+                _dice_c = 0;
+        }
+        
 private:
         int     _player_id;
         int     _area_c;

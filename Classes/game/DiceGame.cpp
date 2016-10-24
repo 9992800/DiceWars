@@ -8,6 +8,7 @@
 
 #include "DiceGame.hpp"
 #include "ScreenCoordinate.hpp"
+#include "GameAI.hpp"
 
 static DiceGame* s_SharedGame = nullptr;
 int DiceGame::CURRENT_PLAYERS = 6;
@@ -45,10 +46,6 @@ _cur_map(nullptr){
 }
 
 bool DiceGame::init(){
-        
-        
-        SET_SIZE_TOIDX(_num, CEL_MAX);
-        
         
         for (int i = 0; i < CEL_MAX; i++){
                 JoinData* join_data = new JoinData();
@@ -137,6 +134,8 @@ SimpleMapInfoBean DiceGame::initMapBasicInfo(){
 
 
 void DiceGame::makeNewMap(){
+        
+        SET_SIZE_TOIDX(_num, CEL_MAX);
         for (int i = 0; i <  CEL_MAX; i++){
                 int radom = random(0, CEL_MAX - 1);
                 
@@ -538,9 +537,9 @@ TMXTiledMap*  DiceGame::initGame(Layer* gameLayer, int playerNum){
 }
 
 
-void DiceGame::startAttack(TMXTiledMap* map, Vec2 position){
+void DiceGame::startAttack(Vec2 position){
         
-        Size map_size = map->getContentSize();
+        Size map_size = _cur_map->getContentSize();
         int cell_id = ScreenCoordinate::getInstance()->getSelectedCell(map_size, position);
         int area_id = this->_cel[cell_id];
         
@@ -574,28 +573,57 @@ void DiceGame::startAttack(TMXTiledMap* map, Vec2 position){
 }
 
 
-void DiceGame::nextTurn(){
-        TMXLayer * layer = _cur_map->getLayer("map");
-        for (int i = 0; i < CEL_MAX; i++){
+//void DiceGame::nextTurn(){
+//        TMXLayer * layer = _cur_map->getLayer("map");
+//        for (int i = 0; i < CEL_MAX; i++){
+//                
+//                int area_id = this->_cel[i];
+//                AreaData* area = this->_areaData[area_id];
+//                
+//                if (area_id > 0 && area->getOwner() != _userId){
+//                        for (int j = 0; j < CEL_MAX; j++){
+//                                if (area_id != this->_cel[j]){
+//                                        continue;
+//                                }
+//                                
+//                                int col = j / XMAX;
+//                                int row = j % XMAX;
+//                                layer->setTileGID(1, Vec2(row, col));
+//                        }
+//                        
+//                        area->setOwner(_userId);
+//                        break;
+//                }
+//                
+//        }
+//}
+
+bool DiceGame::startAIAttack(){
+        bool is_AI_turn = false;
+        
+        int target = GameAI::getInstance()->com_thinking();
+        if (target > 0){
+                AreaData* area_from = this->_areaData[_area_from];
+                area_from->drawAsSelected();
                 
-                int area_id = this->_cel[i];
-                AreaData* area = this->_areaData[area_id];
+                AreaData* area_to   = this->_areaData[_area_to];
+                area_to->drawAsSelected();
                 
-                if (area_id > 0 && area->getOwner() != _userId){
-                        for (int j = 0; j < CEL_MAX; j++){
-                                if (area_id != this->_cel[j]){
-                                        continue;
-                                }
-                                
-                                int col = j / XMAX;
-                                int row = j % XMAX;
-                                layer->setTileGID(1, Vec2(row, col));
-                        }
-                        
-                        area->setOwner(_userId);
-                        break;
-                }
+                //TODO:: play animation;
                 
+                std::chrono::seconds duration( 1 );
+                std::this_thread::sleep_for( duration );
+                
+                area_from->drawAsUnselected();
+                area_to->drawAsUnselected();
         }
+        
+        int player_id = this->_jun[++_ban];
+        if (player_id == _userId){
+                is_AI_turn = false;
+        }
+        
+        
+        return is_AI_turn;
 }
 

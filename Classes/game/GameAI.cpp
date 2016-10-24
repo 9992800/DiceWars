@@ -36,6 +36,10 @@ int GameAI::com_thinking(){
         
         DiceGame* game = DiceGame::getInstance();
         
+        for (int i = 0; i < MAX_PLAYER; i++){
+                game->_player[i]->resetValue();
+        }
+        
         int total_dice = 0;
         for (int i = 1; i < AREA_MAX; i++){
                 AreaData* area = game->_areaData[i];
@@ -51,7 +55,7 @@ int GameAI::com_thinking(){
         
         for (int i = 0; i < MAX_PLAYER - 1; i++) {
                 GamePlayer* player_i = game->_player[i];
-                for (int j = i + 1; i < MAX_PLAYER; j++){
+                for (int j = i + 1; j < MAX_PLAYER; j++){
                         GamePlayer* player_j = game->_player[j];
                         if (player_i->getDiceC() < player_j->getDiceC()){
                                 int tmp = player_i->getDiceJun();

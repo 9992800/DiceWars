@@ -25,9 +25,15 @@ bool GameScene::init()
                                           CC_CALLBACK_1(GameScene::menuEndTurnCallback, this));
         _endTurnItem->setPosition(Vec2(origin.x + visibleSize.width - _endTurnItem->getContentSize().width,
                                     origin.y +_endTurnItem->getContentSize().height));
+        _endTurnItem->setVisible(false);
+        
+        _startAIItem = MenuItemImage::create("start.png", "start.png",
+                                             CC_CALLBACK_1(GameScene::menuEndTurnCallback, this));
+        _startAIItem->setPosition(Vec2(origin.x + visibleSize.width - _startAIItem->getContentSize().width,
+                                       origin.y +_startAIItem->getContentSize().height));
         
         
-        auto menu = Menu::create(_endTurnItem, NULL);
+        auto menu = Menu::create(_endTurnItem, _startAIItem, NULL);
         menu->setPosition(Vec2::ZERO);
         layer->addChild(menu, 30);
         
@@ -84,11 +90,24 @@ bool GameScene::init()
 
 void GameScene::menuEndTurnCallback(Ref* pSender)
 {
-        DiceGame::getInstance()->nextTurn();
+        if (pSender == _startAIItem){
+                _startAIItem->setVisible(false);
+        }
+        
+        _endTurnItem->setVisible(false);
+        
+        while(DiceGame::getInstance()->startAIAttack()){
+//                std::chrono::seconds duration( 5 );
+//                std::this_thread::sleep_for( duration );
+                //TODO::run action;
+        }
+        
+        _endTurnItem->setVisible(true);
+
 }
 
 void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* event){
-        
+        _isMoved = true;
         auto touch = touches[0];
         
         auto diff = touch->getDelta();
@@ -111,11 +130,15 @@ void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* event)
 
 
 void GameScene::onTouchesEnded(const std::vector<Touch*>& touches, Event *event){
+        if (_isMoved) {
+                _isMoved = false;
+                return;
+        }
          
         auto touch = touches[0];
         auto position = touch->getLocation();
         
         Vec2 inMap = _randomMap->convertToNodeSpace(position); 
 
-        DiceGame::getInstance()->startAttack(_randomMap, inMap);
+        DiceGame::getInstance()->startAttack(inMap);
 } 

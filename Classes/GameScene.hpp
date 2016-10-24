@@ -39,7 +39,9 @@ private:
         GameScene(int pn):_player_num(pn),
         _randomMap(nullptr),
         _endTurnItem(nullptr),
-        _lowestPostion_y(0.f){
+        _startAIItem(nullptr),
+        _lowestPostion_y(0.f),
+        _isMoved(false){
                 _menu_items = Vector<MenuItem*>(MAX_PLAYER);
         }
         
@@ -48,10 +50,12 @@ private:
 private:
         TMXTiledMap*    _randomMap;
         MenuItemImage*  _endTurnItem;
+        MenuItemImage*  _startAIItem;
         float           _lowestPostion_y;
         int             _player_num;
         
         Vector<MenuItem*> _menu_items;
+        bool            _isMoved;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
