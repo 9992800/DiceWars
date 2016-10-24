@@ -21,8 +21,7 @@ bool MainScene::init()
         auto visibleSize = Director::getInstance()->getVisibleSize();
         Vec2 origin = Director::getInstance()->getVisibleOrigin();
         
-        _playItem = MenuItemImage::create("playbutton.png",
-                                          "playbutton.png",
+        _playItem = MenuItemImage::create("playbutton.png", "playbutton.png",
                                           CC_CALLBACK_1(MainScene::menuStartGameCallback, this));
         _playItem->setPosition(Vec2(origin.x + visibleSize.width - 2*_playItem->getContentSize().width ,
                                     origin.y +_playItem->getContentSize().height/2));
@@ -56,6 +55,7 @@ bool MainScene::init()
                                            CC_CALLBACK_1(MainScene::menuSetPlayerNum, this));
         _playNum_7->setPosition(Vec2(origin.x + visibleSize.width / 2 + 2 * _playNum_7->getContentSize().width,
                                      origin.y + visibleSize.height / 2));
+        _playNum_7->setColor(Color3B(255, 0, 0));
         
         _playNum_8 = MenuItemImage::create("maps/8.png", "maps/8_s.png",
                                            CC_CALLBACK_1(MainScene::menuSetPlayerNum, this));
@@ -69,6 +69,7 @@ bool MainScene::init()
         LayerColor* back_ground = LayerColor::create(Color4B(255,255,255,255.0));
         layer->addChild(back_ground);
         
+        _selected_num = 7;
         
         return true;
 }
@@ -76,13 +77,25 @@ bool MainScene::init()
 
 void MainScene::menuStartGameCallback(Ref* pSender)
 {
-        auto gameScene = GameScene::create();
+        auto gameScene = GameScene::create(_selected_num);
         Director::getInstance()->pushScene(gameScene);
 }
 
 void MainScene::menuSetPlayerNum(Ref* pSender){
         if (pSender == _playNum_2){
-                
+                _selected_num  = 2;
+        }else if (pSender == _playNum_3){
+                _selected_num  = 3;
+        }else if (pSender == _playNum_4){
+                _selected_num  = 4;
+        }else if (pSender == _playNum_5){
+                _selected_num  = 5;
+        }else if (pSender == _playNum_6){
+                _selected_num  = 6;
+        }else if (pSender == _playNum_7){
+                _selected_num  = 7;
+        }else if (pSender == _playNum_8){
+                _selected_num  = 8;
         }
 }
 

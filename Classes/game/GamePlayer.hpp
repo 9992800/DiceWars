@@ -20,6 +20,9 @@ public:
         inline void setAreaTc(int tc){
                 _area_tc = tc;
         }
+        inline int getAreaTc(){
+                return _area_tc;
+        }
         inline void increaseAreaC(){
                 ++_area_c;
         }

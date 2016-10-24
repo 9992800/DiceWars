@@ -2,6 +2,7 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "GameConfig.hpp"
 
 USING_NS_CC;
 
@@ -13,14 +14,44 @@ public:
         void menuEndTurnCallback(cocos2d::Ref* pSender);
     
         void onTouchesMoved(const std::vector<Touch*>& touches, Event* event);
-        void onTouchesBegan(const std::vector<Touch*>& touches, Event *event);
-     
-        CREATE_FUNC(GameScene);
+        void onTouchesEnded(const std::vector<Touch*>& touches, Event *event);
+        
+        static GameScene* create(int pn)
+        {
+                GameScene *pRet = new(std::nothrow) GameScene(pn);
+                if (pRet && pRet->init())
+                {
+                        pRet->autorelease();
+                        return pRet;
+                }
+                else
+                {
+                        delete pRet;
+                        pRet = nullptr;
+                        return nullptr;
+                }
+        }
+        
+        virtual ~GameScene(){
+                _menu_items.clear();
+        }
+private:
+        GameScene(int pn):_player_num(pn),
+        _randomMap(nullptr),
+        _endTurnItem(nullptr),
+        _lowestPostion_y(0.f){
+                _menu_items = Vector<MenuItem*>(MAX_PLAYER);
+        }
+        
+        
         
 private:
-        TMXTiledMap* _randomMap;
-        MenuItemImage* _endTurnItem;
-        float _lowestPostion_y;
+        TMXTiledMap*    _randomMap;
+        MenuItemImage*  _endTurnItem;
+        float           _lowestPostion_y;
+        int             _player_num;
+        
+        Vector<MenuItem*> _menu_items;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

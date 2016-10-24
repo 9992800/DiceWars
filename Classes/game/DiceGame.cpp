@@ -488,15 +488,16 @@ void DiceGame::set_area_tc(int pid){
 #pragma mark - main pullic function
 
 
-TMXTiledMap*  DiceGame::initGame(Layer* gameLayer){
+TMXTiledMap*  DiceGame::initGame(Layer* gameLayer, int playerNum){
        
         if (nullptr != _cur_map){
                 _cur_map->removeFromParent();
-        } 
+        }
+        
+        CURRENT_PLAYERS = playerNum;
         
         std::string xmls = this->createMapXMLString();
         _cur_map = TMXTiledMap::createWithXML(xmls, "maps");
-        
         
         ScreenCoordinate::getInstance()->configScreen(_cur_map->getContentSize());
         

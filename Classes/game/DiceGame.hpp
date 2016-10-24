@@ -28,10 +28,14 @@ public:
         static DiceGame* getInstance();
         virtual ~DiceGame();
          
-         TMXTiledMap* initGame(Layer* gameLayer);
+         TMXTiledMap* initGame(Layer* gameLayer, int playerNum);
         
         void startAttack(TMXTiledMap* map, Vec2 position);
         void nextTurn();
+        
+        inline int getPlayerTc(int playerId){
+                return this->_player[playerId]->getAreaTc();
+        }
         
 protected:
         DiceGame();

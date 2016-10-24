@@ -30,6 +30,7 @@ private:
                       *_playNum_5, *_playNum_6, *_playNum_7,
                       *_playNum_8;
         
+        int _selected_num;
         
 };
 
