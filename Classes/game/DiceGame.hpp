@@ -27,12 +27,12 @@ class DiceGame : public Ref{
 public:
         static DiceGame* getInstance();
         virtual ~DiceGame();
-        
-        TMXTiledMap* createMap();
-        void startGame();
+         
+         TMXTiledMap* initGame(Layer* gameLayer);
         
         void startAttack(TMXTiledMap* map, Vec2 position);
         void nextTurn();
+        
 protected:
         DiceGame();
         

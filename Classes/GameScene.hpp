@@ -4,26 +4,21 @@
 #include "cocos2d.h"
 
 USING_NS_CC;
-class HelloWorld : public cocos2d::Layer
-{
-public:
-    static cocos2d::Scene* createScene();
 
-    virtual bool init();
-    
-    // a selector callback
-        void menuStartGameCallback(cocos2d::Ref* pSender);
+class GameScene : public Scene
+{
+public: 
+        virtual bool init();
+     
         void menuEndTurnCallback(cocos2d::Ref* pSender);
     
         void onTouchesMoved(const std::vector<Touch*>& touches, Event* event);
         void onTouchesBegan(const std::vector<Touch*>& touches, Event *event);
-//        void onTouchesEnded(const std::vector<Touch*>& touches, Event *event);
-    // implement the "static create()" method manually
-    CREATE_FUNC(HelloWorld);
+     
+        CREATE_FUNC(GameScene);
         
 private:
         TMXTiledMap* _randomMap;
-        MenuItemImage* _playItem;
         MenuItemImage* _endTurnItem;
         float _lowestPostion_y;
 };

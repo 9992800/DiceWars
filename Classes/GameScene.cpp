@@ -1,0 +1,102 @@
+#include "GameScene.hpp"
+#include "SimpleAudioEngine.h"
+#include "game/DiceGame.hpp"
+
+// on "init" you need to initialize your instance
+bool GameScene::init()
+{
+        //////////////////////////////
+        // 1. super init first        
+        if ( !Scene::init() )
+        {
+                return false;
+        }
+        
+        auto layer = Layer::create();
+        this->addChild(layer, 10);
+        
+
+        auto visibleSize = Director::getInstance()->getVisibleSize();
+        Vec2 origin = Director::getInstance()->getVisibleOrigin();
+        
+//        _endTurnItem = MenuItemImage::create("NextButton.png",
+//                                           "NextButton.png",
+//                                          CC_CALLBACK_1(GameScene::menuEndTurnCallback, this));
+//        _endTurnItem->setPosition(Vec2(origin.x + visibleSize.width - 2* _endTurnItem->getContentSize().width ,
+//                                    origin.y + 2 * _endTurnItem->getContentSize().height));
+//        
+        _endTurnItem = MenuItemImage::create("NextButton.png",
+                                          "NextButton.png",
+                                          CC_CALLBACK_1(GameScene::menuEndTurnCallback, this));
+        _endTurnItem->setPosition(Vec2(origin.x + visibleSize.width - _endTurnItem->getContentSize().width,
+                                    origin.y +_endTurnItem->getContentSize().height));
+        
+        
+        auto menu = Menu::create(_endTurnItem, NULL);
+        menu->setPosition(Vec2::ZERO);
+        layer->addChild(menu, 30);
+        
+        
+        /////////////////////////////
+        
+        // 3. init game;
+        auto gameLayer = Layer::create();
+        this->addChild(gameLayer, 5);
+        
+        _randomMap = DiceGame::getInstance()->initGame(gameLayer);
+        _randomMap->setPosition(Vec2(origin.x, origin.y));
+        
+        LayerColor* back_ground = LayerColor::create(Color4B(255,255,255,255.0));
+        gameLayer->addChild(back_ground);
+        
+        Size cs = _randomMap->getContentSize();
+        _lowestPostion_y = visibleSize.height + origin.y - cs.height - 6;
+        
+        
+        Director::getInstance()->setDepthTest(true);
+        auto listener = EventListenerTouchAllAtOnce::create();
+        listener->onTouchesMoved = CC_CALLBACK_2(GameScene::onTouchesMoved, this);
+        listener->onTouchesBegan = CC_CALLBACK_2(GameScene::onTouchesBegan, this);
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+                 
+        return true;
+}
+
+
+void GameScene::menuEndTurnCallback(Ref* pSender)
+{
+        DiceGame::getInstance()->nextTurn();
+}
+
+void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* event){
+        
+        auto touch = touches[0];
+        
+        auto diff = touch->getDelta();
+        diff.x = 0;
+        auto currentPos = _randomMap->getPosition();
+        auto origin = Director::getInstance()->getVisibleOrigin();
+        
+        auto map_size = _randomMap->getContentSize();
+        
+        if (origin.y < (currentPos.y + diff.y)){
+                diff.y = origin.y - currentPos.y;
+        }
+        
+        if ((currentPos.y + diff.y) < _lowestPostion_y){
+                diff.y = _lowestPostion_y - currentPos.y;
+        }
+        
+        _randomMap->setPosition(currentPos + diff);
+}
+
+
+void GameScene::onTouchesBegan(const std::vector<Touch*>& touches, Event *event){
+         
+        auto touch = touches[0];
+        auto position = touch->getLocation();
+        
+        Vec2 inMap = _randomMap->convertToNodeSpace(position); 
+
+        DiceGame::getInstance()->startAttack(_randomMap, inMap);
+} 

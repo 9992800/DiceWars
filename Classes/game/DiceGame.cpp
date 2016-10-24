@@ -11,6 +11,10 @@
 
 static DiceGame* s_SharedGame = nullptr;
 int DiceGame::CURRENT_PLAYERS = 6;
+enum
+{
+        kTagTileMap = 1,
+};
 
 DiceGame* DiceGame::getInstance(){
         
@@ -28,7 +32,8 @@ _selected_area(AREA_UNSELECTED),
 _gameStatus(GAME_STATUS_INIT),
 _ban(0),
 _area_from(-1),
-_area_to(-1){
+_area_to(-1),
+_cur_map(nullptr){
         _join           = std::vector<JoinData*>(CEL_MAX);
         _areaData       = std::vector<AreaData*>(AREA_MAX);
         _player         = std::vector<GamePlayer*>(MAX_PLAYER);
@@ -482,22 +487,23 @@ void DiceGame::set_area_tc(int pid){
 
 #pragma mark - main pullic function
 
-TMXTiledMap* DiceGame::createMap()
-{
-        std::string xmls = this->createMapXMLString();
+
+TMXTiledMap*  DiceGame::initGame(Layer* gameLayer){
+       
+        if (nullptr != _cur_map){
+                _cur_map->removeFromParent();
+        } 
         
+        std::string xmls = this->createMapXMLString();
         _cur_map = TMXTiledMap::createWithXML(xmls, "maps");
+        
+        
         ScreenCoordinate::getInstance()->configScreen(_cur_map->getContentSize());
         
         this->intAreaDrawObject(_cur_map);
         
-        return _cur_map;
-}
-
-void DiceGame::startGame(){
-        if (_gameStatus != GAME_STATUS_INIT){
-                return;
-        }
+        gameLayer->addChild(_cur_map, 2, kTagTileMap);//TODO:: element zorder.
+        
         
         SET_SIZE_TOIDX(_jun, MAX_PLAYER);
         
@@ -526,6 +532,8 @@ void DiceGame::startGame(){
         }
         
         _gameStatus = GAME_STATUS_RUNNING;
+        
+        return _cur_map;
 }
 
 
@@ -566,6 +574,27 @@ void DiceGame::startAttack(TMXTiledMap* map, Vec2 position){
 
 
 void DiceGame::nextTurn(){
-        
+        TMXLayer * layer = _cur_map->getLayer("map");
+        for (int i = 0; i < CEL_MAX; i++){
+                
+                int area_id = this->_cel[i];
+                AreaData* area = this->_areaData[area_id];
+                
+                if (area_id > 0 && area->getOwner() != _userId){
+                        for (int j = 0; j < CEL_MAX; j++){
+                                if (area_id != this->_cel[j]){
+                                        continue;
+                                }
+                                
+                                int col = j / XMAX;
+                                int row = j % XMAX;
+                                layer->setTileGID(1, Vec2(row, col));
+                        }
+                        
+                        area->setOwner(_userId);
+                        break;
+                }
+                
+        }
 }
 
