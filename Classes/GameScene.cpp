@@ -67,6 +67,7 @@ bool GameScene::init()
                 
                 _menu_items.insert(i, player_tc);
         }
+        
         auto menu2 = Menu::createWithArray(_menu_items);
         menu2->setPosition(Vec2::ZERO);
         layer->addChild(menu2, 40);

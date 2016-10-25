@@ -10,6 +10,7 @@
 #include "ScreenCoordinate.hpp"
 #include "GameAI.hpp"
 
+
 static DiceGame* s_SharedGame = nullptr;
 int DiceGame::CURRENT_PLAYERS = 6;
 enum
@@ -613,6 +614,15 @@ bool DiceGame::startAIAttack(){
                 
                 std::chrono::seconds duration( 1 );
                 std::this_thread::sleep_for( duration );
+                
+                auto skeletonNode = SkeletonAnimation::createWithFile("spine/goblins.json", "spine/goblins.atlas", 1.5f);
+                skeletonNode->setAnimation(0, "walk", true);
+                skeletonNode->setSkin("goblin");
+                
+                skeletonNode->setScale(0.2f);
+                skeletonNode->setPosition(pos);
+                addChild(skeletonNode);
+                
                 
                 area_from->drawAsUnselected();
                 area_to->drawAsUnselected();
