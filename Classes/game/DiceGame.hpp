@@ -9,7 +9,6 @@
 #ifndef DiceGame_hpp
 #define DiceGame_hpp
 
-#include <stdio.h>
 #include "cocos2d.h"
 #include "../RandomMap/RandomMap.hpp"
 #include "AreaData.hpp"
