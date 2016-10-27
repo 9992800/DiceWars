@@ -614,37 +614,36 @@ int DiceGame::startBattle(){
         }
 }
 
-int DiceGame::startSupply(){
+void DiceGame::startSupply(){
         int player_id = this->_jun[_ban];
         this->set_area_tc(player_id);
         
         GamePlayer* player = this->_player[player_id];
         player->setStock();
         
-        
-        //TODO::for all stocks;
-        int list[AREA_MAX] = {0};
-        int count = 0;
-        for (int i = 0; i < AREA_MAX; i++){
-                AreaData* area = this->_areaData[i];
-                if (area->isEmpty()
-                    ||area->getOwner() != player_id
-                    ||area->getDice() >= MAX_DICE_PER_AREA){
-                        continue;
+        for (int j = 0; j < player->getStock(); j++){
+                
+                int list[AREA_MAX] = {0};
+                int count = 0;
+                for (int i = 0; i < AREA_MAX; i++){
+                        AreaData* area = this->_areaData[i];
+                        if (area->isEmpty()
+                            ||area->getOwner() != player_id
+                            ||area->getDice() >= MAX_DICE_PER_AREA){
+                                continue;
+                        }
+                        list[count++] = i;
                 }
-                list[count++] = i;
+                
+                if (count == 0 ||player->getStock() <= 0){
+                        break;
+                }
+                
+                int random_area = random(0, count - 1);
+                int selected_area = list[random_area];
+                this->_areaData[selected_area]->increaseDice();
+                player->decreaseStock();
         }
-        
-        if (count == 0 ||player->getStock() <= 0){
-                return 1;
-        }
-        
-        int random_area = random(0, count - 1);
-        int selected_area = list[random_area];
-        this->_areaData[selected_area]->increaseDice();
-        player->decreaseStock();
-        
-        return 0;
 }
 
 bool DiceGame::afterBattle(int batlleResult){
