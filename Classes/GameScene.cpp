@@ -88,6 +88,10 @@ bool GameScene::init()
         return true;
 }
 
+void GameScene::afterBattle(){
+        DiceGame::getInstance()->afterBattle();
+        _endTurnItem->setVisible(true);
+}
 
 void GameScene::menuEndTurnCallback(Ref* pSender)
 {
@@ -95,16 +99,9 @@ void GameScene::menuEndTurnCallback(Ref* pSender)
                 _startAIItem->setVisible(false);
         }
         
+        CallFunc * callback = CallFunc::create(std::bind(&GameScene::afterBattle, this));
         _endTurnItem->setVisible(false);
-        
-        while(DiceGame::getInstance()->startAIAttack()){
-//                std::chrono::seconds duration( 5 );
-//                std::this_thread::sleep_for( duration );
-                //TODO::run action;
-        }
-        
-        _endTurnItem->setVisible(true);
-
+        DiceGame::getInstance()->startAIAttack(callback);
 }
 
 void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* event){

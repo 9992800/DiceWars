@@ -30,10 +30,11 @@ public:
          TMXTiledMap* initGame(Layer* gameLayer, int playerNum);
         
         void startAttack(Vec2 position); 
-        bool startAIAttack();
+        void startAIAttack(CallFunc* callback);
         inline int getPlayerTc(int playerId){
                 return this->_player[playerId]->getAreaTc();
         }
+         void afterBattle();
         
 protected:
         DiceGame();
@@ -48,7 +49,7 @@ protected:
         int percolate(int pt, int cmax, int an);
         
         void set_area_tc(int pid);
-        void animationCallBack(Node* sender);
+       
 public:
         static int  CURRENT_PLAYERS;
         

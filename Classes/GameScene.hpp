@@ -35,6 +35,9 @@ public:
         virtual ~GameScene(){
                 _menu_items.clear();
         }
+        
+protected:
+        void afterBattle();
 private:
         GameScene(int pn):_player_num(pn),
         _randomMap(nullptr),

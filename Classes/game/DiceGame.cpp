@@ -606,50 +606,41 @@ void DiceGame::startAttack(Vec2 position){
 //        }
 //}
 
-void DiceGame::animationCallBack(Node* sender){
+void DiceGame::afterBattle(){
         AreaData* area_from = this->_areaData[_area_from];
         AreaData* area_to   = this->_areaData[_area_to];
         
         area_from->drawAsUnselected();
         area_to->drawAsUnselected();
         
-        sender->stopAllActions();
-        sender->setVisible(false);
+        _tamara->stopAllActions();
+        _tamara->setVisible(false);
 }
 
-bool DiceGame::startAIAttack(){
-        bool is_AI_turn = false;
+
+
+void DiceGame::startAIAttack(CallFunc* callback){
+        
         
         int target = GameAI::getInstance()->com_thinking();
-        if (target > 0){
-                
-                AreaData* area_from = this->_areaData[_area_from];
-                area_from->drawAsSelected();
-                
-                AreaData* area_to   = this->_areaData[_area_to];
-                area_to->drawAsSelected();
-                
-                _tamara->setVisible(true);
-                
-                auto cache = AnimationCache::getInstance();
-                cache->addAnimationsWithFile("spine/animations-2.plist");
-                auto animation2 = cache->getAnimation("dance_1");
-                
-                auto action2 = Animate::create(animation2);
-                CallFunc * callback = CallFunc::create(std::bind(&DiceGame::animationCallBack, this, _tamara));
-                
-                Sequence*  s = Sequence::create(action2, callback, nullptr);
-                
-                _tamara->runAction(s);
-               
+        if (target == 0){
+                return;
         }
         
-        int player_id = this->_jun[++_ban];
-        if (player_id == _userId){
-                is_AI_turn = false;
-        }
+        AreaData* area_from = this->_areaData[_area_from];
+        area_from->drawAsSelected();
         
+        AreaData* area_to   = this->_areaData[_area_to];
+        area_to->drawAsSelected();
         
-        return is_AI_turn;
+        _tamara->setVisible(true);
+        
+        auto cache = AnimationCache::getInstance();
+        cache->addAnimationsWithFile("spine/animations-2.plist");
+        auto animation2 = cache->getAnimation("dance_1");
+        
+        auto action2 = Animate::create(animation2);        
+        Sequence*  s = Sequence::create(action2, callback, nullptr);
+        _tamara->runAction(s);
 }
 
