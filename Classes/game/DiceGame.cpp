@@ -15,10 +15,6 @@ using namespace spine;
 
 static DiceGame* s_SharedGame = nullptr;
 int DiceGame::CURRENT_PLAYERS = 6;
-enum
-{
-        kTagTileMap = 1,
-};
 
 DiceGame* DiceGame::getInstance(){
         
@@ -32,11 +28,10 @@ DiceGame* DiceGame::getInstance(){
 }
 
 DiceGame::DiceGame():_userId(0),
-_selected_area(AREA_UNSELECTED),
 _gameStatus(GAME_STATUS_INIT),
 _ban(0),
-_area_from(-1),
-_area_to(-1),
+_area_from(AREA_UNSELECTED),
+_area_to(AREA_UNSELECTED),
 _cur_map(nullptr){
         _join           = std::vector<JoinData*>(CEL_MAX);
         _areaData       = std::vector<AreaData*>(AREA_MAX);
@@ -46,8 +41,6 @@ _cur_map(nullptr){
         _rcel           = std::vector<int>(CEL_MAX);
         _num            = std::vector<int>(CEL_MAX);
         _chk            = std::vector<int>(AREA_MAX);
-        
-        _tamara = Sprite::create("spine/grossinis_sister1.png");
 }
 
 bool DiceGame::init(){
@@ -492,26 +485,20 @@ void DiceGame::set_area_tc(int pid){
 #pragma mark - main pullic function
 
 
-TMXTiledMap*  DiceGame::initGame(Layer* gameLayer, int playerNum){
+TMXTiledMap*  DiceGame::initGame(int playerNum){
        
         if (nullptr != _cur_map){
                 _cur_map->removeFromParent();
         }
         
         CURRENT_PLAYERS = playerNum;
-        _gameLayer = gameLayer;
-        _gameLayer->addChild(_tamara, 100);
-        _tamara->setPosition(Vec2(100, 100));
         
         std::string xmls = this->createMapXMLString();
         _cur_map = TMXTiledMap::createWithXML(xmls, "maps");
         
         ScreenCoordinate::getInstance()->configScreen(_cur_map->getContentSize());
         
-        this->intAreaDrawObject(_cur_map);
-        
-        _gameLayer->addChild(_cur_map, 2, kTagTileMap);//TODO:: element zorder.
-        
+        this->intAreaDrawObject(_cur_map);        
         
         SET_SIZE_TOIDX(_jun, MAX_PLAYER);
         
@@ -539,44 +526,51 @@ TMXTiledMap*  DiceGame::initGame(Layer* gameLayer, int playerNum){
                 _cur_map->addChild(dice, 3, i + 100);
         }
         
-        _gameStatus = GAME_STATUS_RUNNING;
-        
         return _cur_map;
 }
 
 
-void DiceGame::startAttack(Vec2 position, CallFunc* callback){         
+int DiceGame::startManulAttack(Vec2 position){
         Size map_size = _cur_map->getContentSize();
         int cell_id = ScreenCoordinate::getInstance()->getSelectedCell(map_size, position);
         int area_id = this->_cel[cell_id];
         
         AreaData* area = this->_areaData[area_id];
         int owner_uid = area->getOwner();
+        
 
-        if (AREA_UNSELECTED == _selected_area){
+        if (AREA_UNSELECTED == _area_from){
+                
+                if (area->getDice() <= 1){
+                        return ATTACK_RES_NONE;
+                }
                 
                 if (owner_uid == _userId){
-                        _selected_area = area_id;
+                        _area_from = area_id;
                         area->drawAsSelected();
                 }else{
-                        return;
+                        return ATTACK_RES_NONE;
                 }
                 
         }else{
-                if (area_id == _selected_area){
-                        _selected_area = AREA_UNSELECTED;
+                if (area_id == _area_from){
+                        _area_from = AREA_UNSELECTED;
                         area->drawAsUnselected();
                 }else {
                         
-                        if (area->isJoinedWithArea(_selected_area)
+                        if (area->isJoinedWithArea(_area_from)
                             && owner_uid != _userId){
-                                //TODO::AI Start attack;
+                                _area_to = area_id;
+                                area->drawAsSelected();
+                                return this->startBattle();
+                                
                         }else{
-                                return;
+                                return ATTACK_RES_NONE;
                         }
                 }
         }
         
+        return ATTACK_RES_NONE;
 }
 
 
@@ -605,46 +599,50 @@ void DiceGame::startAttack(Vec2 position, CallFunc* callback){
 //        }
 //}
 
-void DiceGame::afterBattle(){
-        AreaData* area_from = this->_areaData[_area_from];
-        AreaData* area_to   = this->_areaData[_area_to];
-        
-        area_from->drawAsUnselected();
-        area_to->drawAsUnselected();
-        
-        _tamara->stopAllActions();
-        _tamara->setVisible(false);
-}
-
-
-void DiceGame::playBattleAnimation(CallFunc* callback){
+int DiceGame::startBattle(){
         AreaData* area_from = this->_areaData[_area_from];
         area_from->drawAsSelected();
         
         AreaData* area_to   = this->_areaData[_area_to];
         area_to->drawAsSelected();
         
-        _tamara->setVisible(true);
-        
-        auto cache = AnimationCache::getInstance();
-        cache->addAnimationsWithFile("spine/animations-2.plist");
-        auto animation2 = cache->getAnimation("dance_1");
-        
-        auto action2 = Animate::create(animation2);
-        Sequence*  s = Sequence::create(action2, callback, nullptr);
-        _tamara->runAction(s);
+        int from_sum, to_sum;
+        if (from_sum > to_sum){
+                return ATTACK_RES_WIN;
+        }else{
+                return ATTACK_RES_DEFEATED;
+        }
 }
 
+void DiceGame::startSupply(){
+       
+}
 
-void DiceGame::startAIAttack(CallFunc* callback){
+bool DiceGame::afterBattle(int batlleResult){
+        AreaData* area_from = this->_areaData[_area_from];
+        AreaData* area_to   = this->_areaData[_area_to];
         
+        area_from->drawAsUnselected();
+        area_to->drawAsUnselected();
+        
+        if (_userId == this->_jun[_ban]){
+                _gameStatus = GAME_STATUS_INUSERTURN;
+        }else {
+                _gameStatus = GAME_STATUS_AITHINKING;
+        }
+        
+        return _gameStatus == GAME_STATUS_INUSERTURN;
+}
+
+int DiceGame::startAIAttack(){
+        _gameStatus = GAME_STATUS_AIRUNNING;
         this->next_player();
         
         int target = GameAI::getInstance()->com_thinking();
         if (target == 0){
-                return;
+                return ATTACK_RES_NOACTION;
+        }else{
+                return this->startBattle();
         }
-        
-        this->playBattleAnimation(callback);
 }
 

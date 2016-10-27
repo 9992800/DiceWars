@@ -27,15 +27,16 @@ public:
         static DiceGame* getInstance();
         virtual ~DiceGame();
          
-         TMXTiledMap* initGame(Layer* gameLayer, int playerNum);
+         TMXTiledMap* initGame(int playerNum);
         
-        void startAttack(Vec2 position, CallFunc* callback);
-        void startAIAttack(CallFunc* callback);
+        int startManulAttack(Vec2 position);
+        int startAIAttack();
         inline int getPlayerTc(int playerId){
                 return this->_player[playerId]->getAreaTc();
         }
-        void afterBattle();
-        inline bool isManualTurn(){return _userId == this->_jun[_ban];}
+        bool afterBattle(int batlleResult);
+        inline int getCurrentStatus(){return _gameStatus;}
+        
         
 protected:
         DiceGame();
@@ -51,19 +52,20 @@ protected:
         
         void set_area_tc(int pid);
 
-        void playBattleAnimation(CallFunc* callback);
         inline void next_player(){
                 if (++_ban >= CURRENT_PLAYERS){
                         _ban = 0;
                 }
         }
+        
+        int startBattle();
+        void startSupply();
        
 public:
         static int  CURRENT_PLAYERS;
         
 private:
         int                             _userId;
-        int                             _selected_area;
         std::vector<int>                _mapData;
         std::vector<AreaData*>          _areaData;
         std::vector<GamePlayer*>        _player;
@@ -78,9 +80,5 @@ private:
         int     _ban;
         int     _area_from;
         int     _area_to;
-        TMXTiledMap* _cur_map;
-        Sprite* _tamara;
-        EventListenerCustom* _frameDisplayedListener;
-        Layer* _gameLayer;
-};
+        TMXTiledMap* _cur_map;};
 #endif /* DiceGame_hpp */

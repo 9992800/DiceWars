@@ -1,6 +1,10 @@
 #include "GameScene.hpp"
 #include "SimpleAudioEngine.h"
 #include "game/DiceGame.hpp"
+enum
+{
+        kTagTileMap = 1,
+};
 
 // on "init" you need to initialize your instance
 bool GameScene::init()
@@ -41,11 +45,12 @@ bool GameScene::init()
         /////////////////////////////
         
         // 3. init game;
-        auto gameLayer = Layer::create();
-        this->addChild(gameLayer, 5);
+        _gameLayer = Layer::create();
+        this->addChild(_gameLayer, 5);
         
-        _randomMap = DiceGame::getInstance()->initGame(gameLayer, _player_num);
-        _randomMap->setPosition(Vec2(origin.x, origin.y));
+        _randomMap = DiceGame::getInstance()->initGame(_player_num);
+        _randomMap->setPosition(Vec2(origin.x, origin.y));         
+        _gameLayer->addChild(_randomMap, 2, kTagTileMap);//TODO:: element zorder.
         
         Vec2 menu_start = Vec2(origin.x + visibleSize.width - 60, origin.y + visibleSize.height - 60);
         
@@ -73,7 +78,7 @@ bool GameScene::init()
         layer->addChild(menu2, 40);
         
         LayerColor* back_ground = LayerColor::create(Color4B(255,255,255,255.0));
-        gameLayer->addChild(back_ground);
+        _gameLayer->addChild(back_ground);
         
         Size cs = _randomMap->getContentSize();
         _lowestPostion_y = visibleSize.height + origin.y - cs.height - 6;
@@ -84,28 +89,74 @@ bool GameScene::init()
         listener->onTouchesMoved = CC_CALLBACK_2(GameScene::onTouchesMoved, this);
         listener->onTouchesEnded = CC_CALLBACK_2(GameScene::onTouchesEnded, this);
         _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+                
+        
+        _tamara = Sprite::create("spine/grossinis_sister1.png");
+        _gameLayer->addChild(_tamara, 100);
+        _tamara->setPosition(Vec2(100, 100));
                  
         return true;
 }
 
-void GameScene::afterBattle(){
-        DiceGame::getInstance()->afterBattle();
-        if (DiceGame::getInstance()->isManualTurn()){
+void GameScene::afterBattle(int batlleResult){
+        
+        
+        _tamara->stopAllActions();
+        _tamara->setVisible(false);
+        
+        if (DiceGame::getInstance()->afterBattle(batlleResult)){
                 _endTurnItem->setVisible(true);
         }else{
-                CallFunc* cc = CallFunc::create(std::bind(&GameScene::afterBattle, this));
-                DiceGame::getInstance()->startAIAttack(cc);
+                int result = DiceGame::getInstance()->startAIAttack();                
+                this->playAnimation(result);
         }
 }
+
+void GameScene::playAnimation(int result){
+        CallFunc* cc = CallFunc::create(std::bind(&GameScene::afterBattle, this,result));
+        if (ATTACK_RES_NOACTION == result){
+                this->playSupplyAnimation(cc);
+        }else{
+                this->playBattleAnimation(cc);
+        }
+}
+
+void GameScene::playBattleAnimation(CallFunc* callback){
+        
+        _tamara->setVisible(true);
+        
+        auto cache = AnimationCache::getInstance();
+        cache->addAnimationsWithFile("spine/animations-2.plist");
+        auto animation2 = cache->getAnimation("dance_1");
+        
+        auto action2 = Animate::create(animation2);
+        Sequence*  s = Sequence::create(action2, callback, nullptr);
+        _tamara->runAction(s);
+} 
+
+void GameScene::playSupplyAnimation(CallFunc* callback){
+        _tamara->setVisible(true);
+        
+        auto cache = AnimationCache::getInstance();
+        cache->addAnimationsWithFile("spine/animations-2.plist");
+        auto animation2 = cache->getAnimation("dance_1");
+        
+        auto action2 = Animate::create(animation2);
+        Sequence*  s = Sequence::create(action2, callback, nullptr);
+        _tamara->runAction(s);
+}
+
 
 void GameScene::menuEndTurnCallback(Ref* pSender)
 {
         if (pSender == _startAIItem){
                 _startAIItem->setVisible(false);
+                int result = DiceGame::getInstance()->startAIAttack();
+                this->playAnimation(result);
+        }else{
+                _endTurnItem->setVisible(false);
+                this->playAnimation(ATTACK_RES_NOACTION);
         }
-        _endTurnItem->setVisible(false);
-        CallFunc* cc = CallFunc::create(std::bind(&GameScene::afterBattle, this));
-        DiceGame::getInstance()->startAIAttack(cc);
 }
 
 void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* event){
@@ -136,11 +187,15 @@ void GameScene::onTouchesEnded(const std::vector<Touch*>& touches, Event *event)
                 _isMoved = false;
                 return;
         }
+        
+        if (GAME_STATUS_INUSERTURN != DiceGame::getInstance()->getCurrentStatus()){
+                return;
+        }
          
         auto touch = touches[0];
         auto position = touch->getLocation();
         
-        Vec2 inMap = _randomMap->convertToNodeSpace(position); 
-        CallFunc* cc = CallFunc::create(std::bind(&GameScene::afterBattle, this));
-        DiceGame::getInstance()->startAttack(inMap, cc);
+        Vec2 inMap = _randomMap->convertToNodeSpace(position);
+        int result = DiceGame::getInstance()->startManulAttack(inMap);
+        this->playAnimation(result);
 } 
