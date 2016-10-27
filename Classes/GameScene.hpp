@@ -58,7 +58,7 @@ private:
         int             _player_num;
         
         Vector<MenuItem*> _menu_items;
-        bool            _isMoved;
+        bool            _isMoved; 
 };
 
 #endif // __HELLOWORLD_SCENE_H__

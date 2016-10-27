@@ -29,12 +29,13 @@ public:
          
          TMXTiledMap* initGame(Layer* gameLayer, int playerNum);
         
-        void startAttack(Vec2 position); 
+        void startAttack(Vec2 position, CallFunc* callback);
         void startAIAttack(CallFunc* callback);
         inline int getPlayerTc(int playerId){
                 return this->_player[playerId]->getAreaTc();
         }
-         void afterBattle();
+        void afterBattle();
+        inline bool isManualTurn(){return _userId == this->_jun[_ban];}
         
 protected:
         DiceGame();
@@ -49,6 +50,13 @@ protected:
         int percolate(int pt, int cmax, int an);
         
         void set_area_tc(int pid);
+
+        void playBattleAnimation(CallFunc* callback);
+        inline void next_player(){
+                if (++_ban >= CURRENT_PLAYERS){
+                        _ban = 0;
+                }
+        }
        
 public:
         static int  CURRENT_PLAYERS;

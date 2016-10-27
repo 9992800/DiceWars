@@ -90,7 +90,12 @@ bool GameScene::init()
 
 void GameScene::afterBattle(){
         DiceGame::getInstance()->afterBattle();
-        _endTurnItem->setVisible(true);
+        if (DiceGame::getInstance()->isManualTurn()){
+                _endTurnItem->setVisible(true);
+        }else{
+                CallFunc* cc = CallFunc::create(std::bind(&GameScene::afterBattle, this));
+                DiceGame::getInstance()->startAIAttack(cc);
+        }
 }
 
 void GameScene::menuEndTurnCallback(Ref* pSender)
@@ -98,10 +103,9 @@ void GameScene::menuEndTurnCallback(Ref* pSender)
         if (pSender == _startAIItem){
                 _startAIItem->setVisible(false);
         }
-        
-        CallFunc * callback = CallFunc::create(std::bind(&GameScene::afterBattle, this));
         _endTurnItem->setVisible(false);
-        DiceGame::getInstance()->startAIAttack(callback);
+        CallFunc* cc = CallFunc::create(std::bind(&GameScene::afterBattle, this));
+        DiceGame::getInstance()->startAIAttack(cc);
 }
 
 void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* event){
@@ -137,6 +141,6 @@ void GameScene::onTouchesEnded(const std::vector<Touch*>& touches, Event *event)
         auto position = touch->getLocation();
         
         Vec2 inMap = _randomMap->convertToNodeSpace(position); 
-
-        DiceGame::getInstance()->startAttack(inMap);
+        CallFunc* cc = CallFunc::create(std::bind(&GameScene::afterBattle, this));
+        DiceGame::getInstance()->startAttack(inMap, cc);
 } 

@@ -545,8 +545,7 @@ TMXTiledMap*  DiceGame::initGame(Layer* gameLayer, int playerNum){
 }
 
 
-void DiceGame::startAttack(Vec2 position){
-        
+void DiceGame::startAttack(Vec2 position, CallFunc* callback){         
         Size map_size = _cur_map->getContentSize();
         int cell_id = ScreenCoordinate::getInstance()->getSelectedCell(map_size, position);
         int area_id = this->_cel[cell_id];
@@ -618,15 +617,7 @@ void DiceGame::afterBattle(){
 }
 
 
-
-void DiceGame::startAIAttack(CallFunc* callback){
-        
-        
-        int target = GameAI::getInstance()->com_thinking();
-        if (target == 0){
-                return;
-        }
-        
+void DiceGame::playBattleAnimation(CallFunc* callback){
         AreaData* area_from = this->_areaData[_area_from];
         area_from->drawAsSelected();
         
@@ -639,8 +630,21 @@ void DiceGame::startAIAttack(CallFunc* callback){
         cache->addAnimationsWithFile("spine/animations-2.plist");
         auto animation2 = cache->getAnimation("dance_1");
         
-        auto action2 = Animate::create(animation2);        
+        auto action2 = Animate::create(animation2);
         Sequence*  s = Sequence::create(action2, callback, nullptr);
         _tamara->runAction(s);
+}
+
+
+void DiceGame::startAIAttack(CallFunc* callback){
+        
+        this->next_player();
+        
+        int target = GameAI::getInstance()->com_thinking();
+        if (target == 0){
+                return;
+        }
+        
+        this->playBattleAnimation(callback);
 }
 
