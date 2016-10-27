@@ -9,7 +9,7 @@
 #ifndef GamePlayer_hpp
 #define GamePlayer_hpp
 
-#include <stdio.h>
+#include "GameConfig.hpp"
 #include "cocos2d.h"
 USING_NS_CC;
 
@@ -44,7 +44,19 @@ public:
                 _area_c = 0;
                 _dice_c = 0;
         }
+        inline void setStock(){
+                _stock += _area_tc;
+                if (_stock >= STOCK_MAX){
+                        _stock = STOCK_MAX;
+                }
+        }
+        inline int getStock(){
+                return _stock;
+        }
         
+        inline void decreaseStock(){
+                --_stock;
+        }
 private:
         int     _player_id;
         int     _area_c;

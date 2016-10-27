@@ -17,6 +17,8 @@
 #define AREA_MAX (32)
 #define CEL_MAX (XMAX * YMAX)
 #define MAX_PLAYER (8)
+#define MAX_DICE_PER_AREA (8)
+
 
 
 #define SET_SIZE_TOZERO(target, SIZE) {\

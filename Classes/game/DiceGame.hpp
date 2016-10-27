@@ -59,7 +59,7 @@ protected:
         }
         
         int startBattle();
-        void startSupply();
+        int startSupply();
        
 public:
         static int  CURRENT_PLAYERS;
