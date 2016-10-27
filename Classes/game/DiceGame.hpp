@@ -48,7 +48,7 @@ protected:
         int percolate(int pt, int cmax, int an);
         
         void set_area_tc(int pid);
-        
+        void animationCallBack(Node* sender);
 public:
         static int  CURRENT_PLAYERS;
         
@@ -70,5 +70,8 @@ private:
         int     _area_from;
         int     _area_to;
         TMXTiledMap* _cur_map;
+        Sprite* _tamara;
+        EventListenerCustom* _frameDisplayedListener;
+        Layer* _gameLayer;
 };
 #endif /* DiceGame_hpp */

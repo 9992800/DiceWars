@@ -46,6 +46,8 @@ _cur_map(nullptr){
         _rcel           = std::vector<int>(CEL_MAX);
         _num            = std::vector<int>(CEL_MAX);
         _chk            = std::vector<int>(AREA_MAX);
+        
+        _tamara = Sprite::create("spine/grossinis_sister1.png");
 }
 
 bool DiceGame::init(){
@@ -497,6 +499,9 @@ TMXTiledMap*  DiceGame::initGame(Layer* gameLayer, int playerNum){
         }
         
         CURRENT_PLAYERS = playerNum;
+        _gameLayer = gameLayer;
+        _gameLayer->addChild(_tamara, 100);
+        _tamara->setPosition(Vec2(100, 100));
         
         std::string xmls = this->createMapXMLString();
         _cur_map = TMXTiledMap::createWithXML(xmls, "maps");
@@ -505,7 +510,7 @@ TMXTiledMap*  DiceGame::initGame(Layer* gameLayer, int playerNum){
         
         this->intAreaDrawObject(_cur_map);
         
-        gameLayer->addChild(_cur_map, 2, kTagTileMap);//TODO:: element zorder.
+        _gameLayer->addChild(_cur_map, 2, kTagTileMap);//TODO:: element zorder.
         
         
         SET_SIZE_TOIDX(_jun, MAX_PLAYER);
@@ -601,33 +606,42 @@ void DiceGame::startAttack(Vec2 position){
 //        }
 //}
 
+void DiceGame::animationCallBack(Node* sender){
+        AreaData* area_from = this->_areaData[_area_from];
+        AreaData* area_to   = this->_areaData[_area_to];
+        
+        area_from->drawAsUnselected();
+        area_to->drawAsUnselected();
+        
+        sender->stopAllActions();
+        sender->setVisible(false);
+}
+
 bool DiceGame::startAIAttack(){
         bool is_AI_turn = false;
         
         int target = GameAI::getInstance()->com_thinking();
         if (target > 0){
+                
                 AreaData* area_from = this->_areaData[_area_from];
                 area_from->drawAsSelected();
                 
                 AreaData* area_to   = this->_areaData[_area_to];
                 area_to->drawAsSelected();
                 
-                //TODO:: play animation;
+                _tamara->setVisible(true);
                 
-                std::chrono::seconds duration( 1 );
-                std::this_thread::sleep_for( duration );
+                auto cache = AnimationCache::getInstance();
+                cache->addAnimationsWithFile("spine/animations-2.plist");
+                auto animation2 = cache->getAnimation("dance_1");
                 
-                auto skeletonNode = SkeletonAnimation::createWithFile("spine/goblins.json", "spine/goblins.atlas", 1.5f);
-                skeletonNode->setAnimation(0, "walk", true);
-                skeletonNode->setSkin("goblin");
+                auto action2 = Animate::create(animation2);
+                CallFunc * callback = CallFunc::create(std::bind(&DiceGame::animationCallBack, this, _tamara));
                 
-                skeletonNode->setScale(0.2f);
-//                skeletonNode->setPosition(pos);
-//                addChild(skeletonNode);
+                Sequence*  s = Sequence::create(action2, callback, nullptr);
                 
-                
-                area_from->drawAsUnselected();
-                area_to->drawAsUnselected();
+                _tamara->runAction(s);
+               
         }
         
         int player_id = this->_jun[++_ban];
