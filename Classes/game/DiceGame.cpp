@@ -493,16 +493,6 @@ TMXTiledMap*  DiceGame::initGame(int playerNum){
         }
         
         CURRENT_PLAYERS = playerNum;
-        
-        std::string xmls = this->createMapXMLString();
-        _cur_map = TMXTiledMap::createWithXML(xmls, "maps");
-        
-        ScreenCoordinate::getInstance()->configScreen(_cur_map->getContentSize());
-        
-        this->intAreaDrawObject(_cur_map);        
-        
-        SET_SIZE_TOIDX(_jun, MAX_PLAYER);
-        
         for (int i = 0; i < CURRENT_PLAYERS; i++){
                 int ramdom_p = random(0, CURRENT_PLAYERS - 1);
                 int tmp = this->_jun[i];
@@ -514,6 +504,15 @@ TMXTiledMap*  DiceGame::initGame(int playerNum){
                 this->_player[i] = new GamePlayer(i);
         }
         
+        
+        std::string xmls = this->createMapXMLString();
+        _cur_map = TMXTiledMap::createWithXML(xmls, "maps");
+        
+        ScreenCoordinate::getInstance()->configScreen(_cur_map->getContentSize());
+        
+        this->intAreaDrawObject(_cur_map);        
+        
+        SET_SIZE_TOIDX(_jun, MAX_PLAYER);
         for (int i = 0; i < MAX_PLAYER; i++){
                 this->set_area_tc(i);
         }
