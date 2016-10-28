@@ -54,6 +54,10 @@ public:
                 return false;
         }
         
+        inline void setDice(int d){
+                _dice = d;
+        }
+        
         inline bool needDice(int player_uid){
                 return _size != 0 && _arm == player_uid && _dice < 8;
         }
@@ -95,6 +99,8 @@ public:
         void clearFightValue(){
                 _fight_values.clear();
         }
+        
+        inline int getAreaId(){return _areaId;}
         
 private:
         void drawBorder();

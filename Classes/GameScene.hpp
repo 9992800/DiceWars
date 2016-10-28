@@ -51,11 +51,11 @@ private:
         
         void initPlayerTc(Vec2 pos);
         void initCtrlButton(Vec2 origin, Size visibleSize);
+        void initFightDice(Vec2 origin, Size visibleSize);
         void initGameLayer(Vec2 origin);
         void initActionListener(Vec2 origin, Size visibleSize);
         
         void playBattleAnimation(int result, std::vector<int>, std::vector<int>);
-        void playSupplyAnimation(std::set<int> area);
         void playAnimation(int result);
 private:
         TMXTiledMap*    _randomMap;
@@ -68,6 +68,8 @@ private:
         bool            _isMoved;
         Sprite* _tamara;
         Layer* _gameLayer, *_controllerLayer;
+        std::vector<Label*> _fight_from;
+        std::vector<Label*> _fight_to;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

@@ -57,6 +57,10 @@ public:
         inline void decreaseStock(){
                 --_stock;
         }
+        
+        inline int getGid(){
+                return _gid_inmap;
+        }
 private:
         int     _player_id;
         int     _area_c;
@@ -64,5 +68,7 @@ private:
         int     _dice_c;
         int     _dice_jun;
         int     _stock;
+private:
+        int     _gid_inmap;
 };
 #endif /* GamePlayer_hpp */

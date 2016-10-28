@@ -83,9 +83,10 @@ std::string DiceGame::createMapXMLString(){
         for (int i = 0; i < CEL_MAX; i++){
                 int area_id = this->_cel[i];
                 AreaData* area = this->_areaData[area_id];
-                int payer_uid = area->getOwner();
+                int player_uid = area->getOwner();
+                GamePlayer* player = this->_player[player_uid];
                 if (area_id > 0)
-                        _mapData.push_back(payer_uid + 1);
+                        _mapData.push_back(player->getGid());
                 else
                         _mapData.push_back(0);
         }
@@ -523,7 +524,7 @@ TMXTiledMap*  DiceGame::initGame(int playerNum){
                         continue;
                 }
                 Sprite* dice = area->createSprite();
-                _cur_map->addChild(dice, 3, i + 100);
+                _cur_map->addChild(dice, 3, i + AREA_BASE_TAG_INMAP);
         }
         
         return _cur_map;
@@ -572,32 +573,6 @@ int DiceGame::startManulAttack(Vec2 position){
         
         return ATTACK_RES_NONE;
 }
-
-
-//void DiceGame::nextTurn(){
-//        TMXLayer * layer = _cur_map->getLayer("map");
-//        for (int i = 0; i < CEL_MAX; i++){
-//                
-//                int area_id = this->_cel[i];
-//                AreaData* area = this->_areaData[area_id];
-//                
-//                if (area_id > 0 && area->getOwner() != _userId){
-//                        for (int j = 0; j < CEL_MAX; j++){
-//                                if (area_id != this->_cel[j]){
-//                                        continue;
-//                                }
-//                                
-//                                int col = j / XMAX;
-//                                int row = j % XMAX;
-//                                layer->setTileGID(1, Vec2(row, col));
-//                        }
-//                        
-//                        area->setOwner(_userId);
-//                        break;
-//                }
-//                
-//        }
-//}
 
 int DiceGame::startBattle(){
         
@@ -674,7 +649,32 @@ void DiceGame::afterBattle(int batlleResult){
         
         area_from->drawAsUnselected();
         area_to->drawAsUnselected();
+        
+        area_from->clearFightValue();
+        area_to->clearFightValue();
+        
+        if (ATTACK_RES_WIN){
+                
+                this->occupyArea(area_from->getOwner(), _area_to);
+                area_to->setDice(area_from->getDice() - 1);
+                
+                Sprite* sprite = (Sprite*)_cur_map->getChildByTag(_area_to + AREA_BASE_TAG_INMAP);
+                sprite->removeFromParent();
+                
+                sprite = area_to->createSprite();
+                _cur_map->addChild(sprite, _area_to + AREA_BASE_TAG_INMAP);
+        }
+        
+        area_from->initDice();
+        
+        Sprite* sprite = (Sprite*)_cur_map->getChildByTag(_area_from + AREA_BASE_TAG_INMAP);
+        sprite->removeFromParent();
+        
+        sprite = area_from->createSprite();
+        _cur_map->addChild(sprite, _area_from + AREA_BASE_TAG_INMAP);
 }
+
+
 int DiceGame::startAIAttack(){
         
         if (this->_jun[_ban] == _userId){
@@ -691,3 +691,21 @@ int DiceGame::startAIAttack(){
         }
 }
 
+void DiceGame::occupyArea(int newOwner, int area){
+        
+        TMXLayer * layer = _cur_map->getLayer("map");//TODO::move the name to config
+        GamePlayer* player = this->_player[newOwner];
+        
+        for (int j = 0; j < CEL_MAX; j++){
+                if (area != this->_cel[j]){
+                        continue;
+                }
+                
+                int col = j / XMAX;
+                int row = j % XMAX;
+                
+                layer->setTileGID(player->getGid(), Vec2(row, col));
+        }
+        
+        this->_areaData[area]->setOwner(newOwner);
+}

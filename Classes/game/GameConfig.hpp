@@ -46,6 +46,8 @@ target[i] = i;\
 #define DIR_INAREA (6)
 #define AREA_UNSELECTED (-1)
 
+#define AREA_BASE_TAG_INMAP (200)
+
 enum {
         CELL_DIR_RIGHT_TOP = 0,
         CELL_DIR_RIGHT_MID = 1,

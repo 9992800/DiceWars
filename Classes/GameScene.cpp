@@ -37,6 +37,8 @@ bool GameScene::init()
         
         initCtrlButton(origin,visibleSize);
         
+        initFightDice(origin, visibleSize);
+        
         initActionListener(origin, visibleSize);
 
         return true;
@@ -57,6 +59,31 @@ void GameScene::initCtrlButton(Vec2 origin, Size visibleSize){
         auto menu = Menu::create(_endTurnItem, _startAIItem, NULL);
         menu->setPosition(Vec2::ZERO);
         _controllerLayer->addChild(menu, 4);
+}
+
+void GameScene::initFightDice(Vec2 origin, Size visibleSize){
+        
+        Vec2 from_start = Vec2((origin.x + visibleSize.width) / 2 - 10,
+                               (origin.y + visibleSize.height) / 6);
+        for (int i = 0; i < MAX_DICE_PER_AREA; i++){
+                auto label_value = Label::createWithSystemFont("0", "Helvetica", 20);
+                label_value->setColor(Color3B(0,255,0));
+                label_value->setPosition(from_start + Vec2(i * -20, 0));
+                _fight_from.push_back(label_value);
+                _controllerLayer->addChild(label_value, 4);
+                label_value->setVisible(false);
+        }
+        
+        Vec2 from_to = Vec2((origin.x + visibleSize.width) / 2 + 10,
+                            (origin.y + visibleSize.height) / 6);
+        for (int i = 0; i < MAX_DICE_PER_AREA; i++){
+                auto label_value = Label::createWithSystemFont("0", "Helvetica", 20);
+                label_value->setColor(Color3B(0,0,255));
+                label_value->setPosition(from_to + Vec2(i * 20, 0));
+                _fight_to.push_back(label_value);
+                _controllerLayer->addChild(label_value, 4);
+                label_value->setVisible(false);
+        }
 }
 
 void GameScene::initPlayerTc(Vec2 menu_start){
@@ -118,7 +145,13 @@ void GameScene::afterBattle(int batlleResult){
         _tamara->stopAllActions();
         _tamara->setVisible(false);
         
+        for (int i = 0; i < MAX_DICE_PER_AREA; i++){
+                _fight_from[i]->setVisible(false);
+                _fight_to[i]->setVisible(false);
+        }
+        
         DiceGame::getInstance()->afterBattle(batlleResult);
+        
         int result = DiceGame::getInstance()->startAIAttack();
         this->playAnimation(result);
 }
@@ -138,22 +171,37 @@ void GameScene::playAnimation(int result){
         
         if (ATTACK_RES_NOACTION == result){
                 
-                std::set<int> affected_area = DiceGame::getInstance()->startSupply();
-                
-                this->playSupplyAnimation(affected_area);
+                DiceGame::getInstance()->startSupply(); 
                 
         }else if (ATTACK_RES_NONE == result){
                 
                 _endTurnItem->setVisible(true);
         }
         else if (ATTACK_RES_WIN || ATTACK_RES_DEFEATED){
+                
                 std::vector<int> fight_from = DiceGame::getInstance()->getFightValue(0);
                 std::vector<int> fight_to = DiceGame::getInstance()->getFightValue(1);
+                
                 this->playBattleAnimation(result, fight_from, fight_to);
         }
 }
 
 void GameScene::playBattleAnimation(int result, std::vector<int> from, std::vector<int> to){
+        
+        for (int i = 0; i < from.size(); i++){
+                _fight_from[i]->setVisible(true);
+                std::ostringstream s;
+                s << from[i];
+                _fight_from[i]->setString(s.str());
+        }
+        
+        for (int i = 0; i < to.size(); i++){
+                _fight_to[i]->setVisible(true);
+                std::ostringstream s;
+                s << from[i];
+                _fight_to[i]->setString(s.str());
+        }
+        
         CallFunc* callback = CallFunc::create(std::bind(&GameScene::afterBattle, this, result));
         _tamara->setVisible(true);
         
@@ -165,20 +213,6 @@ void GameScene::playBattleAnimation(int result, std::vector<int> from, std::vect
         Sequence*  s = Sequence::create(action2, callback, nullptr);
         _tamara->runAction(s);
 } 
-
-void GameScene::playSupplyAnimation(std::set<int> area){
-        
-        CallFunc* callback = CallFunc::create(std::bind(&GameScene::afterSupply, this));
-        _tamara->setVisible(true);
-        
-        auto cache = AnimationCache::getInstance();
-        cache->addAnimationsWithFile("spine/animations-2.plist");
-        auto animation2 = cache->getAnimation("dance_1");
-        
-        auto action2 = Animate::create(animation2);
-        Sequence*  s = Sequence::create(action2, callback, nullptr);
-        _tamara->runAction(s);
-}
 
 #pragma mark - touch action listener
 void GameScene::menuEndTurnCallback(Ref* pSender)

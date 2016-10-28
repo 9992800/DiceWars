@@ -68,7 +68,8 @@ protected:
         
         void set_area_tc(int pid);
         
-        int startBattle(); 
+        int startBattle();
+        void occupyArea(int newOwner,int area);
        
 public:
         static int  CURRENT_PLAYERS;

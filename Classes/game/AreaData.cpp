@@ -209,5 +209,4 @@ Sprite* AreaData::createSprite(){
         sprite->setPosition(pos);
         return sprite;
 }
-
-
+ 
