@@ -65,6 +65,7 @@ private:
         int             _player_num;
         
         Vector<MenuItem*> _menu_items;
+        Map<int, Label*>  _tc_values;
         bool            _isMoved;
         Sprite* _tamara;
         Layer* _gameLayer, *_controllerLayer;

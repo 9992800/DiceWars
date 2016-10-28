@@ -31,15 +31,21 @@ public:
         
         int startManulAttack(Vec2 position);
         int startAIAttack();
-        inline int getPlayerTc(int playerId){
-                return this->_player[playerId]->getAreaTc();
+        inline std::string getPlayerTc(int playerId){
+                int tc = this->_player[playerId]->getAreaTc();
+                std::ostringstream s;
+                s << tc;
+                return s.str();
         }
-        inline int getPlayerJun(int playerId){
-                return this->_jun[playerId];
+        inline int getPlayerJun(int idx){
+                return this->_jun[idx];
+        }
+        inline int getCurrentPlayer(){
+                return this->_jun[_ban];
         }
         
         void afterBattle(int batlleResult);
-        std::set<int> startSupply();
+        void startSupply(CallFunc* callback);
         inline int getCurrentStatus(){return _gameStatus;}
         inline void next_player(){
                 if (++_ban >= CURRENT_PLAYERS){

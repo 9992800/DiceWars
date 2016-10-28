@@ -209,4 +209,17 @@ Sprite* AreaData::createSprite(){
         sprite->setPosition(pos);
         return sprite;
 }
- 
+
+
+void AreaData::drawSupply(){
+        //TODO::play Animation.
+}
+
+void AreaData::updatePawn(TMXTiledMap* map){
+        Sprite* sprite = (Sprite*)map->getChildByTag(AREA_TAG_ID_INMAP(_areaId));
+        sprite->removeFromParent();
+        
+        sprite = this->createSprite();
+        map->addChild(sprite,AREA_SPRITE_ZORDER, AREA_TAG_ID_INMAP(_areaId));
+
+}

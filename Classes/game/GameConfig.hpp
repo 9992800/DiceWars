@@ -47,7 +47,8 @@ target[i] = i;\
 #define AREA_UNSELECTED (-1)
 
 #define AREA_BASE_TAG_INMAP (200)
-
+#define AREA_TAG_ID_INMAP(i) (i + AREA_BASE_TAG_INMAP)
+#define AREA_SPRITE_ZORDER (3)
 enum {
         CELL_DIR_RIGHT_TOP = 0,
         CELL_DIR_RIGHT_MID = 1,

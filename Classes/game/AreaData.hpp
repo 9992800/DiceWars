@@ -102,6 +102,10 @@ public:
         
         inline int getAreaId(){return _areaId;}
         
+        void drawSupply();
+        
+        void updatePawn(TMXTiledMap*);
+        
 private:
         void drawBorder();
         void drawPolyGon(int owner);

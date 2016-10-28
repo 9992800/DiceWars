@@ -522,7 +522,7 @@ TMXTiledMap*  DiceGame::initGame(int playerNum){
                         continue;
                 }
                 Sprite* dice = area->createSprite();
-                _cur_map->addChild(dice, 3, i + AREA_BASE_TAG_INMAP);
+                _cur_map->addChild(dice, AREA_SPRITE_ZORDER, AREA_TAG_ID_INMAP(i));
         }
         
         return _cur_map;
@@ -603,15 +603,13 @@ int DiceGame::startBattle(){
         }
 }
 
-std::set<int> DiceGame::startSupply(){
+void DiceGame::startSupply(CallFunc* callback){
         int player_id = this->_jun[_ban];
-        this->set_area_tc(player_id);
-        
         GamePlayer* player = this->_player[player_id];
         player->setStock();
         
         
-        std::set<int> affectedAread;
+        std::set<int> affected_aread;
         while (player->getStock() > 0){
                 
                 int list[AREA_MAX] = {0};
@@ -635,10 +633,16 @@ std::set<int> DiceGame::startSupply(){
                 int selected_area = list[random_area];
                 this->_areaData[selected_area]->increaseDice();
                 player->decreaseStock();
-                affectedAread.insert(selected_area);
+                affected_aread.insert(selected_area);
         }
         
-        return affectedAread;
+        for(std::set<int>::iterator it = affected_aread.begin(); it != affected_aread.end(); ++it){
+                AreaData* area = this->_areaData[*it];
+                
+                area->updatePawn(_cur_map);
+                area->drawSupply();
+        }
+//        callback();
 }
 
 void DiceGame::afterBattle(int batlleResult){
@@ -654,22 +658,15 @@ void DiceGame::afterBattle(int batlleResult){
         if (ATTACK_RES_WIN == batlleResult){
                 
                 this->occupyArea(area_from->getOwner(), _area_to);
-                area_to->setDice(area_from->getDice() - 1);
                 
-                Sprite* sprite = (Sprite*)_cur_map->getChildByTag(_area_to + AREA_BASE_TAG_INMAP);
-                sprite->removeFromParent();
-                
-                sprite = area_to->createSprite();
-                _cur_map->addChild(sprite, _area_to + AREA_BASE_TAG_INMAP);
+                area_to->setDice(area_from->getDice() - 1);                
+                area_to->updatePawn(_cur_map);
         }
         
         area_from->initDice();
+        area_from->updatePawn(_cur_map);
         
-        Sprite* sprite = (Sprite*)_cur_map->getChildByTag(_area_from + AREA_BASE_TAG_INMAP);
-        sprite->removeFromParent();
-        
-        sprite = area_from->createSprite();
-        _cur_map->addChild(sprite, _area_from + AREA_BASE_TAG_INMAP);
+        this->set_area_tc(this->_jun[_ban]);
 }
 
 

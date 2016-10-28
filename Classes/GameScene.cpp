@@ -98,13 +98,12 @@ void GameScene::initPlayerTc(Vec2 menu_start){
                 auto player_tc = MenuItemImage::create(s.str(), "");
                 player_tc->setPosition(menu_start - Vec2(0, i * (player_tc->getContentSize().height) + 5));
                 
-                int tc_i = DiceGame::getInstance()->getPlayerTc(player_uid);
-                std::ostringstream s2;
-                s2 << tc_i;
-                auto label_tc = Label::createWithSystemFont(s2.str(), "Helvetica", 12);
+                std::string tc_i = DiceGame::getInstance()->getPlayerTc(player_uid);                
+                auto label_tc = Label::createWithSystemFont(tc_i, "Helvetica", 12);
                 label_tc->setColor(Color3B(255,0,0));
                 label_tc->setPosition(Vec2(player_tc->getContentSize() / 2));
                 player_tc->addChild(label_tc);
+                _tc_values.insert(player_uid, label_tc);
                 
                 _menu_items.insert(i, player_tc);
         }
@@ -151,15 +150,16 @@ void GameScene::afterBattle(int batlleResult){
         }
         
         DiceGame::getInstance()->afterBattle(batlleResult);
+        int playerId = DiceGame::getInstance()->getCurrentPlayer();
+        std::string new_tc = DiceGame::getInstance()->getPlayerTc(playerId);
+        Label* tc_label = _tc_values.at(playerId);
+        tc_label->setString(new_tc);
         
         int result = DiceGame::getInstance()->startAIAttack();
         this->playAnimation(result);
 }
 
 void GameScene::afterSupply(){
-        
-        _tamara->stopAllActions();
-        _tamara->setVisible(false);
        
         DiceGame::getInstance()->next_player();
         int result = DiceGame::getInstance()->startAIAttack();
@@ -170,8 +170,8 @@ void GameScene::playAnimation(int result){
         
         
         if (ATTACK_RES_NOACTION == result){
-                
-                DiceGame::getInstance()->startSupply(); 
+                CallFunc* callback = CallFunc::create(std::bind(&GameScene::afterSupply, this));
+                DiceGame::getInstance()->startSupply(callback);
                 
         }else if (ATTACK_RES_NONE == result){
                 
