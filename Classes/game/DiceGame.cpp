@@ -527,6 +527,7 @@ TMXTiledMap*  DiceGame::initGame(int playerNum){
                 _cur_map->addChild(dice, AREA_SPRITE_ZORDER, AREA_TAG_ID_INMAP(i));
         }
         
+        Director::getInstance()->getScheduler()->setTimeScale(8);//TODO::use it to settings
         return _cur_map;
 }
 
@@ -647,7 +648,7 @@ void DiceGame::startSupply(CallFunc* callback){
         callback->execute();
 }
 
-Map<int, std::string> DiceGame::afterBattle(int batlleResult){
+std::map<int, std::string> DiceGame::afterBattle(int batlleResult){
         AreaData* area_from = this->_areaData[_area_from];
         AreaData* area_to   = this->_areaData[_area_to];
         
@@ -668,18 +669,18 @@ Map<int, std::string> DiceGame::afterBattle(int batlleResult){
         area_from->initDice();
         area_from->updatePawn(_cur_map);
         
-        Map<int, std::string> ok_area = Map<int, std::string>();
+        std::map<int, std::string> ok_area = std::map<int, std::string>();
         for (int i = 0; i < MAX_PLAYER; i++){
                 int tc = this->set_area_tc(i);
                 std::ostringstream s;
                 s<<tc;
-                ok_area.insert(i, s.str());
-//                if (tc > 0){
-//                        
-//                }
+                ok_area.insert(std::pair<int, std::string>(i, s.str()));
         }
-         
-         return ok_area;
+        
+        _area_to    = AREA_UNSELECTED;
+        _area_from  = AREA_UNSELECTED;
+        
+        return ok_area;
 }
 
 

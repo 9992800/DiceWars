@@ -149,23 +149,13 @@ void GameScene::afterBattle(int batlleResult){
                 _fight_to[i]->setVisible(false);
         }
         
-        Map<int, std::string> survival = DiceGame::getInstance()->afterBattle(batlleResult);
-        for (Map<int, std::string>::iterator it = survival.begin();
+        std::map<int, std::string> survival = DiceGame::getInstance()->afterBattle(batlleResult);
+        for (std::map<int, std::string>::iterator it = survival.begin();
              it != survival.end(); it++){
                 Label* tc_label = _tc_values.at(it->first);
-                tc_label->setString(it->second);
+                if (nullptr != tc_label)
+                        tc_label->setString(it->second);
         }
-//        
-//        if (survival.size() == _tc_values.size()){
-//                
-//               
-//        }else{
-//                
-//        }
-        int playerId = DiceGame::getInstance()->getCurrentPlayer();
-        std::string new_tc = DiceGame::getInstance()->getPlayerTc(playerId);
-        Label* tc_label = _tc_values.at(playerId);
-        tc_label->setString(new_tc);
         
         int result = DiceGame::getInstance()->startAIAttack();
         this->playAnimation(result);
@@ -222,8 +212,11 @@ void GameScene::playBattleAnimation(int result, std::vector<int> from, std::vect
         auto animation2 = cache->getAnimation("dance_1");
         
         auto action2 = Animate::create(animation2);
-        Sequence*  s = Sequence::create(action2, callback, nullptr);
+        
+        
+        Sequence*  s = Sequence::create(action2, callback, nullptr);        
         _tamara->runAction(s);
+        _tamara->setScale(2.0);//TODO::
 } 
 
 #pragma mark - touch action listener

@@ -44,7 +44,7 @@ public:
                 return this->_jun[_ban];
         }
         
-        Map<int, std::string> afterBattle(int batlleResult);
+        std::map<int, std::string> afterBattle(int batlleResult);
         void startSupply(CallFunc* callback);
         inline int getCurrentStatus(){return _gameStatus;}
         inline void next_player(){
