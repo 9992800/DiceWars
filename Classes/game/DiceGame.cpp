@@ -651,7 +651,7 @@ void DiceGame::afterBattle(int batlleResult){
         area_from->clearFightValue();
         area_to->clearFightValue();
         
-        if (ATTACK_RES_WIN){
+        if (ATTACK_RES_WIN == batlleResult){
                 
                 this->occupyArea(area_from->getOwner(), _area_to);
                 area_to->setDice(area_from->getDice() - 1);
