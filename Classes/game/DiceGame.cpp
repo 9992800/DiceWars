@@ -78,8 +78,6 @@ DiceGame::~DiceGame(){
 
 std::string DiceGame::createMapXMLString(){
         
-        this->makeNewMap();         
-        
         for (int i = 0; i < CEL_MAX; i++){
                 int area_id = this->_cel[i];
                 AreaData* area = this->_areaData[area_id];
@@ -493,6 +491,7 @@ TMXTiledMap*  DiceGame::initGame(int playerNum){
         }
         
         CURRENT_PLAYERS = playerNum;
+        SET_SIZE_TOIDX(_jun, MAX_PLAYER);
         for (int i = 0; i < CURRENT_PLAYERS; i++){
                 int ramdom_p = random(0, CURRENT_PLAYERS - 1);
                 int tmp = this->_jun[i];
@@ -505,14 +504,14 @@ TMXTiledMap*  DiceGame::initGame(int playerNum){
         }
         
         
+        this->makeNewMap();
         std::string xmls = this->createMapXMLString();
         _cur_map = TMXTiledMap::createWithXML(xmls, "maps");
         
         ScreenCoordinate::getInstance()->configScreen(_cur_map->getContentSize());
         
-        this->intAreaDrawObject(_cur_map);        
+        this->intAreaDrawObject(_cur_map);
         
-        SET_SIZE_TOIDX(_jun, MAX_PLAYER);
         for (int i = 0; i < MAX_PLAYER; i++){
                 this->set_area_tc(i);
         }
@@ -581,7 +580,7 @@ int DiceGame::startBattle(){
         AreaData* area_to   = this->_areaData[_area_to];
         area_to->drawAsSelected();
         
-        int from_sum, to_sum;
+        int from_sum = 0, to_sum = 0;
         
         area_from->clearFightValue();
         for (int i = 0; i < area_from->getDice(); i++){

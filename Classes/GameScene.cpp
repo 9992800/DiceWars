@@ -198,7 +198,7 @@ void GameScene::playBattleAnimation(int result, std::vector<int> from, std::vect
         for (int i = 0; i < to.size(); i++){
                 _fight_to[i]->setVisible(true);
                 std::ostringstream s;
-                s << from[i];
+                s << to[i];
                 _fight_to[i]->setString(s.str());
         }
         
@@ -266,5 +266,5 @@ void GameScene::onTouchesEnded(const std::vector<Touch*>& touches, Event *event)
         
         Vec2 inMap = _randomMap->convertToNodeSpace(position);
         int result = DiceGame::getInstance()->startManulAttack(inMap);
-        this->playAnimation(result);
-} 
+//        this->playAnimation(result);
+}
