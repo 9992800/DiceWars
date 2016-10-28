@@ -149,7 +149,19 @@ void GameScene::afterBattle(int batlleResult){
                 _fight_to[i]->setVisible(false);
         }
         
-        DiceGame::getInstance()->afterBattle(batlleResult);
+        Map<int, std::string> survival = DiceGame::getInstance()->afterBattle(batlleResult);
+        for (Map<int, std::string>::iterator it = survival.begin();
+             it != survival.end(); it++){
+                Label* tc_label = _tc_values.at(it->first);
+                tc_label->setString(it->second);
+        }
+//        
+//        if (survival.size() == _tc_values.size()){
+//                
+//               
+//        }else{
+//                
+//        }
         int playerId = DiceGame::getInstance()->getCurrentPlayer();
         std::string new_tc = DiceGame::getInstance()->getPlayerTc(playerId);
         Label* tc_label = _tc_values.at(playerId);

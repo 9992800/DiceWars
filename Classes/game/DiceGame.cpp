@@ -418,7 +418,7 @@ void DiceGame::setAreaLine(int cell, int dir){
         area->initAreaLine(cell, dir, this);
 }
 
-void DiceGame::set_area_tc(int pid){
+int DiceGame::set_area_tc(int pid){
         
         GamePlayer* player = this->_player[pid];
         
@@ -479,6 +479,8 @@ void DiceGame::set_area_tc(int pid){
         
         player->setAreaTc(tc);
         printf("\r\n\r\n---player:(%d) tc=%d---", pid, tc);
+        
+        return tc;
 }
 
 #pragma mark - main pullic function
@@ -642,10 +644,10 @@ void DiceGame::startSupply(CallFunc* callback){
                 area->updatePawn(_cur_map);
                 area->drawSupply();
         }
-//        callback();
+        callback->execute();
 }
 
-void DiceGame::afterBattle(int batlleResult){
+Map<int, std::string> DiceGame::afterBattle(int batlleResult){
         AreaData* area_from = this->_areaData[_area_from];
         AreaData* area_to   = this->_areaData[_area_to];
         
@@ -666,7 +668,18 @@ void DiceGame::afterBattle(int batlleResult){
         area_from->initDice();
         area_from->updatePawn(_cur_map);
         
-        this->set_area_tc(this->_jun[_ban]);
+        Map<int, std::string> ok_area = Map<int, std::string>();
+        for (int i = 0; i < MAX_PLAYER; i++){
+                int tc = this->set_area_tc(i);
+                std::ostringstream s;
+                s<<tc;
+                ok_area.insert(i, s.str());
+//                if (tc > 0){
+//                        
+//                }
+        }
+         
+         return ok_area;
 }
 
 

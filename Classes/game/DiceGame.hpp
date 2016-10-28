@@ -44,7 +44,7 @@ public:
                 return this->_jun[_ban];
         }
         
-        void afterBattle(int batlleResult);
+        Map<int, std::string> afterBattle(int batlleResult);
         void startSupply(CallFunc* callback);
         inline int getCurrentStatus(){return _gameStatus;}
         inline void next_player(){
@@ -72,7 +72,7 @@ protected:
         SimpleMapInfoBean initMapBasicInfo();
         int percolate(int pt, int cmax, int an);
         
-        void set_area_tc(int pid);
+        int set_area_tc(int pid);
         
         int startBattle();
         void occupyArea(int newOwner,int area);
