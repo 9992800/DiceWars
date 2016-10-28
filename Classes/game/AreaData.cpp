@@ -38,6 +38,7 @@ _len_min(9999){
         _line_cel   = std::vector<int>(MAX_LINE_INAREA);
         _line_dir   = std::vector<int>(MAX_LINE_INAREA);
         _cell_idxs  = std::set<int>();
+        _fight_values = std::vector<int>(MAX_DICE_PER_AREA);
 }
 
 

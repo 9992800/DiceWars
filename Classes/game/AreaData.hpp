@@ -85,6 +85,17 @@ public:
         }
         
         Sprite* createSprite();
+        
+        void recordFightValue(int value){
+                _fight_values.push_back(value);
+        }
+        std::vector<int> getFightValues(){
+                return _fight_values;
+        }
+        void clearFightValue(){
+                _fight_values.clear();
+        }
+        
 private:
         void drawBorder();
         void drawPolyGon(int owner);
@@ -110,5 +121,6 @@ private:
         std::vector<int>    _line_cel;
         std::vector<int>    _line_dir;
         std::set<int>       _cell_idxs;
+        std::vector<int>    _fight_values;
 };
 #endif /* AreaData_hpp */

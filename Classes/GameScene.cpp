@@ -7,6 +7,8 @@ enum
 };
 
 // on "init" you need to initialize your instance
+
+#pragma mark - initialize
 bool GameScene::init()
 {
         //////////////////////////////
@@ -16,19 +18,35 @@ bool GameScene::init()
                 return false;
         }
         
-         
-        
-        auto layer = Layer::create();
-        this->addChild(layer, 10);
-        
-
         auto visibleSize = Director::getInstance()->getVisibleSize();
         Vec2 origin = Director::getInstance()->getVisibleOrigin();
-                
+        
+        /////////////////////////////
+        // 2. init game data;
+        _gameLayer = Layer::create();
+        this->addChild(_gameLayer, 2);
+        initGameLayer(origin);
+        
+        /////////////////////////////
+        // 3. init controller;
+        _controllerLayer = Layer::create();
+        this->addChild(_controllerLayer, 3);
+        
+        Vec2 menu_start = Vec2(origin.x + visibleSize.width - 60, origin.y + visibleSize.height - 60);
+        initPlayerTc(menu_start);
+        
+        initCtrlButton(origin,visibleSize);
+        
+        initActionListener(origin, visibleSize);
+
+        return true;
+}
+
+void GameScene::initCtrlButton(Vec2 origin, Size visibleSize){
         _endTurnItem = MenuItemImage::create("NextButton.png", "NextButton.png",
-                                          CC_CALLBACK_1(GameScene::menuEndTurnCallback, this));
+                                             CC_CALLBACK_1(GameScene::menuEndTurnCallback, this));
         _endTurnItem->setPosition(Vec2(origin.x + visibleSize.width - _endTurnItem->getContentSize().width,
-                                    origin.y +_endTurnItem->getContentSize().height));
+                                       origin.y +_endTurnItem->getContentSize().height));
         _endTurnItem->setVisible(false);
         
         _startAIItem = MenuItemImage::create("start.png", "start.png",
@@ -36,93 +54,107 @@ bool GameScene::init()
         _startAIItem->setPosition(Vec2(origin.x + visibleSize.width - _startAIItem->getContentSize().width,
                                        origin.y +_startAIItem->getContentSize().height));
         
-        
         auto menu = Menu::create(_endTurnItem, _startAIItem, NULL);
         menu->setPosition(Vec2::ZERO);
-        layer->addChild(menu, 30);
-        
-        
-        /////////////////////////////
-        
-        // 3. init game;
-        _gameLayer = Layer::create();
-        this->addChild(_gameLayer, 5);
-        
-        _randomMap = DiceGame::getInstance()->initGame(_player_num);
-        _randomMap->setPosition(Vec2(origin.x, origin.y));         
-        _gameLayer->addChild(_randomMap, 2, kTagTileMap);//TODO:: element zorder.
-        
-        Vec2 menu_start = Vec2(origin.x + visibleSize.width - 60, origin.y + visibleSize.height - 60);
+        _controllerLayer->addChild(menu, 4);
+}
+
+void GameScene::initPlayerTc(Vec2 menu_start){
         
         static std::string menu_image = "maps/player_";
         for (int i = 0; i < _player_num; i++){
-                std::ostringstream s;
-                s << menu_image << i <<".png";
                 
+                int player_uid = DiceGame::getInstance()->getPlayerJun(i);
+                
+                std::ostringstream s;
+                s << menu_image << player_uid <<".png";
                 auto player_tc = MenuItemImage::create(s.str(), "");
                 player_tc->setPosition(menu_start - Vec2(0, i * (player_tc->getContentSize().height) + 5));
                 
-                int tc_i = DiceGame::getInstance()->getPlayerTc(i);
+                int tc_i = DiceGame::getInstance()->getPlayerTc(player_uid);
                 std::ostringstream s2;
                 s2 << tc_i;
                 auto label_tc = Label::createWithSystemFont(s2.str(), "Helvetica", 12);
                 label_tc->setColor(Color3B(255,0,0));
-                label_tc->setPosition(Vec2(player_tc->getContentSize()/ 2));
+                label_tc->setPosition(Vec2(player_tc->getContentSize() / 2));
                 player_tc->addChild(label_tc);
                 
                 _menu_items.insert(i, player_tc);
         }
         
-        auto menu2 = Menu::createWithArray(_menu_items);
-        menu2->setPosition(Vec2::ZERO);
-        layer->addChild(menu2, 40);
+        auto menu = Menu::createWithArray(_menu_items);
+        menu->setPosition(Vec2::ZERO);
+        _controllerLayer->addChild(menu, 4);
+}
+
+void GameScene::initGameLayer(Vec2 origin){
+        _randomMap = DiceGame::getInstance()->initGame(_player_num);
+        _randomMap->setPosition(origin);
+        _gameLayer->addChild(_randomMap, 2, kTagTileMap);
+        
         
         LayerColor* back_ground = LayerColor::create(Color4B(255,255,255,255.0));
         _gameLayer->addChild(back_ground);
+        _tamara = Sprite::create("spine/grossinis_sister1.png");
+        _gameLayer->addChild(_tamara, 4);
+        _tamara->setPosition(Vec2(100, 100));
+}
+
+void GameScene::initActionListener(Vec2 origin, Size visibleSize){
         
         Size cs = _randomMap->getContentSize();
         _lowestPostion_y = visibleSize.height + origin.y - cs.height - 6;
-        
-        
         Director::getInstance()->setDepthTest(true);
         auto listener = EventListenerTouchAllAtOnce::create();
         listener->onTouchesMoved = CC_CALLBACK_2(GameScene::onTouchesMoved, this);
         listener->onTouchesEnded = CC_CALLBACK_2(GameScene::onTouchesEnded, this);
         _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-                
-        
-        _tamara = Sprite::create("spine/grossinis_sister1.png");
-        _gameLayer->addChild(_tamara, 100);
-        _tamara->setPosition(Vec2(100, 100));
-                 
-        return true;
 }
 
+
+#pragma mark - battle logic
 void GameScene::afterBattle(int batlleResult){
-        
         
         _tamara->stopAllActions();
         _tamara->setVisible(false);
         
-        if (DiceGame::getInstance()->afterBattle(batlleResult)){
-                _endTurnItem->setVisible(true);
-        }else{
-                int result = DiceGame::getInstance()->startAIAttack();                
-                this->playAnimation(result);
-        }
+        DiceGame::getInstance()->afterBattle(batlleResult);
+        int result = DiceGame::getInstance()->startAIAttack();
+        this->playAnimation(result);
+}
+
+void GameScene::afterSupply(){
+        
+        _tamara->stopAllActions();
+        _tamara->setVisible(false);
+       
+        DiceGame::getInstance()->next_player();
+        int result = DiceGame::getInstance()->startAIAttack();
+        this->playAnimation(result);
 }
 
 void GameScene::playAnimation(int result){
-        CallFunc* cc = CallFunc::create(std::bind(&GameScene::afterBattle, this,result));
+        
+        
         if (ATTACK_RES_NOACTION == result){
-                this->playSupplyAnimation(cc);
-        }else{
-                this->playBattleAnimation(cc);
+                
+                std::set<int> affected_area = DiceGame::getInstance()->startSupply();
+                
+                this->playSupplyAnimation(affected_area);
+                
+        }else if (ATTACK_RES_NONE == result){
+                
+                _endTurnItem->setVisible(true);
+        }
+        else if (ATTACK_RES_WIN || ATTACK_RES_DEFEATED){
+                std::vector<int> fight_from = DiceGame::getInstance()->getFightValue(0);
+                std::vector<int> fight_to = DiceGame::getInstance()->getFightValue(1);
+                this->playBattleAnimation(result, fight_from, fight_to);
         }
 }
 
-void GameScene::playBattleAnimation(CallFunc* callback){
-        
+void GameScene::playBattleAnimation(int result, std::vector<int> from, std::vector<int> to){
+        CallFunc* callback = CallFunc::create(std::bind(&GameScene::afterBattle, this, result));
         _tamara->setVisible(true);
         
         auto cache = AnimationCache::getInstance();
@@ -134,7 +166,9 @@ void GameScene::playBattleAnimation(CallFunc* callback){
         _tamara->runAction(s);
 } 
 
-void GameScene::playSupplyAnimation(CallFunc* callback){
+void GameScene::playSupplyAnimation(std::set<int> area){
+        
+        CallFunc* callback = CallFunc::create(std::bind(&GameScene::afterSupply, this));
         _tamara->setVisible(true);
         
         auto cache = AnimationCache::getInstance();
@@ -146,17 +180,18 @@ void GameScene::playSupplyAnimation(CallFunc* callback){
         _tamara->runAction(s);
 }
 
-
+#pragma mark - touch action listener
 void GameScene::menuEndTurnCallback(Ref* pSender)
-{
+{        
         if (pSender == _startAIItem){
                 _startAIItem->setVisible(false);
-                int result = DiceGame::getInstance()->startAIAttack();
-                this->playAnimation(result);
-        }else{
+        }else {
+                DiceGame::getInstance()->next_player();
                 _endTurnItem->setVisible(false);
-                this->playAnimation(ATTACK_RES_NOACTION);
         }
+        
+        int res = DiceGame::getInstance()->startAIAttack();
+        this->playAnimation(res);
 }
 
 void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* event){

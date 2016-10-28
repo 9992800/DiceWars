@@ -600,6 +600,7 @@ int DiceGame::startManulAttack(Vec2 position){
 //}
 
 int DiceGame::startBattle(){
+        
         AreaData* area_from = this->_areaData[_area_from];
         area_from->drawAsSelected();
         
@@ -607,6 +608,21 @@ int DiceGame::startBattle(){
         area_to->drawAsSelected();
         
         int from_sum, to_sum;
+        
+        area_from->clearFightValue();
+        for (int i = 0; i < area_from->getDice(); i++){
+                int random_value = random(1, 6);
+                area_from->recordFightValue(random_value);
+                from_sum += random_value;
+        }
+        
+        area_to->clearFightValue();
+        for (int i = 0; i < area_to->getDice(); i++){
+                int random_value = random(1, 6);
+                area_to->recordFightValue(random_value);
+                to_sum += random_value;
+        }
+        
         if (from_sum > to_sum){
                 return ATTACK_RES_WIN;
         }else{
@@ -614,14 +630,16 @@ int DiceGame::startBattle(){
         }
 }
 
-void DiceGame::startSupply(){
+std::set<int> DiceGame::startSupply(){
         int player_id = this->_jun[_ban];
         this->set_area_tc(player_id);
         
         GamePlayer* player = this->_player[player_id];
         player->setStock();
         
-        for (int j = 0; j < player->getStock(); j++){
+        
+        std::set<int> affectedAread;
+        while (player->getStock() > 0){
                 
                 int list[AREA_MAX] = {0};
                 int count = 0;
@@ -632,10 +650,11 @@ void DiceGame::startSupply(){
                             ||area->getDice() >= MAX_DICE_PER_AREA){
                                 continue;
                         }
+                        
                         list[count++] = i;
                 }
                 
-                if (count == 0 ||player->getStock() <= 0){
+                if (count == 0){
                         break;
                 }
                 
@@ -643,29 +662,27 @@ void DiceGame::startSupply(){
                 int selected_area = list[random_area];
                 this->_areaData[selected_area]->increaseDice();
                 player->decreaseStock();
+                affectedAread.insert(selected_area);
         }
+        
+        return affectedAread;
 }
 
-bool DiceGame::afterBattle(int batlleResult){
+void DiceGame::afterBattle(int batlleResult){
         AreaData* area_from = this->_areaData[_area_from];
         AreaData* area_to   = this->_areaData[_area_to];
         
         area_from->drawAsUnselected();
         area_to->drawAsUnselected();
+}
+int DiceGame::startAIAttack(){
         
-        if (_userId == this->_jun[_ban]){
+        if (this->_jun[_ban] == _userId){
                 _gameStatus = GAME_STATUS_INUSERTURN;
-        }else {
-                _gameStatus = GAME_STATUS_AITHINKING;
+                return ATTACK_RES_NONE;
         }
         
-        return _gameStatus == GAME_STATUS_INUSERTURN;
-}
-
-int DiceGame::startAIAttack(){
         _gameStatus = GAME_STATUS_AIRUNNING;
-        this->next_player();
-        
         int target = GameAI::getInstance()->com_thinking();
         if (target == 0){
                 return ATTACK_RES_NOACTION;

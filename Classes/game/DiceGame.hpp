@@ -34,9 +34,25 @@ public:
         inline int getPlayerTc(int playerId){
                 return this->_player[playerId]->getAreaTc();
         }
-        bool afterBattle(int batlleResult);
-        inline int getCurrentStatus(){return _gameStatus;}
+        inline int getPlayerJun(int playerId){
+                return this->_jun[playerId];
+        }
         
+        void afterBattle(int batlleResult);
+        std::set<int> startSupply();
+        inline int getCurrentStatus(){return _gameStatus;}
+        inline void next_player(){
+                if (++_ban >= CURRENT_PLAYERS){
+                        _ban = 0;
+                }
+        }
+        
+        
+        inline std::vector<int> getFightValue(int idx){                
+                int area_id = (idx == 0) ? _area_from : _area_to;
+                AreaData* area = this->_areaData[area_id];
+                return area->getFightValues();
+        }
         
 protected:
         DiceGame();
@@ -51,15 +67,8 @@ protected:
         int percolate(int pt, int cmax, int an);
         
         void set_area_tc(int pid);
-
-        inline void next_player(){
-                if (++_ban >= CURRENT_PLAYERS){
-                        _ban = 0;
-                }
-        }
         
-        int startBattle();
-        void startSupply();
+        int startBattle(); 
        
 public:
         static int  CURRENT_PLAYERS;

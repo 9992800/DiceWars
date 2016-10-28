@@ -38,6 +38,7 @@ public:
         
 protected:
         void afterBattle(int res);
+        void afterSupply();
 private:
         GameScene(int pn):_player_num(pn),
         _randomMap(nullptr),
@@ -48,8 +49,13 @@ private:
                 _menu_items = Vector<MenuItem*>(MAX_PLAYER);
         }
         
-        void playBattleAnimation(CallFunc* callback);
-        void playSupplyAnimation(CallFunc* callback);
+        void initPlayerTc(Vec2 pos);
+        void initCtrlButton(Vec2 origin, Size visibleSize);
+        void initGameLayer(Vec2 origin);
+        void initActionListener(Vec2 origin, Size visibleSize);
+        
+        void playBattleAnimation(int result, std::vector<int>, std::vector<int>);
+        void playSupplyAnimation(std::set<int> area);
         void playAnimation(int result);
 private:
         TMXTiledMap*    _randomMap;
@@ -61,7 +67,7 @@ private:
         Vector<MenuItem*> _menu_items;
         bool            _isMoved;
         Sprite* _tamara;
-        Layer* _gameLayer;
+        Layer* _gameLayer, *_controllerLayer;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
