@@ -228,13 +228,12 @@ void GameScene::menuEndTurnCallback(Ref* pSender)
 {        
         if (pSender == _startAIItem){
                 _startAIItem->setVisible(false);
+                int res = DiceGame::getInstance()->startAIAttack();
+                this->playAnimation(res);
         }else {
                 this->playAnimation(ATTACK_RES_GOTSUPPLY);
                 _endTurnItem->setVisible(false);
         }
-        
-        int res = DiceGame::getInstance()->startAIAttack();
-        this->playAnimation(res);
 }
 
 void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* event){
