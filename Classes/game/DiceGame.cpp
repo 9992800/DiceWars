@@ -27,12 +27,21 @@ DiceGame* DiceGame::getInstance(){
         return s_SharedGame;
 }
 
-DiceGame::DiceGame():_userId(0),
-_gameStatus(GAME_STATUS_INIT),
-_ban(0),
-_area_from(AREA_UNSELECTED),
-_area_to(AREA_UNSELECTED),
-_cur_map(nullptr){
+DiceGame::DiceGame():_userId(0){
+}
+
+bool DiceGame::init(){
+        
+        return true;
+}
+
+void DiceGame::initMapData(){
+        
+        _gameStatus     = (GAME_STATUS_INIT);
+        _ban            = (0);
+        _area_from      = (AREA_UNSELECTED);
+        _area_to        = (AREA_UNSELECTED);
+        _cur_map        = (nullptr);
         _join           = std::vector<JoinData*>(CEL_MAX);
         _areaData       = std::vector<AreaData*>(AREA_MAX);
         _player         = std::vector<GamePlayer*>(MAX_PLAYER);
@@ -41,9 +50,6 @@ _cur_map(nullptr){
         _rcel           = std::vector<int>(CEL_MAX);
         _num            = std::vector<int>(CEL_MAX);
         _chk            = std::vector<int>(AREA_MAX);
-}
-
-bool DiceGame::init(){
         
         for (int i = 0; i < CEL_MAX; i++){
                 JoinData* join_data = new JoinData();
@@ -51,29 +57,22 @@ bool DiceGame::init(){
                 _join[i] = join_data;
         }
         
-        return true;
+        SET_SIZE_TOIDX(_jun, MAX_PLAYER);
+        for (int i = 0; i < CURRENT_PLAYERS; i++){
+                int ramdom_p = random(0, CURRENT_PLAYERS - 1);
+                int tmp = this->_jun[i];
+                this->_jun[i] = this->_jun[ramdom_p];
+                this->_jun[ramdom_p] = tmp;
+        }
+        
+        for (int i = 0; i < MAX_PLAYER; i++){
+                this->_player[i] = new GamePlayer(i);
+        }
 }
 
 DiceGame::~DiceGame(){
         
-        for (AreaData* p : _areaData){
-                delete p;
-        }
-        for (GamePlayer* p : _player){
-                delete p;
-        }
-        for (JoinData* p : _join){
-                delete p;
-        }
-        
-        _join.clear();
-        _areaData.clear();
-        _player.clear();
-        _jun.clear();
-        _cel.clear();
-        _rcel.clear();
-        _num.clear();
-        _chk.clear();
+        this->destroyGame();
 }
 
 std::string DiceGame::createMapXMLString(){
@@ -91,7 +90,7 @@ std::string DiceGame::createMapXMLString(){
         
         SimpleMapInfoBean simpleBean = this->initMapBasicInfo();
         
-        RandomMap* mapxml = RandomMap::create(simpleBean);
+        auto mapxml = RandomMap::create(simpleBean);
         std::string xmls = mapxml->getXmlString();
         
         return xmls;
@@ -486,27 +485,36 @@ int DiceGame::set_area_tc(int pid){
 #pragma mark - main pullic function
 
 
-TMXTiledMap*  DiceGame::initGame(int playerNum){
-       
-        if (nullptr != _cur_map){
-                _cur_map->removeFromParent();
+void DiceGame::destroyGame(){
+        for (AreaData* p : _areaData){
+                delete p;
         }
+        for (GamePlayer* p : _player){
+                delete p;
+        }
+        for (JoinData* p : _join){
+                delete p;
+        }
+        
+        _join.clear();
+        _areaData.clear();
+        _player.clear();
+        _jun.clear();
+        _cel.clear();
+        _rcel.clear();
+        _num.clear();
+        _chk.clear();
+        _mapData.clear();
+}
+
+
+TMXTiledMap*  DiceGame::initGame(int playerNum){
+        
+        this->initMapData();
         
         CURRENT_PLAYERS = playerNum;
-        SET_SIZE_TOIDX(_jun, MAX_PLAYER);
-        for (int i = 0; i < CURRENT_PLAYERS; i++){
-                int ramdom_p = random(0, CURRENT_PLAYERS - 1);
-                int tmp = this->_jun[i];
-                this->_jun[i] = this->_jun[ramdom_p];
-                this->_jun[ramdom_p] = tmp;
-        }
-        
-        for (int i = 0; i < MAX_PLAYER; i++){
-                this->_player[i] = new GamePlayer(i);
-        }
-        
-        
         this->makeNewMap();
+        
         std::string xmls = this->createMapXMLString();
         _cur_map = TMXTiledMap::createWithXML(xmls, "maps");
         
@@ -528,9 +536,19 @@ TMXTiledMap*  DiceGame::initGame(int playerNum){
         }
         
         Director::getInstance()->getScheduler()->setTimeScale(4);//TODO::use it to settings
+        
         return _cur_map;
 }
 
+void DiceGame::clearManulAction(){
+        if (AREA_UNSELECTED == _area_from){
+                return;
+        }
+        
+        AreaData* area = this->_areaData[_area_from];
+        area->drawAsUnselected();
+        _area_from = AREA_UNSELECTED;
+}
 
 int DiceGame::startManulAttack(Vec2 position){
         Size map_size = _cur_map->getContentSize();

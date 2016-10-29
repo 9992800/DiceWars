@@ -10,12 +10,6 @@ class GameScene : public Scene
 {
 public: 
         virtual bool init();
-     
-        void menuEndTurnCallback(cocos2d::Ref* pSender);
-    
-        void onTouchesMoved(const std::vector<Touch*>& touches, Event* event);
-        void onTouchesEnded(const std::vector<Touch*>& touches, Event *event);
-        
         static GameScene* create(int pn)
         {
                 GameScene *pRet = new(std::nothrow) GameScene(pn);
@@ -39,6 +33,12 @@ public:
 protected:
         void afterBattle(int res);
         void afterSupply();
+        
+        void menuEndTurnCallback(cocos2d::Ref* pSender);
+        void menuForBackCallback(cocos2d::Ref* pSender);
+        
+        void onTouchesMoved(const std::vector<Touch*>& touches, Event* event);
+        void onTouchesEnded(const std::vector<Touch*>& touches, Event *event);
 private:
         GameScene(int pn):_player_num(pn),
         _randomMap(nullptr),
@@ -61,6 +61,8 @@ private:
         TMXTiledMap*    _randomMap;
         MenuItemImage*  _endTurnItem;
         MenuItemImage*  _startAIItem;
+        MenuItemImage*  _forBackItem;
+
         float           _lowestPostion_y;
         int             _player_num;
         

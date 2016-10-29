@@ -27,9 +27,11 @@ public:
         static DiceGame* getInstance();
         virtual ~DiceGame();
          
-         TMXTiledMap* initGame(int playerNum);
+        TMXTiledMap* initGame(int playerNum);
+        void destroyGame();
         
         int startManulAttack(Vec2 position);
+        void clearManulAction();
         int startAIAttack();
         inline std::string getPlayerTc(int playerId){
                 int tc = this->_player[playerId]->getAreaTc();
@@ -66,6 +68,7 @@ protected:
         std::string createMapXMLString();
         void intAreaDrawObject(TMXTiledMap* map);
         bool init();
+        void initMapData();
          
         void makeNewMap();
         void setAreaLine(int cell, int dir);

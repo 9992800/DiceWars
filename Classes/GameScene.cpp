@@ -56,7 +56,12 @@ void GameScene::initCtrlButton(Vec2 origin, Size visibleSize){
         _startAIItem->setPosition(Vec2(origin.x + visibleSize.width - _startAIItem->getContentSize().width,
                                        origin.y +_startAIItem->getContentSize().height));
         
-        auto menu = Menu::create(_endTurnItem, _startAIItem, NULL);
+        _forBackItem = MenuItemImage::create("CloseNormal.png", "CloseSelected.png",
+                                             CC_CALLBACK_1(GameScene::menuForBackCallback, this));
+        _forBackItem->setPosition(Vec2(origin.x + _forBackItem->getContentSize().width + 10,
+                                       origin.y + visibleSize.height - _forBackItem->getContentSize().height - 10));
+        
+        auto menu = Menu::create(_endTurnItem, _startAIItem, _forBackItem, NULL);
         menu->setPosition(Vec2::ZERO);
         _controllerLayer->addChild(menu, 4);
 }
@@ -231,9 +236,16 @@ void GameScene::menuEndTurnCallback(Ref* pSender)
                 int res = DiceGame::getInstance()->startAIAttack();
                 this->playAnimation(res);
         }else {
+                DiceGame::getInstance()->clearManulAction();
                 this->playAnimation(ATTACK_RES_GOTSUPPLY);
                 _endTurnItem->setVisible(false);
         }
+}
+
+
+void GameScene::menuForBackCallback(cocos2d::Ref* pSender){
+        DiceGame::getInstance()->destroyGame();
+        Director::getInstance()->popScene();
 }
 
 void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* event){
