@@ -102,7 +102,7 @@ public:
         
         inline int getAreaId(){return _areaId;}
         
-        void drawSupply();
+        void drawSupply(TMXTiledMap* map);
         
         void updatePawn(TMXTiledMap*);
         
@@ -126,6 +126,7 @@ private:
         int     _areaId;
         
         DrawNode* _drawNode;
+        ParticleSystemQuad* _emitter;
         
         std::vector<bool>    _join;
         std::vector<int>    _line_cel;

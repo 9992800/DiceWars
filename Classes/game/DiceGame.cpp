@@ -527,7 +527,7 @@ TMXTiledMap*  DiceGame::initGame(int playerNum){
                 _cur_map->addChild(dice, AREA_SPRITE_ZORDER, AREA_TAG_ID_INMAP(i));
         }
         
-        Director::getInstance()->getScheduler()->setTimeScale(8);//TODO::use it to settings
+        Director::getInstance()->getScheduler()->setTimeScale(4);//TODO::use it to settings
         return _cur_map;
 }
 
@@ -643,7 +643,7 @@ void DiceGame::startSupply(CallFunc* callback){
                 AreaData* area = this->_areaData[*it];
                 
                 area->updatePawn(_cur_map);
-                area->drawSupply();
+                area->drawSupply(_cur_map);
         }
         callback->execute();
 }

@@ -211,8 +211,15 @@ Sprite* AreaData::createSprite(){
 }
 
 
-void AreaData::drawSupply(){
+void AreaData::drawSupply(TMXTiledMap* map){
         //TODO::play Animation.
+        
+        std::string filename = "particles/ExplodingRing.plist";
+        _emitter = ParticleSystemQuad::create(filename);
+        _emitter->retain();
+        map->addChild(_emitter, 10);
+        Vec2 pos = ScreenCoordinate::getInstance()->getAreaCenterPos(_cpos);
+        _emitter->setPosition(pos);
 }
 
 void AreaData::updatePawn(TMXTiledMap* map){
