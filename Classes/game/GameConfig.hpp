@@ -67,8 +67,8 @@ enum {
 };
 
 enum {
-        ATTACK_RES_NONE = -1,
-        ATTACK_RES_NOACTION = 0,
+        ATTACK_RES_NONE         = -1,
+        ATTACK_RES_GOTSUPPLY    = 0,
         ATTACK_RES_WIN,
         ATTACK_RES_DEFEATED
 };

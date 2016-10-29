@@ -694,7 +694,7 @@ int DiceGame::startAIAttack(){
         _gameStatus = GAME_STATUS_AIRUNNING;
         int target = GameAI::getInstance()->com_thinking();
         if (target == 0){
-                return ATTACK_RES_NOACTION;
+                return ATTACK_RES_GOTSUPPLY;
         }else{
                 return this->startBattle();
         }

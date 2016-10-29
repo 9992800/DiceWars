@@ -157,6 +157,10 @@ void GameScene::afterBattle(int batlleResult){
                         tc_label->setString(it->second);
         }
         
+        if (GAME_STATUS_INUSERTURN == DiceGame::getInstance()->getCurrentStatus()){
+                return;
+        }
+        
         int result = DiceGame::getInstance()->startAIAttack();
         this->playAnimation(result);
 }
@@ -171,7 +175,7 @@ void GameScene::afterSupply(){
 void GameScene::playAnimation(int result){
         
         
-        if (ATTACK_RES_NOACTION == result){
+        if (ATTACK_RES_GOTSUPPLY == result){
                 CallFunc* callback = CallFunc::create(std::bind(&GameScene::afterSupply, this));
                 DiceGame::getInstance()->startSupply(callback);
                 
@@ -225,7 +229,7 @@ void GameScene::menuEndTurnCallback(Ref* pSender)
         if (pSender == _startAIItem){
                 _startAIItem->setVisible(false);
         }else {
-                DiceGame::getInstance()->next_player();
+                this->playAnimation(ATTACK_RES_GOTSUPPLY);
                 _endTurnItem->setVisible(false);
         }
         
@@ -271,5 +275,5 @@ void GameScene::onTouchesEnded(const std::vector<Touch*>& touches, Event *event)
         
         Vec2 inMap = _randomMap->convertToNodeSpace(position);
         int result = DiceGame::getInstance()->startManulAttack(inMap);
-//        this->playAnimation(result);
+        this->playAnimation(result);
 }
