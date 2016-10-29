@@ -6,6 +6,11 @@ enum
         kTagTileMap = 1,
 };
 
+std::string INT_TO_STRING(int c){\
+        std::ostringstream s;\
+        s << c;\
+        return s.str();\
+}
 // on "init" you need to initialize your instance
 
 #pragma mark - initialize
@@ -154,12 +159,27 @@ void GameScene::afterBattle(int batlleResult){
                 _fight_to[i]->setVisible(false);
         }
         
-        std::map<int, std::string> survival = DiceGame::getInstance()->afterBattle(batlleResult);
-        for (std::map<int, std::string>::iterator it = survival.begin();
+        int current_user_num = 0;
+        std::map<int, int> survival = DiceGame::getInstance()->afterBattle(batlleResult);
+        for (std::map<int, int>::iterator it = survival.begin();
              it != survival.end(); it++){
                 Label* tc_label = _tc_values.at(it->first);
                 if (nullptr != tc_label)
-                        tc_label->setString(it->second);
+                        tc_label->setString(INT_TO_STRING(it->second));
+                if (it->second > 0){
+                        current_user_num++;
+                }
+        }
+        
+        if (current_user_num <= 1){
+                int user_tc = DiceGame::getInstance()->getUserTC();
+                if (user_tc == 0){
+                        //TODO::Failed
+                        Director::getInstance()->pause();
+                }else{
+                        //TODO::WIN
+                        Director::getInstance()->pause();
+                }
         }
         
         if (GAME_STATUS_INUSERTURN == DiceGame::getInstance()->getCurrentStatus()){

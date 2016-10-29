@@ -668,7 +668,7 @@ void DiceGame::startSupply(CallFunc* callback){
         callback->execute();
 }
 
-std::map<int, std::string> DiceGame::afterBattle(int batlleResult){
+std::map<int, int> DiceGame::afterBattle(int batlleResult){
         AreaData* area_from = this->_areaData[_area_from];
         AreaData* area_to   = this->_areaData[_area_to];
         
@@ -689,12 +689,10 @@ std::map<int, std::string> DiceGame::afterBattle(int batlleResult){
         area_from->initDice();
         area_from->updatePawn(_cur_map);
         
-        std::map<int, std::string> ok_area = std::map<int, std::string>();
+        std::map<int, int> ok_area = std::map<int, int>();
         for (int i = 0; i < MAX_PLAYER; i++){
                 int tc = this->set_area_tc(i);
-                std::ostringstream s;
-                s<<tc;
-                ok_area.insert(std::pair<int, std::string>(i, s.str()));
+                ok_area.insert(std::pair<int, int>(i, tc));
         }
         
         _area_to    = AREA_UNSELECTED;

@@ -75,6 +75,4 @@ enum {
 
 #define AI_ATTACK_THINKING_SIZE (AREA_MAX * AREA_MAX)
 
-
-
 #endif /* GameConfig_h */

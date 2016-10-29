@@ -46,9 +46,10 @@ public:
                 return this->_jun[_ban];
         }
         
-        std::map<int, std::string> afterBattle(int batlleResult);
+        std::map<int, int> afterBattle(int batlleResult);
         void startSupply(CallFunc* callback);
         inline int getCurrentStatus(){return _gameStatus;}
+        inline int getUserTC(){return this->_player[_userId]->getAreaTc();}
         inline void next_player(){
                 if (++_ban >= CURRENT_PLAYERS){
                         _ban = 0;
