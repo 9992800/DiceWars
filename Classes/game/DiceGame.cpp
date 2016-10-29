@@ -510,9 +510,11 @@ void DiceGame::destroyGame(){
 
 TMXTiledMap*  DiceGame::initGame(int playerNum){
         
-        this->initMapData();
         
         CURRENT_PLAYERS = playerNum;
+        
+        this->initMapData();
+        
         this->makeNewMap();
         
         std::string xmls = this->createMapXMLString();
