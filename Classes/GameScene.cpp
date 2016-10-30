@@ -49,17 +49,6 @@ bool GameScene::init()
         
         initActionListener(origin, visibleSize);
         
-        
-        BaseDialogConfig config = {"DIALOG_BACKGROUND.png",
-                "吾名一叶",
-                "  娇兰傲梅世人赏，却少幽芬暗里藏。不看百花共争艳，独爱疏樱一枝香",
-                20, 20, 50, 100};
-        PopUpOkDialog* dialog = PopUpOkDialog::create(config);
-        _controllerLayer->addChild(dialog);
-        
-        Vec2 center = (origin + visibleSize) / 2;
-        dialog->setPosition(center);
-
         return true;
 }
 
