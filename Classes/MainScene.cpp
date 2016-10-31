@@ -70,10 +70,33 @@ bool MainScene::init()
         LayerColor* back_ground = LayerColor::create(Color4B(255,255,255,255.0));
         layer->addChild(back_ground);
         
-        _selected_num = 6;         
+        
+        scheduleUpdate();
+        _loadingBar = LoadingBar::create("sliderProgress.png");
+        _loadingBar->setDirection(LoadingBar::Direction::LEFT);
+        _loadingBar->setPercent(0);
+        layer->addChild(_loadingBar, 3);
+        _loadingBar->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + 30));
+        
+        _selected_num = 6;
+        _count = 0;
         return true;
 }
 
+MainScene::~MainScene(){
+        unscheduleUpdate();
+}
+
+
+void MainScene::update(float delta){
+        _count++;
+        if (_count > 100)
+                {
+                _count = 0;
+                }
+        
+        _loadingBar->setPercent(_count);
+}
 
 void MainScene::menuStartGameCallback(Ref* pSender)
 {

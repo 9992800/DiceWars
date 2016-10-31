@@ -10,15 +10,18 @@
 #define MainScene_hpp
 
 #include "cocos2d.h"
+#include "ui/CocosGUI.h"
+using namespace cocos2d::ui;
 
 USING_NS_CC;
 
 class MainScene : public Scene
 {
 public:
-        virtual bool init();
-        
+        virtual bool init()override;
+        virtual ~MainScene();
         CREATE_FUNC(MainScene);
+        void update(float delta)override;
 private:
         
         void menuStartGameCallback(cocos2d::Ref* pSender);
@@ -31,6 +34,10 @@ private:
                       *_playNum_8;
         
         int _selected_num;
+        
+        
+        int _count;
+        LoadingBar* _loadingBar;
         
 };
 
