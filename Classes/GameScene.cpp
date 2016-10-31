@@ -180,11 +180,10 @@ void GameScene::afterBattle(int batlleResult){
                 }
         }
         
-        if (current_user_num <= 1){
-                int user_tc = DiceGame::getInstance()->getUserTC();
+        int user_tc = DiceGame::getInstance()->getUserTC();
+        if (current_user_num <= 1 || user_tc == 0){
+                Director::getInstance()->pause();
                 if (user_tc == 0){
-                        Director::getInstance()->pause();
-                        
                         BaseDialogConfig config("失败", "娇兰傲梅世人赏，却少幽芬暗里藏。不看百花共争艳，独爱疏樱一枝香");
                         PopUpOkCancelDialog *dialog = PopUpOkCancelDialog::create(config,
                                                                                    CC_CALLBACK_1(GameScene::gameOver, this, GAME_OVER_DEFEATED),
@@ -192,12 +191,13 @@ void GameScene::afterBattle(int batlleResult){
                         _controllerLayer->addChild(dialog);
                         
                 }else{
-                        Director::getInstance()->pause();
+                        
                         BaseDialogConfig config("胜利", "娇兰傲梅世人赏，却少幽芬暗里藏。不看百花共争艳，独爱疏樱一枝香");
                         PopUpOkDialog* dialog = PopUpOkDialog::create(config, CC_CALLBACK_1(GameScene::gameOver, this, GAME_OVER_WIN));
                         _controllerLayer->addChild(dialog);
                 }
                 
+                return;
         }
         
         if (GAME_STATUS_INUSERTURN == DiceGame::getInstance()->getCurrentStatus()){
