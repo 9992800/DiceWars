@@ -50,6 +50,7 @@ void DiceGame::initMapData(){
         _rcel           = std::vector<int>(CEL_MAX);
         _num            = std::vector<int>(CEL_MAX);
         _chk            = std::vector<int>(AREA_MAX);
+        _mapData        = std::vector<int>(CEL_MAX);
         
         for (int i = 0; i < CEL_MAX; i++){
                 JoinData* join_data = new JoinData();
@@ -83,9 +84,9 @@ std::string DiceGame::createMapXMLString(){
                 int player_uid = area->getOwner();
                 GamePlayer* player = this->_player[player_uid];
                 if (area_id > 0)
-                        _mapData.push_back(player->getGid());
+                        _mapData[i] = (player->getGid());
                 else
-                        _mapData.push_back(0);
+                        _mapData[i] = (0);
         }
         
         SimpleMapInfoBean simpleBean = this->initMapBasicInfo();
@@ -504,7 +505,7 @@ void DiceGame::destroyGame(){
         _rcel.clear();
         _num.clear();
         _chk.clear();
-        _mapData.clear();
+        _mapData.clear(); 
 }
 
 

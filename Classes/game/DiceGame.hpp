@@ -100,5 +100,6 @@ private:
         int     _ban;
         int     _area_from;
         int     _area_to;
-        TMXTiledMap* _cur_map;};
+        TMXTiledMap* _cur_map;
+};
 #endif /* DiceGame_hpp */

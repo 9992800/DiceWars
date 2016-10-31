@@ -153,6 +153,12 @@ void GameScene::initActionListener(Vec2 origin, Size visibleSize){
 
 
 void GameScene::gameOver(Ref* dialog, int result){
+        Director::getInstance()->resume();
+        
+        _fight_from.clear();
+        _fight_to.clear();
+        _tc_values.clear();
+        _menu_items.clear();
         DiceGame::getInstance()->destroyGame();
         Director::getInstance()->popScene();
 }

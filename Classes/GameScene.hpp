@@ -78,6 +78,7 @@ private:
         Layer* _gameLayer, *_controllerLayer;
         std::vector<Label*> _fight_from;
         std::vector<Label*> _fight_to;
+        Sequence*           _seq;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
