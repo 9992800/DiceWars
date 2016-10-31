@@ -13,6 +13,7 @@
 #include "cocos2d.h"
 USING_NS_CC;
 
+
 typedef struct BaseDialogConfig_tg {
         std::string     _backGroundImg;
         std::string     _title;
@@ -23,11 +24,10 @@ typedef struct BaseDialogConfig_tg {
         int             _paddingTop;
 }BaseDialogConfig;
 
-class PopUpBaseDialog: public Layer{
+class PopUpBaseDialog: public LayerColor{
 public:
         PopUpBaseDialog(BaseDialogConfig config);
-        ~PopUpBaseDialog();
-        virtual bool init()=0;
+        ~PopUpBaseDialog(); 
         
 protected:
         BaseDialogConfig        _baseConfig;

@@ -29,6 +29,8 @@ PopUpOkDialog::~PopUpOkDialog(){
         
 }
 bool PopUpOkDialog::init(){
+        Size s = this->getContentSize();
+        LayerColor::initWithColor(Color4B(255, 100, 100, 128), s.width, s.height);
         return true;
 } 
 void PopUpOkDialog::onEnter(){
