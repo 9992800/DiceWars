@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include "game/DiceGame.hpp"
 #include "PopUpOkDialog.hpp"
+#include "PopUpOkCancelDialog.hpp"
 
 
 enum
@@ -151,6 +152,11 @@ void GameScene::initActionListener(Vec2 origin, Size visibleSize){
 }
 
 
+void GameScene::gameOver(Ref* dialog, int result){
+        DiceGame::getInstance()->destroyGame();
+        Director::getInstance()->popScene();
+}
+
 #pragma mark - battle logic
 void GameScene::afterBattle(int batlleResult){
         
@@ -177,18 +183,21 @@ void GameScene::afterBattle(int batlleResult){
         if (current_user_num <= 1){
                 int user_tc = DiceGame::getInstance()->getUserTC();
                 if (user_tc == 0){
-                        //TODO::Failed
                         Director::getInstance()->pause();
+                        
+                        BaseDialogConfig config("失败", "娇兰傲梅世人赏，却少幽芬暗里藏。不看百花共争艳，独爱疏樱一枝香");
+                        PopUpOkCancelDialog *dialog = PopUpOkCancelDialog::create(config,
+                                                                                   CC_CALLBACK_1(GameScene::gameOver, this, GAME_OVER_DEFEATED),
+                                                                                   CC_CALLBACK_1(GameScene::gameOver, this, GAME_OVER_DEFEATED));                        
+                        _controllerLayer->addChild(dialog);
+                        
                 }else{
-                        //TODO::WIN
                         Director::getInstance()->pause();
+                        BaseDialogConfig config("胜利", "娇兰傲梅世人赏，却少幽芬暗里藏。不看百花共争艳，独爱疏樱一枝香");
+                        PopUpOkDialog* dialog = PopUpOkDialog::create(config, CC_CALLBACK_1(GameScene::gameOver, this, GAME_OVER_WIN));
+                        _controllerLayer->addChild(dialog);
                 }
-                BaseDialogConfig config = {"DIALOG_BACKGROUND.png",
-                        "吾名一叶",
-                        "娇兰傲梅世人赏，却少幽芬暗里藏。不看百花共争艳，独爱疏樱一枝香",
-                        20, 20, 50, 100};
-                PopUpOkDialog* dialog = PopUpOkDialog::create(config);
-                _controllerLayer->addChild(dialog);
+                
         }
         
         if (GAME_STATUS_INUSERTURN == DiceGame::getInstance()->getCurrentStatus()){
@@ -254,7 +263,7 @@ void GameScene::playBattleAnimation(int result, std::vector<int> from, std::vect
         
         Sequence*  s = Sequence::create(action2, callback, nullptr);        
         _tamara->runAction(s);
-        _tamara->setScale(2.0);//TODO::
+        _tamara->setScale(1.0);//TODO::
 } 
 
 #pragma mark - touch action listener

@@ -70,16 +70,7 @@ bool MainScene::init()
         LayerColor* back_ground = LayerColor::create(Color4B(255,255,255,255.0));
         layer->addChild(back_ground);
         
-        _selected_num = 6;
-       
-        
-        BaseDialogConfig config = {"DIALOG_BACKGROUND.png",
-                "吾名一叶",
-                "娇兰傲梅世人赏，却少幽芬暗里藏。不看百花共争艳，独爱疏樱一枝香",
-                20, 20, 50, 30};
-        PopUpOkDialog* dialog = PopUpOkDialog::create(config);
-        layer->addChild(dialog, 5); 
-        
+        _selected_num = 6;         
         return true;
 }
 

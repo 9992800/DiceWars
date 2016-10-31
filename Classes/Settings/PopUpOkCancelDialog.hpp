@@ -17,10 +17,13 @@ public:
         ~PopUpOkCancelDialog();
         bool init(); 
         static PopUpOkCancelDialog* create(BaseDialogConfig config);
-        void setCallBack(CallFunc* callback);
-protected:
-        void onEnter();
-        void onExit();
+        static PopUpOkCancelDialog*  create(BaseDialogConfig config, ccMenuCallback callback1, ccMenuCallback callback2);
+        void setCallBack(ccMenuCallback callback1, ccMenuCallback callback2);
+private:
+        ccMenuCallback _okCallback;
+        ccMenuCallback _cancelCallback;
+        MenuItemImage *_okButton;
+        MenuItemImage *_cancelButton;
 };
 
 #endif /* PopUpOkCancelDialog_hpp */

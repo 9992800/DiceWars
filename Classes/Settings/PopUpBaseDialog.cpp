@@ -5,11 +5,6 @@
 //  Created by Wansheng Li on 2016/10/30.
 //
 //
-enum{
-        kTagBackGrd = 1,
-        kTagTittle,
-        kTagContent,
-};
 #include "PopUpBaseDialog.hpp"
 PopUpBaseDialog::PopUpBaseDialog(BaseDialogConfig config):LayerColor::LayerColor(){
         _baseConfig = config;

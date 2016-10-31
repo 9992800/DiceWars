@@ -54,9 +54,12 @@ private:
         void initFightDice(Vec2 origin, Size visibleSize);
         void initGameLayer(Vec2 origin);
         void initActionListener(Vec2 origin, Size visibleSize);
+        void gameOver(Ref* pSender, int result);
+        
         
         void playBattleAnimation(int result, std::vector<int>, std::vector<int>);
         void playAnimation(int result);
+        
 private:
         TMXTiledMap*    _randomMap;
         MenuItemImage*  _endTurnItem;

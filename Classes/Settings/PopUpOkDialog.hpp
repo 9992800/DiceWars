@@ -15,12 +15,12 @@ public:
         PopUpOkDialog(BaseDialogConfig config);
         ~PopUpOkDialog();
         bool init();
-        void setCallBack(CallFunc* callback);
+        void setCallBack(ccMenuCallback callback);
         static PopUpOkDialog* create(BaseDialogConfig config);
+        static PopUpOkDialog* create(BaseDialogConfig config, ccMenuCallback callback);
         
 protected:
-        void onEnter();
-        void onExit();
+        MenuItemImage *_okButton;
 };
 
 #endif /* PopupOkDialog_hpp */
