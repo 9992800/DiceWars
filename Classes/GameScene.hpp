@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "GameConfig.hpp"
 
+#include "SimpleAudioEngine.h"
 USING_NS_CC;
 
 class GameScene : public Scene
@@ -28,6 +29,7 @@ public:
         
         virtual ~GameScene(){
                 _menu_items.clear();
+                CocosDenshion::SimpleAudioEngine::end();
         }
         
 protected:

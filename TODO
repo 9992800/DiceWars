@@ -1,15 +1,15 @@
 TODO:
----------------------step1---------------------
-1.loading bar test
+---------------------step1---------------------------------------------------------
+1.loading bar test------------------------------------------------OK
 2.retry or exit game logic
-3.play sound effect
-4.sound setting and game speed setting.
+3.play sound effect-----------------------------------------------OK
+4.sound setting and game speed setting, animation setting.
 
 
 
 
 
----------------------step2---------------------
+---------------------step2---------------------------------------------------------
 1.image resource search path
 2.share the app by facebook and wechat
-3.支付功能
+3.payment action for ios

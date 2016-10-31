@@ -80,4 +80,12 @@ enum {
 
 #define AI_ATTACK_THINKING_SIZE (AREA_MAX * AREA_MAX)
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#define EFFECT_FILE        "effect2.ogg"
+#elif( CC_TARGET_PLATFORM == CC_PLATFORM_MARMALADE)
+#define EFFECT_FILE        "effect1.raw"
+#else
+#define EFFECT_FILE        "effect1.wav"
+#endif // CC_PLATFOR_ANDROID
+
 #endif /* GameConfig_h */

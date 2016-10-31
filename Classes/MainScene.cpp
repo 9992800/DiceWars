@@ -95,6 +95,7 @@ void MainScene::update(float delta){
                 _count = 0;
                 }
         
+        CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect( EFFECT_FILE );
         _loadingBar->setPercent(_count);
 }
 

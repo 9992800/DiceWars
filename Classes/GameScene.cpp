@@ -217,7 +217,7 @@ void GameScene::afterSupply(){
 
 void GameScene::playAnimation(int result){
         
-        
+        CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(EFFECT_FILE);
         if (ATTACK_RES_GOTSUPPLY == result){
                 CallFunc* callback = CallFunc::create(std::bind(&GameScene::afterSupply, this));
                 DiceGame::getInstance()->startSupply(callback);
