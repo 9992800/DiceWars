@@ -15,6 +15,8 @@ std::string INT_TO_STRING(int c){\
         s << c;\
         return s.str();\
 }
+
+template <typename T> std::string tostr(const T& t) { std::ostringstream os; os<<t; return os.str(); }
 // on "init" you need to initialize your instance
 
 #pragma mark - initialize
