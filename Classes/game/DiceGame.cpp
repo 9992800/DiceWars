@@ -113,8 +113,7 @@ SimpleMapInfoBean DiceGame::initMapBasicInfo(){
         
         MapResolustionConfig config =  MapResolustion::getConfig();
         
-        MapBasicBean mapBasic = {row, columns, config.mapTileWidth, config.mapTileHeight, config.hexsidelength,
-                "y", "odd", "hexagonal", "right-down"};
+        MapBasicBean mapBasic = {row, columns, config.mapTileWidth, config.mapTileHeight, config.hexsidelength};
         simpleBean.mapBasicBean = mapBasic;
         
         TileSetBean tileSet = {"game", config.tilesetWidth, config.tilesetHeight,
