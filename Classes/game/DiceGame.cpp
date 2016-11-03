@@ -517,16 +517,15 @@ TMXTiledMap*  DiceGame::initGame(int playerNum){
         
         this->makeNewMap();
         
+        for (int i = 0; i < MAX_PLAYER; i++){
+                this->set_area_tc(i);
+        }
         std::string xmls = this->createMapXMLString();
         _cur_map = TMXTiledMap::createWithXML(xmls, "maps");
         
         ScreenCoordinate::getInstance()->configScreen(_cur_map->getContentSize());
         
         this->intAreaDrawObject(_cur_map);
-        
-        for (int i = 0; i < MAX_PLAYER; i++){
-                this->set_area_tc(i);
-        }
         
         for(int i = 1; i < AREA_MAX; i++){
                 AreaData* area = this->_areaData[i];
