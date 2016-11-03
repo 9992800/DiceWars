@@ -3,20 +3,11 @@ TODO:
 1.loading bar test-------------------------------------------OK
 3.play sound effect------------------------------------------OK
 4.image resource search path---------------------------------OK
-
-
-----------------------step1 bugs--------------------------------
-sometimes area data is not correct
-
-
-
-
+2,9 grid dialog----------------------------------------------OK
+3.payment action for ios----------------------------use sdk box
+5.local sqlite database or userdefault ----------------------OK
 
 ---------------------step2-------------------------------------------
-1,AI logic check again
-2,9 grid dialog----------------------------------------------OK
-3.payment action for ios
-4.retry same map
 
 
 
@@ -25,29 +16,22 @@ sometimes area data is not correct
 ----------------------------keep----------------------------------------
 1.sound setting and game speed setting, animation setting.
 
-2.share the app by facebook and wechat
+2.share the app by facebook 
 
+1,AI logic check again
 
+2,test all the fixed value of UI wdgets
 
+4.retry same map
+ 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+----------------------------------------------------------------------------------
+第一界面：loading——有兵种的全屏背景图+loading进度条
+第二个界面：开始游戏——logo在中间背景图是个场景的模糊图，和一个进入游戏按钮，左边有个关闭音乐按钮右侧有个设置按钮右上有个帮助按钮
+第三个界面：选择关卡——官卡图paly按钮，声音，设置，金币等按钮
+第四个界面：游戏界面——地图，兵种元素，地形元素，骰子等
+第五个界面：游戏VS界面——VS角色半身像骰子等可能需要动画表现
+第六个界面：战斗结算——胜利失败效果界面，重玩和返回按钮
 
 
 
@@ -58,12 +42,11 @@ default:  320   480
 -568h@2x  640   1136
 -667h@2x  750   1334
 -736h@3x  2208  1242
+iPhone5：1136×640 
+iPhone5s：1136×640 
+iphone6: 1334×750
+iphone6s：1334×750
+iphone6plus:1920x1080
+iphone6splus:1920x1080
 
 
-----------------------------------------------------------------------------------
-第一界面：loading——有兵种的全屏背景图+loading进度条
-第二个界面：开始游戏——logo在中间背景图是个场景的模糊图，和一个进入游戏按钮，左边有个关闭音乐按钮右侧有个设置按钮右上有个帮助按钮
-第三个界面：选择关卡——官卡图paly按钮，声音，设置，金币等按钮
-第四个界面：游戏界面——地图，兵种元素，地形元素，骰子等
-第五个界面：游戏VS界面——VS角色半身像骰子等可能需要动画表现
-第六个界面：战斗结算——胜利失败效果界面，重玩和返回按钮
