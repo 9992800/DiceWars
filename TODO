@@ -7,6 +7,9 @@ TODO:
 3.payment action for ios----------------------------use sdk box
 5.local sqlite database or userdefault ----------------------OK
 
+4.retry same map
+1,AI logic check again
+2.share the app by facebook 
 ---------------------step2-------------------------------------------
 
 
@@ -14,16 +17,13 @@ TODO:
 
 
 ----------------------------keep----------------------------------------
-1.sound setting and game speed setting, animation setting.
-
-2.share the app by facebook 
-
-1,AI logic check again
+1.sound setting and game speed setting, animation setting. 
 
 2,test all the fixed value of UI wdgets
 
-4.retry same map
- 
+ must be a littile animaiton.
+
+ restore product
 
 ----------------------------------------------------------------------------------
 第一界面：loading——有兵种的全屏背景图+loading进度条
